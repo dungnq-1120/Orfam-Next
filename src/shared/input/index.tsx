@@ -13,7 +13,7 @@ const variantsStylesInput = cva(["border-2 border-gray-400 text-base pl-4 outlin
     types: {
       primary: "focus:border-blue-500",
       secondary: "focus:border-gray-500",
-      success: "focus:border-green-500",
+      success: "focus:border-green-ct5",
       warning: "focus:border-yellow-500",
       error: "focus:border-red-500",
     },
@@ -32,7 +32,7 @@ const variantsStylesInput = cva(["border-2 border-gray-400 text-base pl-4 outlin
   },
 });
 
-const Input = forwardRef<HTMLInputElement, PropsInput>(({ className, types = "primary", size = "sm", fullWidth, ...rest }, ref) => {
+const InputForm = forwardRef<HTMLInputElement, PropsInput>(({ className, types = "primary", size = "sm", fullWidth, ...rest }, ref) => {
   const classStyles = variantsStylesInput({
     className,
     types,
@@ -44,6 +44,6 @@ const Input = forwardRef<HTMLInputElement, PropsInput>(({ className, types = "pr
 
   return <input {...rest} ref={ref} className={mergedClassName} />;
 });
-Input.displayName = "Input";
+InputForm.displayName = "Input";
 
-export default Input;
+export default InputForm;
