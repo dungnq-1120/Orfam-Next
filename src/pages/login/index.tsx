@@ -3,6 +3,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { Form, FormField, FormItem, FormMessage } from "@/shared/form";
 import InputForm from "@/shared/input";
 import { Button } from "@/shared/button";
@@ -10,9 +11,7 @@ import { TForm } from "@/shared/form/type";
 import Image from "next/image";
 import logo from "../../../public/image/logo/Logo.png";
 import { Checkbox } from "@/shared/checkbox";
-import Link from "next/link";
-const registerSchema = z.object({
-  name: z.string().min(1, "Please enter name").trim(),
+const loginSchema = z.object({
   email: z
     .string()
     .min(1, "Please enter email")
@@ -23,37 +22,29 @@ const registerSchema = z.object({
     .min(1, "Please enter password")
     .regex(/^.{4,8}$/, "Invalid password")
     .trim(),
-  confirmPassword: z.string().min(1, "Please confirm password"),
 });
 
-const Register = () => {
+const Login = () => {
   const form = useForm({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: {
-      name: "",
       email: "",
       password: "",
-      confirmPassword: "",
     },
   });
 
-  const onSubmit = (data: TForm) => console.log(data);
+  const onSubmit = (data: Pick<TForm, "email" | "password">) => console.log(data);
 
-  const formFields = [
-    { name: "name", placeholder: "Name" } as const,
-    { name: "email", placeholder: "Email" } as const,
-    { name: "password", placeholder: "Password", type: "password" } as const,
-    { name: "confirmPassword", placeholder: "Confirm password", type: "password" } as const,
-  ];
+  const formFields = [{ name: "email", placeholder: "Email" } as const, { name: "password", placeholder: "Password", type: "password" } as const];
 
   return (
-    <div className="register w-screen h-screen flex justify-center items-center bg-slate-200 p-5 s:h-full xs:pt-4 xs:pb-4">
-      <div className="form-register flex justify-center items-center max-w-lg shadow-shadow1 bg-white rounded-lg p-6 sm:w-11/12 xs:w-full">
+    <div className="Login w-screen h-screen flex justify-center items-center bg-slate-200 p-5 xs:pt-4 xs:pb-4">
+      <div className="form-Login flex justify-center items-center max-w-lg shadow-shadow1 bg-white rounded-lg p-6 sm:w-11/12 xs:w-full">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
             <div className="head-form mt-">
               <Image src={logo} alt="logo" className="m-auto" />
-              <h3 className="text-center text-blue-ct6 font-bold text-4xl mb-2 mt-4 sm:text-3xl xs:text-2xl">REGISTER</h3>
+              <h3 className="text-center text-blue-ct6 font-bold text-4xl mb-2 mt-4 sm:text-3xl xs:text-2xl">Login</h3>
             </div>
             {formFields.map(({ name, placeholder, type }) => (
               <FormField
@@ -65,7 +56,7 @@ const Register = () => {
                     <InputForm
                       types="success"
                       fullWidth
-                      className="rounded-3xl bg-slate-100 border-0 mt-4 text-sm xs:text-xs"
+                      className="rounded-3xl bg-slate-100 border-0 mt-6 text-sm xs:text-xs"
                       placeholder={placeholder}
                       type={type || "text"}
                       {...field}
@@ -75,21 +66,21 @@ const Register = () => {
                 )}
               />
             ))}
-            <div className="checkbox ">
-              <div className="flex mt-4 gap-2 ">
+
+            <div className="checkbox flex items-center justify-between mt-6 mb-6 gap-2 ">
+              <div className="flex items-center gap-2">
                 <Checkbox />
-                <p className="text-sm text-blue-ct7 font-medium sm:text-xs">
-                  By using this form you agree with the storage and handling of your data by this website.
-                </p>
+                <p className="text-sm text-blue-ct7 font-medium sm:text-xs">Remember me</p>
               </div>
+              <p className="text-sm text-blue-ct7 font-medium duration-500 cursor-pointer hover:text-green-ct5">Forgot password ?</p>
             </div>
-            <div className="flex justify-end mt-4">
-              <Button className="px-16 w-full py-3 sm:w-full xs:text-xs" type="submit">
-                CREATE AN ACCOUNT
+            <div className="flex justify-end">
+              <Button className="px-16 py-3 mt-4 w-full xs:text-xs" type="submit">
+                LOGIN
               </Button>
             </div>
-            <Link className="text-sm text-end block mt-3 text-blue-ct6 hover:text-blue-ct5 font-medium" href="/login">
-              Have an account? Login Here
+            <Link className="text-sm text-end block mt-3 text-blue-ct6 hover:text-blue-ct5 font-medium" href="/register">
+              Not registered? Create an account
             </Link>
           </form>
         </Form>
@@ -98,8 +89,8 @@ const Register = () => {
   );
 };
 
-Register.getLayout = function getLayout(page: React.ReactElement) {
+Login.getLayout = function getLayout(page: React.ReactElement) {
   return <PublicLayout>{page}</PublicLayout>;
 };
 
-export default Register;
+export default Login;
