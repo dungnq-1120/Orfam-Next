@@ -10,6 +10,7 @@ import { TForm } from "@/shared/form/type";
 import Image from "next/image";
 import logo from "../../../public/image/logo/Logo.png";
 import { Checkbox } from "@/shared/checkbox";
+import Link from "next/link";
 const registerSchema = z.object({
   name: z.string().min(1, "Please enter name").trim(),
   email: z
@@ -47,7 +48,7 @@ const Register = () => {
 
   return (
     <div className="register w-screen h-screen flex justify-center items-center bg-slate-200 p-5 s:h-full xs:pt-4 xs:pb-4">
-      <div className="form-register flex justify-center items-center w-4/5 shadow-shadow1 bg-white rounded-lg p-6 sm:w-11/12 xs:w-full">
+      <div className="form-register flex justify-center items-center max-w-lg shadow-shadow1 bg-white rounded-lg p-6 sm:w-11/12 xs:w-full">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full ">
             <div className="head-form mt-">
@@ -74,17 +75,22 @@ const Register = () => {
                 )}
               />
             ))}
-            <div className="checkbox flex items-center mt-4 gap-2">
-              <Checkbox />
-              <p className="text-sm text-blue-ct7 font-medium sm:text-xs">
-                By using this form you agree with the storage and handling of your data by this website.
-              </p>
+            <div className="checkbox ">
+              <div className="flex mt-4 gap-2 ">
+                <Checkbox />
+                <p className="text-sm text-blue-ct7 font-medium sm:text-xs">
+                  By using this form you agree with the storage and handling of your data by this website.
+                </p>
+              </div>
             </div>
-            <div className="flex justify-end">
-              <Button className="px-16 py-3 mt-2 sm:w-full xs:text-xs" type="submit">
+            <div className="flex justify-end mt-4">
+              <Button className="px-16 w-full py-3 sm:w-full xs:text-xs" type="submit">
                 CREATE AN ACCOUNT
               </Button>
             </div>
+            <Link className="text-sm text-end block mt-3 text-blue-ct6 hover:text-blue-ct5 font-medium" href="/login">
+              Have an account? Login Here
+            </Link>
           </form>
         </Form>
       </div>
