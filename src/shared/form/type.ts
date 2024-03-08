@@ -1,6 +1,6 @@
 export interface TForm {
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
-  phone: string;
+  password: string;
+  confirmPassword: string;
 }

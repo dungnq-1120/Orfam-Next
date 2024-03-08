@@ -11,11 +11,11 @@ interface PropsInput extends Omit<InputHTMLAttributes<HTMLInputElement>, "size">
 const variantsStylesInput = cva(["border-2 border-gray-400 text-base pl-4 outline-none rounded-md "], {
   variants: {
     types: {
-      primary: "focus:border-blue-500",
-      secondary: "focus:border-gray-500",
-      success: "focus:border-green-500",
-      warning: "focus:border-yellow-500",
-      error: "focus:border-red-500",
+      primary: "focus:border-blue-500 focus:border-2",
+      secondary: "focus:border-gray-500 focus:border-2",
+      success: "focus:border-green-ct5 focus:border-2",
+      warning: "focus:border-yellow-500 focus:border-2",
+      error: "focus:border-red-500 focus:border-2",
     },
     size: {
       sm: "py-3",

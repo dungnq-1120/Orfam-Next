@@ -1,6 +1,4 @@
 import Layout from "@/components/layouts/privateLayout";
-import { Checkbox } from "@/shared/checkbox";
-import Card from "@/shared/card";
 
 import type { ReactElement } from "react";
 
