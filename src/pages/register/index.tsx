@@ -46,6 +46,7 @@ const Register = () => {
     { name: "confirmPassword", placeholder: "Confirm password", type: "password" } as const,
   ];
 
+  
   return (
     <div className="register w-screen h-screen flex justify-center items-center bg-slate-200 p-5 s:h-full xs:pt-4 xs:pb-4">
       <div className="form-register flex justify-center items-center max-w-lg shadow-shadow1 bg-white rounded-lg p-6 sm:w-11/12 xs:w-full">
