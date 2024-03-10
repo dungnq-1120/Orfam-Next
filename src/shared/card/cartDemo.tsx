@@ -1,4 +1,5 @@
-{/* <Card className="w-52 cursor-pointer relative group">
+{
+  /* <Card className="w-52 cursor-pointer relative group">
 <CardHeader>
   <CardTitle className="overflow-hidden h-60">
     <Image src={chicken} alt="product" className="w-full h-full object-cover" />
@@ -32,4 +33,5 @@ left-1 p-1 px-2 rounded"
     50%
   </div>
 </CardContent>
-</Card> */}
+</Card> */
+}
