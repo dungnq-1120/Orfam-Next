@@ -10,7 +10,7 @@ interface PropsInput extends Omit<InputHTMLAttributes<HTMLInputElement>, "size">
 
 const variantsStylesInput = cva(
   [
-    "peer h-4 w-4 inline-block shrink-0 rounded-xl  disabled:cursor-not-allowed disabled:opacity-100",
+    "peer h-4 w-4 inline-block shrink-0 rounded-x disabled:cursor-not-allowed disabled:opacity-100",
   ],
   {
     variants: {

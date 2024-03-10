@@ -2,7 +2,7 @@ import { cva } from "class-variance-authority";
 import { forwardRef, InputHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
-interface PropsInput extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
+interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
   types?: "primary" | "secondary" | "success" | "warning" | "error";
   size?: "sm" | "md" | "lg";
   fullWidth?: boolean;
@@ -32,7 +32,7 @@ const variantsStylesInput = cva(["border-2 border-gray-400 text-base pl-4 outlin
   },
 });
 
-const InputForm = forwardRef<HTMLInputElement, PropsInput>(({ className, types = "primary", size = "sm", fullWidth, ...rest }, ref) => {
+const InputForm = forwardRef<HTMLInputElement, Props>(({ className, types = "primary", size = "sm", fullWidth, ...rest }, ref) => {
   const classStyles = variantsStylesInput({
     className,
     types,
@@ -40,9 +40,7 @@ const InputForm = forwardRef<HTMLInputElement, PropsInput>(({ className, types =
     fullWidth,
   });
 
-  const mergedClassName = cn(classStyles, className);
-
-  return <input {...rest} ref={ref} className={mergedClassName} />;
+  return <input {...rest} ref={ref} className={cn(classStyles, className)} />;
 });
 InputForm.displayName = "Input";
 

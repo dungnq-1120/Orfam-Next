@@ -1,5 +1,5 @@
 import PublicLayout from "@/components/layouts/publicLayout";
-import React, { FormEvent, useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,13 +9,13 @@ import Image from "next/image";
 import logo from "../../../public/image/logo/Logo.png";
 import Link from "next/link";
 import Checkbox from "@/shared/checkbox";
-import { TRegister } from "@/shared/form/type";
 import { Button } from "@/shared/button";
+import { TFormRegister } from "@/shared/form/type";
 
 const registerSchema = z
   .object({
     name: z.string().min(1, "Please enter name").trim(),
-    email: z.string().min(1, "Please enter email").email("Invalid email").trim(),
+    email: z.string().email("Invalid email").min(1, "Please enter email").trim(),
     password: z
       .string()
       .min(1, "Please enter password")
@@ -46,7 +46,7 @@ const Register = () => {
     },
   });
 
-  const onSubmit = (data: TRegister) => {
+  const onSubmit = (data: TFormRegister) => {
     console.log(data);
   };
 

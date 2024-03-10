@@ -7,21 +7,19 @@ import Link from "next/link";
 import { Form, FormField, FormItem, FormMessage } from "@/shared/form";
 import InputForm from "@/shared/input";
 import { Button } from "@/shared/button";
-import { TForm } from "@/shared/form/type";
 import Image from "next/image";
 import logo from "../../../public/image/logo/Logo.png";
-import { Checkbox } from "@/shared/checkbox";
+import { TFormRegister } from "@/shared/form/type";
+import Checkbox from "@/shared/checkbox";
+
 const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Please enter email")
-    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email")
-    .trim(),
+  email: z.string().email("Invalid email").min(1, "Please enter email").trim(),
   password: z
     .string()
     .min(1, "Please enter password")
     .regex(/^.{4,8}$/, "Invalid password")
     .trim(),
+  termsAccepted: z.boolean().refine((val) => val === true, "You must accept the terms and conditions."),
 });
 
 const Login = () => {
@@ -30,15 +28,16 @@ const Login = () => {
     defaultValues: {
       email: "",
       password: "",
+      termsAccepted: false,
     },
   });
 
-  const onSubmit = (data: Pick<TForm, "email" | "password">) => console.log(data);
+  const onSubmit = (data: Pick<TFormRegister, "email" | "password">) => console.log(data);
 
   const formFields = [{ name: "email", placeholder: "Email" } as const, { name: "password", placeholder: "Password", type: "password" } as const];
 
   return (
-    <div className="Login w-screen h-screen flex justify-center items-center bg-slate-200 p-5 xs:pt-4 xs:pb-4">
+    <div className="login w-full h-screen flex justify-center items-center bg-slate-200 p-5 s:h-full xs:pt-4 xs:pb-4">
       <div className="form-Login flex justify-center items-center max-w-lg shadow-shadow1 bg-white rounded-lg p-6 sm:w-11/12 xs:w-full">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
@@ -69,13 +68,13 @@ const Login = () => {
 
             <div className="checkbox flex items-center justify-between mt-6 mb-6 gap-2 ">
               <div className="flex items-center gap-2">
-                <Checkbox />
+                <Checkbox {...form.register("termsAccepted")} types={form.formState.errors.termsAccepted ? "error" : "primary"} />
                 <p className="text-sm text-blue-ct7 font-medium sm:text-xs">Remember me</p>
               </div>
               <p className="text-sm text-blue-ct7 font-medium duration-500 cursor-pointer hover:text-green-ct5">Forgot password ?</p>
             </div>
             <div className="flex justify-end">
-              <Button className="px-16 py-3 mt-4 w-full xs:text-xs" type="submit">
+              <Button className=" px-16 py-3 mt-4 w-full xs:text-xs" type="submit">
                 LOGIN
               </Button>
             </div>
