@@ -1,0 +1,151 @@
+[33mcommit f45b29debb03521d7feae73edc471c5e9b93f21b[m[33m ([m[1;36mHEAD -> [m[1;32mfeature.login[m[33m)[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Sun Mar 10 21:34:33 2024 +0700
+
+    feature.login update
+
+[33mcommit 45120b6d96bbce7b3167a02b35e7b466e0d3b7af[m[33m ([m[1;31morigin/feature.login[m[33m)[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Sun Mar 10 21:30:35 2024 +0700
+
+    feature.login update
+
+[33mcommit 428701e8fb992c205d4b1f8a9566b1134cbe5d21[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Sun Mar 10 21:28:53 2024 +0700
+
+    feature.login update
+
+[33mcommit 8587feaf1122be880db7972eb448b535a7e9e9af[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Sun Mar 10 21:25:52 2024 +0700
+
+    feature.login fix
+
+[33mcommit 4050fe8ada86b97ef23bd9e30d78527477014be5[m
+Merge: 88c4abb f0ca96f
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Sun Mar 10 20:28:19 2024 +0700
+
+    Merge branch 'main' into feature.login
+
+[33mcommit f0ca96f80cb2143816b891a7651ef1f4057ed624[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m
+Merge: ff5fb22 711acbd
+Author: LƯỢNG PHƯƠNG HIỂN <118298424+Hieng55@users.noreply.github.com>
+Date:   Sun Mar 10 20:17:09 2024 +0700
+
+    Merge pull request #3 from Hieng55/feature.register
+    
+    Feature.register
+
+[33mcommit 711acbd3b9f1b3b9d1de2860e93e343c5ed81e44[m[33m ([m[1;31morigin/feature.register[m[33m, [m[1;32mfeature.register[m[33m)[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Sun Mar 10 16:23:09 2024 +0700
+
+    feature.register fix
+
+[33mcommit 575a9e11e4eb6ea675f78497f9bacb6b7c960403[m
+Merge: 6104bfb b47612d
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Sun Mar 10 16:07:29 2024 +0700
+
+    feature.register update code
+
+[33mcommit ff5fb22454e92363bfa38aa3ec227e11cf1fed90[m
+Merge: c7fe9a8 b47612d
+Author: LƯỢNG PHƯƠNG HIỂN <118298424+Hieng55@users.noreply.github.com>
+Date:   Sun Mar 10 15:58:41 2024 +0700
+
+    Merge pull request #2 from Hieng55/feature.function_common
+    
+    feature.function_common
+
+[33mcommit b47612db994534f633e3df466221e48c5304d35b[m[33m ([m[1;31morigin/feature.function_common[m[33m, [m[1;32mfeature.function_common[m[33m)[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Sun Mar 10 15:56:30 2024 +0700
+
+    feature.function_common fix and update
+
+[33mcommit 6104bfb13fcdea3afb0b9e431a792ee6b358a57f[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Sun Mar 10 15:51:50 2024 +0700
+
+    feature.register fix update
+
+[33mcommit c5537daa6f1cf1c5da0be6b07e3acbab429d251c[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Sat Mar 9 11:14:39 2024 +0700
+
+    feature.function_common done
+
+[33mcommit 653063f1d566490f6ce2cff0a9b9ba7c65240cc9[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Sat Mar 9 09:20:51 2024 +0700
+
+    feature.function_common update card
+
+[33mcommit 18c4f6dee22b45b24547311bbb8e3ff4b82aab18[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Sat Mar 9 08:52:55 2024 +0700
+
+    feature.register update
+
+[33mcommit 24369bd0a39c22cb434a4d5d393523a1379fa74e[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Sat Mar 9 08:22:51 2024 +0700
+
+    fix feature.function_common update
+
+[33mcommit 3ea3000c225887f007dd95769b1c8594dfb055e0[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Fri Mar 8 21:46:59 2024 +0700
+
+    fix feature.function_common
+
+[33mcommit 88c4abb3e0c70014fc112ecf5f864c30f43cf96d[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Fri Mar 8 21:42:04 2024 +0700
+
+    feature.login
+
+[33mcommit 6f005d01718e62ccc5462a7b4d77e485a2c854b6[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Fri Mar 8 18:12:18 2024 +0700
+
+    feature.register.update
+
+[33mcommit cdf94692a237a33a917751d2d9ae76f898243aa7[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Fri Mar 8 16:34:30 2024 +0700
+
+    feature.register
+
+[33mcommit b08dbd150cc43e66876e5036ae415dd703a75f10[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Fri Mar 8 11:28:31 2024 +0700
+
+    feature.function_common update
+
+[33mcommit 404495a61b806a479e99fb73a8cdbeef28638bb3[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Fri Mar 8 10:11:13 2024 +0700
+
+    feature.function_common
+
+[33mcommit c7fe9a8a8e42dda9e0518cecc10f45784a2f0846[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Thu Mar 7 16:52:33 2024 +0700
+
+    update font
+
+[33mcommit 3447b8b234b8db61b3e97e23914ae62d5b870675[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Thu Mar 7 12:52:43 2024 +0700
+
+    code base
+
+[33mcommit a7f23ff785fb40188463c3c18e3a20b3600d2251[m
+Author: Hieng55 <bosshieng55@gmail.com>
+Date:   Wed Mar 6 17:08:12 2024 +0700
+
+    Initial commit from Create Next App

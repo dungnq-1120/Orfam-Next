@@ -13,10 +13,9 @@ import { TFormRegister } from "@/shared/form/type";
 import Checkbox from "@/shared/checkbox";
 
 const loginSchema = z.object({
-  email: z.string().email("Invalid email").min(1, "Please enter email").trim(),
+  email: z.string().email("Invalid email").trim(),
   password: z
     .string()
-    .min(1, "Please enter password")
     .regex(/^.{4,8}$/, "Invalid password")
     .trim(),
   termsAccepted: z.boolean().refine((val) => val === true, "You must accept the terms and conditions."),

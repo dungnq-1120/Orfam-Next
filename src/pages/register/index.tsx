@@ -15,10 +15,9 @@ import { TFormRegister } from "@/shared/form/type";
 const registerSchema = z
   .object({
     name: z.string().min(1, "Please enter name").trim(),
-    email: z.string().email("Invalid email").min(1, "Please enter email").trim(),
+    email: z.string().email("Invalid email").trim(),
     password: z
       .string()
-      .min(1, "Please enter password")
       .regex(/^.{4,8}$/, "Invalid password")
       .trim(),
     confirmPassword: z.string().min(1, "Please confirm password"),
