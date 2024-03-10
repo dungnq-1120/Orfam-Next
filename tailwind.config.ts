@@ -47,6 +47,30 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        gray: {
+          ct1: "#f2f2f6",
+        },
+        blue: {
+          ct7: "#2d2a6e",
+          ct6: "#443fad",
+          ct5: "#6964c8fc",
+          ct1: "#d6c9ff",
+        },
+        green: {
+          ct5: "#96ae00",
+          ct6: "#718300",
+        },
+        orange: {
+          ct2: "#ffc6a1",
+          ct1: "#ff00002b",
+        },
+        black: {
+          ct50: "#00000080",
+        },
+      },
+      boxShadow: {
+        shadowCheck: "0 0 0 0.25rem rgba(13, 110, 253, 0.25)",
+        shadow1: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
       },
       borderRadius: {
         lg: "var(--radius)",
