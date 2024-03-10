@@ -1,30 +1,38 @@
 import PublicLayout from "@/components/layouts/publicLayout";
-import React from "react";
+import React, { FormEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField, FormItem, FormMessage } from "@/shared/form";
 import InputForm from "@/shared/input";
-import { Button } from "@/shared/button";
-import { TForm } from "@/shared/form/type";
 import Image from "next/image";
 import logo from "../../../public/image/logo/Logo.png";
-import { Checkbox } from "@/shared/checkbox";
 import Link from "next/link";
-const registerSchema = z.object({
-  name: z.string().min(1, "Please enter name").trim(),
-  email: z
-    .string()
-    .min(1, "Please enter email")
-    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email")
-    .trim(),
-  password: z
-    .string()
-    .min(1, "Please enter password")
-    .regex(/^.{4,8}$/, "Invalid password")
-    .trim(),
-  confirmPassword: z.string().min(1, "Please confirm password"),
-});
+import Checkbox from "@/shared/checkbox";
+import { TRegister } from "@/shared/form/type";
+import { Button } from "@/shared/button";
+
+const registerSchema = z
+  .object({
+    name: z.string().min(1, "Please enter name").trim(),
+    email: z.string().min(1, "Please enter email").email("Invalid email").trim(),
+    password: z
+      .string()
+      .min(1, "Please enter password")
+      .regex(/^.{4,8}$/, "Invalid password")
+      .trim(),
+    confirmPassword: z.string().min(1, "Please confirm password"),
+    termsAccepted: z.boolean().refine((val) => val === true, "You must accept the terms and conditions."),
+  })
+  .superRefine((data, ctx) => {
+    if (data.password !== data.confirmPassword) {
+      ctx.addIssue({
+        path: ["confirmPassword"],
+        message: "Passwords do not match",
+        code: z.ZodIssueCode.custom,
+      });
+    }
+  });
 
 const Register = () => {
   const form = useForm({
@@ -34,10 +42,13 @@ const Register = () => {
       email: "",
       password: "",
       confirmPassword: "",
+      termsAccepted: false,
     },
   });
 
-  const onSubmit = (data: TForm) => console.log(data);
+  const onSubmit = (data: TRegister) => {
+    console.log(data);
+  };
 
   const formFields = [
     { name: "name", placeholder: "Name" } as const,
@@ -76,8 +87,8 @@ const Register = () => {
               />
             ))}
             <div className="checkbox ">
-              <div className="flex mt-4 gap-2 ">
-                <Checkbox />
+              <div className="flex items-center mt-4 gap-2 ">
+                <Checkbox {...form.register("termsAccepted")} types={form.formState.errors.termsAccepted ? "error" : "primary"} />
                 <p className="text-sm text-blue-ct7 font-medium sm:text-xs">
                   By using this form you agree with the storage and handling of your data by this website.
                 </p>

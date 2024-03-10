@@ -11,11 +11,11 @@ interface PropsInput extends Omit<InputHTMLAttributes<HTMLInputElement>, "size">
 const variantsStylesInput = cva(["border-2 border-gray-400 text-base pl-4 outline-none rounded-md "], {
   variants: {
     types: {
-      primary: "focus:border-blue-500 focus:border-2",
-      secondary: "focus:border-gray-500 focus:border-2",
-      success: "focus:border-green-ct5 focus:border-2",
-      warning: "focus:border-yellow-500 focus:border-2",
-      error: "focus:border-red-500 focus:border-2",
+      primary: "focus:border-blue-500",
+      secondary: "focus:border-gray-500",
+      success: "focus:border-green-ct5",
+      warning: "focus:border-yellow-500",
+      error: "focus:border-red-500",
     },
     size: {
       sm: "py-3",
@@ -32,7 +32,7 @@ const variantsStylesInput = cva(["border-2 border-gray-400 text-base pl-4 outlin
   },
 });
 
-const Input = forwardRef<HTMLInputElement, PropsInput>(({ className, types = "primary", size = "sm", fullWidth, ...rest }, ref) => {
+const InputForm = forwardRef<HTMLInputElement, PropsInput>(({ className, types = "primary", size = "sm", fullWidth, ...rest }, ref) => {
   const classStyles = variantsStylesInput({
     className,
     types,
@@ -44,6 +44,6 @@ const Input = forwardRef<HTMLInputElement, PropsInput>(({ className, types = "pr
 
   return <input {...rest} ref={ref} className={mergedClassName} />;
 });
-Input.displayName = "Input";
+InputForm.displayName = "Input";
 
-export default Input;
+export default InputForm;
