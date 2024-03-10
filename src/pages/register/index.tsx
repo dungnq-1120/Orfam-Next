@@ -5,13 +5,12 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField, FormItem, FormMessage } from "@/shared/form";
 import InputForm from "@/shared/input";
-import { Button } from "@/shared/button";
-import { TForm } from "@/shared/form/type";
 import Image from "next/image";
 import logo from "../../../public/image/logo/Logo.png";
-
 import Link from "next/link";
 import Checkbox from "@/shared/checkbox";
+import { TRegister } from "@/shared/form/type";
+import { Button } from "@/shared/button";
 
 const registerSchema = z
   .object({
@@ -47,7 +46,7 @@ const Register = () => {
     },
   });
 
-  const onSubmit = (data: TForm) => {
+  const onSubmit = (data: TRegister) => {
     console.log(data);
   };
 
