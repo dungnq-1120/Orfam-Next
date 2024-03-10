@@ -1,4 +1,5 @@
 import Layout from "@/components/layouts/privateLayout";
+
 import type { ReactElement } from "react";
 
 const Home = () => {

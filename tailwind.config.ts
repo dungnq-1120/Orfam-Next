@@ -70,6 +70,7 @@ const config = {
       },
       boxShadow: {
         shadowCheck: "0 0 0 0.25rem rgba(13, 110, 253, 0.25)",
+        shadowRed: "0 0 0 0.25rem rgba(255, 34, 0, 0.393)",
         shadow1: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
       },
       borderRadius: {
@@ -90,6 +91,15 @@ const config = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      screens: {
+        s: { max: "350px" },
+        xs: { max: "399px" },
+        sm: { max: "640px" },
+        md: { max: "768px" },
+        lg: { max: "1024px" },
+        xl: { max: "1280px" },
+        xxl: { max: "1536px" },
       },
     },
   },
