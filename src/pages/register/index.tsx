@@ -14,13 +14,13 @@ import { TFormRegister } from "@/shared/form/type";
 
 const registerSchema = z
   .object({
-    name: z.string().min(1, "Please enter name").trim(),
-    email: z.string().email("Invalid email").trim(),
+    name: z.string().min(1, "Please enter your name").trim(),
+    email: z.string().email("Invalid email format").trim(),
     password: z
       .string()
-      .regex(/^.{4,8}$/, "Invalid password")
+      .regex(/^.{4,8}$/, "Password must be between 4 and 8 characters")
       .trim(),
-    confirmPassword: z.string().min(1, "Please confirm password"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
     termsAccepted: z.boolean().refine((val) => val === true, "You must accept the terms and conditions."),
   })
   .superRefine((data, ctx) => {

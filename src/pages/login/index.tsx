@@ -13,10 +13,10 @@ import { TFormRegister } from "@/shared/form/type";
 import Checkbox from "@/shared/checkbox";
 
 const loginSchema = z.object({
-  email: z.string().email("Invalid email").trim(),
+  email: z.string().email("Invalid email format").trim(),
   password: z
     .string()
-    .regex(/^.{4,8}$/, "Invalid password")
+    .regex(/^.{4,8}$/, "Password must be between 4 and 8 characters")
     .trim(),
   termsAccepted: z.boolean().refine((val) => val === true, "You must accept the terms and conditions."),
 });
