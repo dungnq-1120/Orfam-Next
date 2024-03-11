@@ -1,5 +1,5 @@
 import PublicLayout from "@/components/layouts/publicLayout";
-import React, { FormEvent, useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,19 +9,18 @@ import Image from "next/image";
 import logo from "../../../public/image/logo/Logo.png";
 import Link from "next/link";
 import Checkbox from "@/shared/checkbox";
-import { TRegister } from "@/shared/form/type";
 import { Button } from "@/shared/button";
+import { TFormRegister } from "@/shared/form/type";
 
 const registerSchema = z
   .object({
-    name: z.string().min(1, "Please enter name").trim(),
-    email: z.string().min(1, "Please enter email").email("Invalid email").trim(),
+    name: z.string().min(1, "Please enter your name").trim(),
+    email: z.string().email("Invalid email format").trim(),
     password: z
       .string()
-      .min(1, "Please enter password")
-      .regex(/^.{4,8}$/, "Invalid password")
+      .regex(/^.{4,8}$/, "Password must be between 4 and 8 characters")
       .trim(),
-    confirmPassword: z.string().min(1, "Please confirm password"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
     termsAccepted: z.boolean().refine((val) => val === true, "You must accept the terms and conditions."),
   })
   .superRefine((data, ctx) => {
@@ -46,7 +45,7 @@ const Register = () => {
     },
   });
 
-  const onSubmit = (data: TRegister) => {
+  const onSubmit = (data: TFormRegister) => {
     console.log(data);
   };
 
@@ -61,7 +60,7 @@ const Register = () => {
     <div className="register w-screen h-screen flex justify-center items-center bg-slate-200 p-5 s:h-full xs:pt-4 xs:pb-4">
       <div className="form-register flex justify-center items-center max-w-lg shadow-shadow1 bg-white rounded-lg p-6 sm:w-11/12 xs:w-full">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full ">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
             <div className="head-form mt-">
               <Image src={logo} alt="logo" className="m-auto" />
               <h3 className="text-center text-blue-ct6 font-bold text-4xl mb-2 mt-4 sm:text-3xl xs:text-2xl">REGISTER</h3>
