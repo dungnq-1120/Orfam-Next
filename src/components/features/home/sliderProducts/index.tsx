@@ -2,14 +2,15 @@ import React, { useRef } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import cherry from "../../../../../public/image/product/product-img-15.webp";
-import previous from "../../../../../public/image/icon/left.png";
+import cherry from "@/image/product/product-img-15.webp";
+import previous from "@/image/icon/left.png";
 import CardProduct from "../../card";
 import { Button } from "@/shared/button";
 import Image from "next/image";
 
 const SpecialProducts = () => {
   const sliderRef = useRef<Slider>(null);
+
   const settings = {
     dots: false,
     infinite: true,
@@ -18,6 +19,7 @@ const SpecialProducts = () => {
     slidesToScroll: 1,
     arrows: false,
   };
+
   const goToNextSlide = () => {
     if (sliderRef.current) {
       sliderRef.current.slickNext();
@@ -30,7 +32,6 @@ const SpecialProducts = () => {
     }
   };
   return (
-    <>
       <div className="specialProducts pt-16 pb-10">
         <div className="content-heading text-center">
           <h4 className="text-green-ct5 font-medium">~ Special Products ~</h4>
@@ -55,7 +56,6 @@ const SpecialProducts = () => {
           </div>
         </div>
       </div>
-    </>
   );
 };
 

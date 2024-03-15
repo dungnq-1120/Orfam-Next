@@ -1,9 +1,10 @@
 import Image from "next/image";
 import React from "react";
-import blog1 from "../../../../../public/image/banner/blog-bg-1.webp";
-import blog2 from "../../../../../public/image/banner/blog-bg-2.webp";
-import blog3 from "../../../../../public/image/banner/blog-bg-3.webp";
-import blog4 from "../../../../../public/image/banner/blog-bg-4.webp";
+import blog1 from "@/image/banner/blog-bg-1.webp";
+import blog2 from "@/image/banner/blog-bg-2.webp";
+import blog3 from "@/image/banner/blog-bg-3.webp";
+import blog4 from "@/image/banner/blog-bg-4.webp";
+
 const BlogPost = () => {
   const blogs = [
     {
@@ -35,6 +36,7 @@ const BlogPost = () => {
       image: blog4,
     },
   ];
+
   return (
     <>
       <div className="blog-post pb-8">
@@ -47,7 +49,7 @@ const BlogPost = () => {
           {blogs.map((item, index) => (
             <div key={index} className="blog group overflow-hidden p-3 cursor-pointer">
               <div className="image overflow-hidden rounded-tr-xl rounded-tl-xl">
-                <Image src={item.image} alt="" className="w-full h-full duration-500 group-hover:scale-110"/>
+                <Image src={item.image} alt="" className="w-full h-full duration-500 group-hover:scale-110" />
               </div>
               <div className="content-blog p-5">
                 <h4 className="text-xs">

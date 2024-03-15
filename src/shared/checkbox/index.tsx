@@ -8,28 +8,23 @@ interface PropsInput extends Omit<InputHTMLAttributes<HTMLInputElement>, "size">
   fullWidth?: boolean;
 }
 
-const variantsStylesInput = cva(
-  [
-    "peer h-4 w-4 inline-block shrink-0 rounded-xl disabled:cursor-not-allowed disabled:opacity-100",
-  ],
-  {
-    variants: {
-      types: {
-        primary: "focus:shadow-shadowCheck outline-red-500 focus:outline-none",
-        error: "focus:shadow-shadowRed outline-red-500 focus:outline-none",
-      },
-      size: {
-        sm: "h-4 w-4",
-        md: "h-6 w-6",
-        lg: "h-8 w-8",
-      },
+const variantsStylesInput = cva(["peer h-4 w-4 inline-block shrink-0 rounded-xl disabled:cursor-not-allowed disabled:opacity-100"], {
+  variants: {
+    types: {
+      primary: "focus:shadow-shadowCheck outline-red-500 focus:outline-none",
+      error: "focus:shadow-shadowRed outline-red-500 focus:outline-none",
     },
-    defaultVariants: {
-      types: "primary",
-      size: "sm",
+    size: {
+      sm: "h-4 w-4",
+      md: "h-6 w-6",
+      lg: "h-8 w-8",
     },
-  }
-);
+  },
+  defaultVariants: {
+    types: "primary",
+    size: "sm",
+  },
+});
 
 const Checkbox = forwardRef<HTMLInputElement, PropsInput>(({ className, types = "primary", size = "sm", fullWidth, ...rest }, ref) => {
   const classStyles = variantsStylesInput({

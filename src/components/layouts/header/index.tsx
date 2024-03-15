@@ -1,4 +1,4 @@
-import logo from "../../../../public/image/logo/Logo.png";
+import logo from "@/image/logo/Logo.png";
 import { Button } from "@/shared/button";
 import { Search } from "@/icons/info/Search";
 import { User } from "@/icons/info/User";
@@ -10,7 +10,6 @@ export const Header = () => {
   const menuList = ["HOME", "SHOP", "BLOG", "ABOUT US", "CONTACT"];
 
   return (
-    <>
       <nav className="nav fixed top-0 w-full bg-white z-9999 flex justify-between items-center shadow-shadow1 h-20 pl-4 pr-5">
         <div className="logo">
           <Image src={logo} alt="logo" />
@@ -34,6 +33,5 @@ export const Header = () => {
           </Button>
         </div>
       </nav>
-    </>
   );
 };

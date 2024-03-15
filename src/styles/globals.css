@@ -66,6 +66,10 @@
   }
 }
 
+.slick-slider .slick-slide {
+  padding: 0 10px;
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -74,4 +78,3 @@
     @apply bg-background text-foreground;
   }
 }
-

@@ -8,7 +8,7 @@ import { Form, FormField, FormItem, FormMessage } from "@/shared/form";
 import InputForm from "@/shared/input";
 import { Button } from "@/shared/button";
 import Image from "next/image";
-import logo from "../../../public/image/logo/Logo.png";
+import logo from "@/image/logo/Logo.png";
 import { TFormRegister } from "@/shared/form/type";
 import Checkbox from "@/shared/checkbox";
 
@@ -37,7 +37,7 @@ const Login = () => {
 
   return (
     <div className="login w-full h-screen flex justify-center items-center bg-slate-200 p-5 s:h-full xs:pt-4 xs:pb-4">
-      <div className="form-Login flex justify-center items-center max-w-lg shadow-shadow1 bg-white rounded-lg p-6 sm:w-11/12 xs:w-full">
+      <div className="form-Login flex justify-center items-center w-96 shadow-shadow1 bg-white rounded-lg p-6 sm:w-11/12 xs:w-full">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
             <div className="head-form mt-">
@@ -65,19 +65,19 @@ const Login = () => {
               />
             ))}
 
-            <div className="checkbox flex items-center justify-between mt-6 mb-6 gap-2 ">
+            <div className="checkbox flex items-center justify-between mt-6 mb-6 gap-2">
               <div className="flex items-center gap-2">
                 <Checkbox {...form.register("termsAccepted")} types={form.formState.errors.termsAccepted ? "error" : "primary"} />
                 <p className="text-sm text-blue-ct7 font-medium sm:text-xs">Remember me</p>
               </div>
-              <p className="text-sm text-blue-ct7 font-medium duration-500 cursor-pointer hover:text-green-ct5">Forgot password ?</p>
+              <p className="text-sm text-blue-ct7 font-medium duration-500 cursor-pointer hover:text-green-ct5 xs:text-xs">Forgot password ?</p>
             </div>
             <div className="flex justify-end">
               <Button className=" px-16 py-3 mt-4 w-full xs:text-xs" type="submit">
                 LOGIN
               </Button>
             </div>
-            <Link className="text-sm text-end block mt-3 text-blue-ct6 hover:text-blue-ct5 font-medium" href="/register">
+            <Link className="text-xs text-end block mt-3 text-blue-ct6 hover:text-blue-ct5 font-medium" href="/register">
               Not registered? Create an account
             </Link>
           </form>

@@ -1,36 +1,26 @@
 import React from "react";
 import Image, { StaticImageData } from "next/image";
-import { Card, CardHeader, CardContent } from "@/shared/card";
-import star from "../../../../public/image/icon/star-svgrepo-com.svg";
+import { Card,  CardContent } from "@/shared/card";
 import { Button } from "@/shared/button";
+import Rate from "../rate";
 
-const CardProduct = ({
-  imageUrl,
-  productName,
-  productDescription,
-  salePercentage,
-}: {
+interface Props {
   imageUrl: StaticImageData;
   productName: string;
   productDescription: string;
   salePercentage: string;
-}) => {
+}
+
+const CardProduct = ({ imageUrl, productName, productDescription, salePercentage }: Props) => {
   return (
-    
     <Card className="cursor-pointer relative group overflow-hidden group">
-      <CardHeader className="overflow-hidden w-full">
+      <div className="overflow-hidden w-full">
         <Image src={imageUrl} alt="product" className="w-full h-full object-cover scale-100 duration-500 group-hover:scale-110" />
-      </CardHeader>
+      </div>
       <CardContent className="bg-gray-100 text-center pt-2 w-full">
         <h4 className="text-xs font-semibold text-blue-ct7">{productName}</h4>
         <p className="text-ctBlue7 text-sm mt-3 mb-3 font-semibold text-blue-ct7">{productDescription}</p>
-        <ul className="flex justify-center gap-1 mb-2">
-          {Array.from({ length: 5 }).map((_, index) => (
-            <li key={index}>
-              <Image src={star} alt="" className="w-4 h-4" />
-            </li>
-          ))}
-        </ul>
+        <Rate rating={5} />
         <h4>
           <span className="text-red-600 text-lg font-bold mr-2">$500.00</span>
           <del className="text-slate-500 text-sm">$700.00</del>
