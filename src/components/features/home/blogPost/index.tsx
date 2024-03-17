@@ -45,11 +45,11 @@ const BlogPost = () => {
           <h3 className="text-3xl font-bold text-blue-ct7 mt-4 mb-4">Our Latest Post</h3>
           <p className="text-blue-ct7 text-sm font-medium mb-8">The liber tempor cum soluta nobis eleifend option congue doming quod mazim.</p>
         </div>
-        <div className="blogs flex px-8">
+        <div className="blogs flex justify-center flex-wrap w-full">
           {blogs.map((item, index) => (
-            <div key={index} className="blog group overflow-hidden p-3 cursor-pointer">
-              <div className="image overflow-hidden rounded-tr-xl rounded-tl-xl">
-                <Image src={item.image} alt="" className="w-full h-full duration-500 group-hover:scale-110" />
+            <div key={index} className="blog group overflow-hidden p-3 cursor-pointer w-[350px] csm:w-full">
+              <div className="image h-52 w-full overflow-hidden rounded-tr-xl rounded-tl-xl">
+                <Image src={item.image} alt="" className="w-full h-full duration-500 group-hover:scale-110 object-cover" />
               </div>
               <div className="content-blog p-5">
                 <h4 className="text-xs">

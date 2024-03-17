@@ -79,6 +79,8 @@ const config = {
       },
       zIndex: {
         "9999": "9999",
+        "5xl": "99999",
+        "6xl": "999999",
       },
       borderWidth: {
         "1": "1px",
@@ -106,15 +108,18 @@ const config = {
       backgroundImage: {
         boxes: "url('https://orfarm-next-js.vercel.app/assets/img/slider/shape-bg.jpg')",
         bannerHead: "url('https://orfarm-next-js.vercel.app/assets/img/slider/shape-bg-2.jpg')",
-        grayBg:"url('https://orfarm-next-js.vercel.app/assets/img/shape/choos-bg-1.svg')",
+        grayBg: "url('https://orfarm-next-js.vercel.app/assets/img/shape/choos-bg-1.svg')",
         footer: "url('https://orfarm-next-js.vercel.app/assets/img/shape/footer-shape-1.svg')",
       },
       screens: {
         s: { max: "350px" },
-        xs: { max: "399px" },
+        xs: { max: "428px" },
         sm: { max: "640px" },
+        csm: { max: "700px" },
         md: { max: "768px" },
-        lg: { max: "1024px" },
+        mdd: { max: "822px" },
+        nm: { max: "937px" },
+        lg: { max: "1080px" },
         xl: { max: "1280px" },
         xxl: { max: "1536px" },
       },

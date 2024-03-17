@@ -26,15 +26,16 @@ const TabsProducts = () => {
         </div>
         <div className="tabs">
           <Tabs defaultValue="fruit-drink" className="w-full m-auto ">
-            <div className="flex justify-center items-center mb-6">
-              <TabsList className="w-2/5 py-6">
+            <div className="flex justify-center items-center mb-6 ">
+              <TabsList className="w-2/5 py-6 bg-blue-ct7 xl:w-3/5 nm:w-4/5 sm:bg-transparent md:!w-full md:bg md:mb-10">
                 {tabData.map((tab) => (
-                  <TabsTrigger key={tab.value} className="flex-1 bg-blue-ct7 text-white" value={tab.value}>
+                  <TabsTrigger key={tab.value} className="flex-1 -translate-y-2/4  md:rounded-none sm:-translate-y-0 bg-blue-ct7 text-white" value={tab.value}>
                     {tab.label}
                   </TabsTrigger>
                 ))}
               </TabsList>
             </div>
+
             {tabData.map((tab) => (
               <TabsContent className="flex flex-wrap justify-center gap-4" key={tab.label} value={tab.value}>
                 {Array.from({ length: 5 }).map((_, index) => (

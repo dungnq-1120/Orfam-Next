@@ -30,15 +30,15 @@ const AboutUs = () => {
   ];
 
   return (
-    <div className="about-us bg-grayBg bg-center py-24 px-7">
+    <div className="about-us bg-grayBg bg-no-repeat bg-cover bg-center py-24 px-7">
       <div className="content-heading text-center">
         <h4 className="text-green-ct5 font-medium">~ Why choose us? ~</h4>
         <h3 className="text-3xl font-bold text-blue-ct7 mt-4 mb-4">What makes us different</h3>
         <p className="font-medium text-sm text-blue-ct7">The liber tempor cum soluta nobis eleifend option congue doming quod mazim.</p>
       </div>
-      <div className="group-about flex gap-4 mt-10">
+      <div className="group-about flex justify-center gap-4 mt-10 w-full flex-wrap ">
         {aboutInfo.map((item, index) => (
-          <div key={index} className="box group bg-white text-center py-10 px-10 rounded-3xl cursor-pointer">
+          <div key={index} className="box group w-80 bg-white text-center py-10 px-14 rounded-3xl cursor-pointer nm:w-full">
             <Image src={item.icon} alt="" className="m-auto duration-500 group-hover:-translate-y-1" />
             <h4 className="font-bold text-blue-ct7 mt-4">{item.title}</h4>
             <p className="text-sm font-medium text-blue-ct7 mt-2 mb-2">{item.description}</p>

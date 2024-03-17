@@ -6,7 +6,7 @@ const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "400", "500", 
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className={quicksand.className}>
+    <div className={`${quicksand.className}`}>
       <header>
         <Header />
       </header>

@@ -70,6 +70,19 @@
   padding: 0 10px;
 }
 
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #96ae00;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background:white;
+}
+
 @layer base {
   * {
     @apply border-border;
