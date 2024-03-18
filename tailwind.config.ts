@@ -13,6 +13,10 @@ const config = {
       },
     },
     extend: {
+      width: {
+        "70p": "70%",
+        "30p": "30%",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -73,11 +77,20 @@ const config = {
         shadowRed: "0 0 0 0.25rem rgba(255, 34, 0, 0.393)",
         shadow1: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
       },
+      zIndex: {
+        "9999": "9999",
+        "5xl": "99999",
+        "6xl": "999999",
+      },
+      borderWidth: {
+        "1": "1px",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -92,12 +105,21 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      backgroundImage: {
+        boxes: "url('https://orfarm-next-js.vercel.app/assets/img/slider/shape-bg.jpg')",
+        bannerHead: "url('https://orfarm-next-js.vercel.app/assets/img/slider/shape-bg-2.jpg')",
+        grayBg: "url('https://orfarm-next-js.vercel.app/assets/img/shape/choos-bg-1.svg')",
+        footer: "url('https://orfarm-next-js.vercel.app/assets/img/shape/footer-shape-1.svg')",
+      },
       screens: {
         s: { max: "350px" },
-        xs: { max: "399px" },
+        xs: { max: "428px" },
         sm: { max: "640px" },
+        csm: { max: "700px" },
         md: { max: "768px" },
-        lg: { max: "1024px" },
+        mdd: { max: "822px" },
+        nm: { max: "937px" },
+        lg: { max: "1080px" },
         xl: { max: "1280px" },
         xxl: { max: "1536px" },
       },
