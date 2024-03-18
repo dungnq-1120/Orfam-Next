@@ -8,7 +8,7 @@ import leafThird from "@/image/banner-remove-bg/slider-shape-3.webp";
 
 const Banner = () => {
   return (
-    <div className="banner mt-20 bg-bannerHead pl-4 px-10 pt-24 h-screen relative group mb-7 bg-center md:mt-4">
+    <div className="banner mt-20 bg-banner pl-4 px-10 pt-24 h-screen relative group mb-7 bg-center md:mt-4">
       <div className="flex items-center justify-between md:block ">
         <div className="content ml-7">
           <h4 className="text-green-ct5 font-semibold text-lg xl:text-sm nm:text-xs">TOP SELLER IN THE WEEK</h4>
