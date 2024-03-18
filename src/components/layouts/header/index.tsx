@@ -11,6 +11,7 @@ import cartIcon from "@/image/icon/cart.png";
 import userIcon from "@/image/icon/user.png";
 import { useState } from "react";
 import ModalSearch from "@/components/features/modalSearch";
+
 export const Header = () => {
   const menuList = ["HOME", "SHOP", "BLOG", "ABOUT US", "CONTACT"];
   const [isOpen, setIsOpen] = useState<boolean>(false);
