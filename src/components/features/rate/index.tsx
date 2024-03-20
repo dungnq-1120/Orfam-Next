@@ -15,7 +15,7 @@ const Rate: React.FC<RateProps> = ({ rating }) => {
     }
   });
 
-  return <div className="flex justify-center gap-1 mb-2">{stars}</div>;
+  return <div className="flex justify-center gap-1">{stars}</div>;
 };
 
 export default Rate;

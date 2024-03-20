@@ -1,6 +1,6 @@
 import React from "react";
 import Image, { StaticImageData } from "next/image";
-import { Card,  CardContent } from "@/shared/card";
+import { Card, CardContent } from "@/shared/card";
 import { Button } from "@/shared/button";
 import Rate from "../rate";
 
