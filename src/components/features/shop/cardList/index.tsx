@@ -13,7 +13,7 @@ const CardList = () => {
 
   return (
     <div className="card-shop w-3/4 lg:w-full">
-      <div className="shop-text-heading bg-banner_shop text-white text-center py-10 rounded-xl">
+      <div className="shop-text-heading bg-[url('https://orfarm-next-js.vercel.app/assets/img/banner/shop-bg-1.jpg')] text-white text-center py-10 rounded-xl">
         <h4 className="text-sm text-yellow-300 font-semibold sm:text-xs">THE SALAD</h4>
         <h3 className="text-2xl my-3 font-bold sm:text-xl">
           Fresh & Natural <br />
