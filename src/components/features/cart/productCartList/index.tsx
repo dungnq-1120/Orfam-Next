@@ -4,11 +4,12 @@ import bin from "@/image/icon/bin.svg";
 import Image from "next/image";
 import { Button } from "@/shared/button";
 import InputForm from "@/shared/input";
+
 const ProductCartList = () => {
   return (
     <div className="product-cart-list mt-20 py-16 px-4">
       <div className="nm:overflow-x-auto">
-        <table className="t w-full border-collapse nm:w-[150%]">
+        <table className="t w-full border-collapse nm:w-[200%] sm:!w-[350%]">
           <thead>
             <tr>
               <th className="border-1 p-2 text-sm text-blue-ct5">Images</th>
@@ -28,7 +29,7 @@ const ProductCartList = () => {
               <td className="border-1 text-center text-base font-semibold text-red-600">$30.00</td>
               <td className="border-1 ">
                 <div className="flex justify-center">
-                  <div className="inline-flex items-center bg-gray-100 shadow-lg rounded-3xl py-1 w-28 xs:!flex xs:w-full xs:mt-4">
+                  <div className="inline-flex items-center bg-gray-100 shadow-lg rounded-3xl py-1 w-28 xs:!flex xs:mt-4">
                     <Button className="text-blue-ct6 px-0 py-0 w-full h-full flex justify-center items-center text-4xl leading-none bg-transparent">
                       -
                     </Button>
@@ -49,12 +50,12 @@ const ProductCartList = () => {
           </tbody>
         </table>
       </div>
-      <div className="discount mt-10 flex justify-end">
-        <InputForm className="border-1 rounded-3xl text-xs py-4 pl-5 w-1/4" placeholder="Coupon code" />
-        <Button className="py-3 px-4 ml-3 rounded-3xl text-base">Apply Coupon</Button>
+      <div className="discount mt-10 flex justify-end sm:block">
+        <InputForm className="border-1 rounded-3xl text-xs py-4 pl-5 w-1/4 sm:w-full sm:mb-3" placeholder="Coupon code" />
+        <Button className="py-3 px-4 ml-3 rounded-3xl text-base sm:w-full sm:ml-0">Apply Coupon</Button>
       </div>
       <div className="flex justify-end mt-20">
-        <ul className="w-3/6">
+        <ul className="w-3/6 nm:w-full">
           <li>
             <h3 className="text-2xl mb-2 text-blue-ct7 font-medium">Cart Totals</h3>
           </li>

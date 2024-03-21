@@ -13,7 +13,6 @@ import { useState } from "react";
 import ModalSearch from "@/components/features/modalSearch";
 
 export const Header = () => {
-  const menuList = ["HOME", "SHOP", "BLOG", "ABOUT US", "CONTACT"];
   const [isOpen, setIsOpen] = useState<boolean>(false);
   function openModal() {
     setIsOpen(true);
@@ -25,12 +24,24 @@ export const Header = () => {
         <div className="logo">
           <Image src={logo} alt="logo" />
         </div>
-        <ul className="menu-page flex h-full md:hidden">
-          {menuList.map((item) => (
-            <li className="px-3 h-full flex items-center text-blue-ct7 text-sm font-semibold" key={item}>
-              <Link href="">{item}</Link>
-            </li>
-          ))}
+        <ul
+          className="menu-page flex h-full md:hidden text-blue-ct7 text-sm"
+        >
+          <li className="px-3 h-full flex items-center font-semibold duration-500 hover:text-green-ct5">
+            <Link href="/">HOME</Link>
+          </li>
+          <li className="px-3 h-full flex items-center font-semibold duration-500 hover:text-green-ct5">
+            <Link href="/shop">SHOP</Link>
+          </li>
+          <li className="px-3 h-full flex items-center font-semibold duration-500 hover:text-green-ct5">
+            <Link href="/blog">BLOG</Link>
+          </li>
+          <li className="px-3 h-full flex items-center font-semibold duration-500 hover:text-green-ct5">
+            <Link href="/about">ABOUT US</Link>
+          </li>
+          <li className="px-3 h-full flex items-center font-semibold duration-500 hover:text-green-ct5">
+            <Link href="/contact">CONTACT</Link>
+          </li>
         </ul>
         <div className="list-option flex gap-2">
           <Button onClick={openModal} className="rounded-full px-3 py-3 bg-blue-200">
@@ -60,7 +71,7 @@ export const Header = () => {
           </li>
         </ul>
       </nav>
-      <ModalSearch setIsOpen={setIsOpen} isOpen={isOpen}/>
+      <ModalSearch setIsOpen={setIsOpen} isOpen={isOpen} />
     </>
   );
 };

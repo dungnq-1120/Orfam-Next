@@ -5,6 +5,7 @@ import blogDetail_1 from "@/image/banner/blog-details-sm-1.webp";
 import blogDetail_2 from "@/image/banner/blog-details-sm-2.webp";
 import blogDetail_3 from "@/image/banner/blog-details-sm-3.webp";
 import BlogComment from "../comment";
+
 const BlogContainer = () => {
   return (
     <div className="blog-container">

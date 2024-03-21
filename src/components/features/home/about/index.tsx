@@ -30,7 +30,7 @@ const AboutUs = () => {
   ];
 
   return (
-    <div className="about-us bg-grayBg bg-no-repeat bg-cover bg-center py-24 px-7">
+    <div className="about-us bg-no-repeat bg-cover bg-[url('https://orfarm-next-js.vercel.app/assets/img/shape/choos-bg-1.svg')] py-24 px-7">
       <div className="content-heading text-center">
         <h4 className="text-green-ct5 font-medium">~ Why choose us? ~</h4>
         <h3 className="text-3xl font-bold text-blue-ct7 mt-4 mb-4">What makes us different</h3>

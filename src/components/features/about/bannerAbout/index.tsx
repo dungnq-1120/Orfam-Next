@@ -2,7 +2,7 @@ import React from "react";
 
 const BannerAbout = () => {
   return (
-    <div className="flex justify-center items-center h-screen text-center bg-banner_about bg-no-repeat bg-cover sm:px-3">
+    <div className="flex justify-center items-center h-screen text-center bg-[url('https://orfarm-next-js.vercel.app/assets/img/banner/about-bg-1.png')] bg-no-repeat bg-cover sm:px-3">
       <div className="about-heading text-white">
         <h4 className="font-bold xs:text-sm ">ABOUT FOR ORFARM</h4>
         <h2 className="text-6xl font-bold mt-6 mb-6 sm:text-5xl xs:text-4xl">Unique People</h2>

@@ -8,6 +8,7 @@ import Layout from "@/components/layouts/privateLayout";
 import Image from "next/image";
 import InputForm from "@/shared/input";
 import { Button } from "@/shared/button";
+
 const Contact = () => {
   const addresses = [
     {

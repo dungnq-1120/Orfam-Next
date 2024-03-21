@@ -8,12 +8,12 @@ import leafThird from "@/image/banner-remove-bg/slider-shape-3.webp";
 
 const Banner = () => {
   return (
-    <div className="banner mt-20 bg-banner pl-4 px-10 pt-24 h-screen relative group mb-7 bg-center md:mt-4">
+    <div className="banner mt-20 bg-[url('https://orfarm-next-js.vercel.app/assets/img/slider/shape-bg-2.jpg')] pl-4 px-10 pt-24 h-screen relative group mb-7 bg-center md:mt-4">
       <div className="flex items-center justify-between md:block ">
         <div className="content ml-7">
           <h4 className="text-green-ct5 font-semibold text-lg xl:text-sm nm:text-xs">TOP SELLER IN THE WEEK</h4>
           <h2 className="text-blue-ct7 font-bold text-6xl mt-4 mb-4 xl:text-5xl nm:text-4xl">
-            The Best <br className="md:hidden"/> Health Fresh.
+            The Best <br className="md:hidden" /> Health Fresh.
           </h2>
           <p className="text-blue-ct7 font-medium mb-8 xl:text-sm nm:text-xs">
             Presentation matters. Our fresh Vietnamese vegetable rolls <br /> look good and taste even better
