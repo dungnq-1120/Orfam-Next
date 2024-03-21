@@ -72,6 +72,7 @@
 
 ::-webkit-scrollbar {
   width: 5px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -80,7 +81,7 @@
 }
 
 ::-webkit-scrollbar-track {
-  background:white;
+  background: white;
 }
 
 @layer base {

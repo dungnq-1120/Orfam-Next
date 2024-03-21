@@ -107,7 +107,9 @@ const config = {
       },
       backgroundImage: {
         boxes: "url('https://orfarm-next-js.vercel.app/assets/img/slider/shape-bg.jpg')",
-        bannerHead: "url('https://orfarm-next-js.vercel.app/assets/img/slider/shape-bg-2.jpg')",
+        banner: "url('https://orfarm-next-js.vercel.app/assets/img/slider/shape-bg-2.jpg')",
+        banner_about: "url('https://orfarm-next-js.vercel.app/assets/img/banner/about-bg-1.png')",
+        banner_shop: "url('https://orfarm-next-js.vercel.app/assets/img/banner/shop-bg-1.jpg')",
         grayBg: "url('https://orfarm-next-js.vercel.app/assets/img/shape/choos-bg-1.svg')",
         footer: "url('https://orfarm-next-js.vercel.app/assets/img/shape/footer-shape-1.svg')",
       },
