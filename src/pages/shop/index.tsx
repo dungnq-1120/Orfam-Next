@@ -8,7 +8,6 @@ const Shop = () => {
     <div className="shop mt-14 py-20 px-10 flex gap-5 relative xl:px-5 lg:block">
       <FilterProduct />
       <CardList />
-     
     </div>
   );
 };
