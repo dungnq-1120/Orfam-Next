@@ -1,11 +1,11 @@
 import React from "react";
-import CheckOut from "@/components/features/checkout";
 import Layout from "@/components/layouts/privateLayout";
+import Checkout from "@/components/features/checkout";
 
 const Billing = () => {
   return (
     <div className="billing">
-      <CheckOut />
+      <Checkout />
     </div>
   );
 };

@@ -9,7 +9,7 @@ import { z } from "zod";
 const checkoutSchema = z.object({
   name: z.string().min(1, "Please enter your name").trim(),
   phone: z.string().min(1, "Please enter your phone").trim(),
-  email: z.string().email("Invalid email format").trim(),
+  email: z.string().email(" Please enter invalid email format").trim(),
   address: z.string().min(1, "Please enter your address").trim(),
 });
 
@@ -26,7 +26,7 @@ interface TFormBilling {
   address: string;
 }
 
-const CheckOut = () => {
+const Checkout = () => {
   const [selectedOption, setSelectedOption] = useState<TOptionShip>({ type: "standard", price: 7.0, label: "Standard delivery" });
 
   const form = useForm({
@@ -111,7 +111,7 @@ const CheckOut = () => {
             <h6>Cart Subtotal</h6> <span className="text-red-600">$30.00</span>
           </li>
           <li className="flex justify-between p-3 border-1 border-b-0 text-blue-ct7 font-medium">
-            <h6>Shipping</h6>{" "}
+            <h6>Shipping</h6>
             <span className="text-green-500">{selectedOption ? `${selectedOption.label}: $${selectedOption.price.toFixed(2)}` : ""}</span>
           </li>
           <li className="flex justify-between p-3 border-1 text-blue-ct7 font-medium">
@@ -126,4 +126,4 @@ const CheckOut = () => {
   );
 };
 
-export default CheckOut;
+export default Checkout;
