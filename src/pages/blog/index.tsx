@@ -1,5 +1,5 @@
 import BlogContainer from "@/components/features/blog/blogContainer";
-import Layout from "@/components/layouts/privateLayout";
+import Layout from "@/components/layouts/publicLayout";
 import React from "react";
 
 const Blog = () => {

@@ -1,5 +1,4 @@
-import PublicLayout from "@/components/layouts/publicLayout";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,8 +8,14 @@ import InputForm from "@/shared/input";
 import { Button } from "@/shared/button";
 import Image from "next/image";
 import logo from "@/image/logo/Logo.png";
-import { TFormRegister } from "@/shared/form/type";
 import Checkbox from "@/shared/checkbox";
+import authLocal from "@/utils/localStorage.utils";
+import { useRouter } from "next/router";
+import useSWRMutation from "swr/mutation";
+import { fetcherPost } from "@/services/callApiService";
+import { LoginData } from "./type";
+import LoginLayout from "@/components/layouts/loginLayout";
+import LoadingPage from "@/components/features/loading";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email format").trim(),
@@ -18,7 +23,6 @@ const loginSchema = z.object({
     .string()
     .regex(/^.{4,8}$/, "Password must be between 4 and 8 characters")
     .trim(),
-  termsAccepted: z.boolean().refine((val) => val === true, "You must accept the terms and conditions."),
 });
 
 const Login = () => {
@@ -27,16 +31,34 @@ const Login = () => {
     defaultValues: {
       email: "",
       password: "",
-      termsAccepted: false,
     },
   });
 
-  const onSubmit = (data: Pick<TFormRegister, "email" | "password">) => console.log(data);
+  const router = useRouter();
+  const [errors, setErrors] = useState("");
+  const { trigger } = useSWRMutation("/auth/login", fetcherPost);
+  const { setInfo } = authLocal;
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onSubmit = async (data: LoginData) => {
+    setIsLoading(true);
+    const token = (await trigger(data)) as TToken;
+    
+    if (token && token.access_token) {
+      setInfo(token, "KEY_TOKEN");
+      router.push("/");
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
+      setErrors("Incorrect email or password");
+    }
+  };
 
   const formFields = [{ name: "email", placeholder: "Email" } as const, { name: "password", placeholder: "Password", type: "password" } as const];
 
   return (
     <div className="login w-full h-screen flex justify-center items-center bg-slate-200 p-5 s:h-full xs:pt-4 xs:pb-4">
+      <LoadingPage isLoading={isLoading} />
       <div className="form-Login flex justify-center items-center w-96 shadow-shadow1 bg-white rounded-lg p-6 sm:w-11/12 xs:w-full">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
@@ -59,7 +81,11 @@ const Login = () => {
                       type={type || "text"}
                       {...field}
                     />
-                    <FormMessage className="xs:text-xs" />
+                    {(errors && name === "email") || (errors && name === "password") ? (
+                      <FormMessage className="xs:text-xs">{errors}</FormMessage>
+                    ) : (
+                      <FormMessage className="xs:text-xs" />
+                    )}
                   </FormItem>
                 )}
               />
@@ -67,7 +93,7 @@ const Login = () => {
 
             <div className="checkbox flex items-center justify-between mt-6 mb-6 gap-2">
               <div className="flex items-center gap-2">
-                <Checkbox {...form.register("termsAccepted")} types={form.formState.errors.termsAccepted ? "error" : "primary"} />
+                <Checkbox />
                 <p className="text-sm text-blue-ct7 font-medium sm:text-xs">Remember me</p>
               </div>
               <p className="text-sm text-blue-ct7 font-medium duration-500 cursor-pointer hover:text-green-ct5 xs:text-xs">Forgot password ?</p>
@@ -88,7 +114,7 @@ const Login = () => {
 };
 
 Login.getLayout = function getLayout(page: React.ReactElement) {
-  return <PublicLayout>{page}</PublicLayout>;
+  return <LoginLayout>{page}</LoginLayout>;
 };
 
 export default Login;

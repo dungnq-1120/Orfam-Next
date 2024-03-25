@@ -1,6 +1,6 @@
 import CardList from "@/components/features/shop/cardList";
 import FilterProduct from "@/components/features/shop/filter";
-import Layout from "@/components/layouts/privateLayout";
+import Layout from "@/components/layouts/publicLayout";
 import React from "react";
 
 const Shop = () => {

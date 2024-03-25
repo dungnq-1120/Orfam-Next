@@ -1,5 +1,4 @@
-import PublicLayout from "@/components/layouts/publicLayout";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,7 +9,13 @@ import logo from "@/image/logo/Logo.png";
 import Link from "next/link";
 import Checkbox from "@/shared/checkbox";
 import { Button } from "@/shared/button";
+import useSWRMutation from "swr/mutation";
+import { useRouter } from "next/router";
 import { TFormRegister } from "@/shared/form/type";
+import { fetcherPost } from "@/services/callApiService";
+import authLocal from "@/utils/localStorage.utils";
+import LoginLayout from "@/components/layouts/loginLayout";
+import LoadingPage from "@/components/features/loading";
 
 const registerSchema = z
   .object({
@@ -44,9 +49,22 @@ const Register = () => {
       termsAccepted: false,
     },
   });
+  const [emailErrorRegister, setEmailErrorRegister] = useState("");
+  const router = useRouter();
+  const { trigger } = useSWRMutation("/auth/register", fetcherPost);
+  const { setInfo } = authLocal;
+  const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit = (data: TFormRegister) => {
-    console.log(data);
+  const onSubmit = async (data: TFormRegister) => {
+    setIsLoading(true);
+    const token = (await trigger(data)) as TToken;
+    if (token && token.access_token) {
+      setInfo(token, "KEY_TOKEN");
+      router.push("/");
+    } else {
+      setEmailErrorRegister("Email already exists");
+    }
+    setIsLoading(false);
   };
 
   const formFields = [
@@ -58,6 +76,7 @@ const Register = () => {
 
   return (
     <div className="register w-screen h-screen flex justify-center items-center bg-slate-200 p-5 s:h-full xs:pt-4 xs:pb-4">
+      <LoadingPage isLoading={isLoading} />
       <div className="form-register flex justify-center items-center max-w-lg shadow-shadow1 bg-white rounded-lg p-6 sm:w-11/12 xs:w-full">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
@@ -80,7 +99,11 @@ const Register = () => {
                       type={type || "text"}
                       {...field}
                     />
-                    <FormMessage className="xs:text-xs" />
+                    {emailErrorRegister && name === "email" ? (
+                      <FormMessage className="xs:text-xs">{emailErrorRegister}</FormMessage>
+                    ) : (
+                      <FormMessage className="xs:text-xs" />
+                    )}
                   </FormItem>
                 )}
               />
@@ -109,7 +132,7 @@ const Register = () => {
 };
 
 Register.getLayout = function getLayout(page: React.ReactElement) {
-  return <PublicLayout>{page}</PublicLayout>;
+  return <LoginLayout>{page}</LoginLayout>;
 };
 
 export default Register;

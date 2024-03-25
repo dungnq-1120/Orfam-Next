@@ -1,12 +1,19 @@
-const LOGIN_KEY = "LOGIN";
-export function setLogin(infoLogin: string) {
-  localStorage.setItem(LOGIN_KEY, JSON.stringify(infoLogin));
+function setInfo(info: object, key: string) {
+  localStorage.setItem(key, JSON.stringify(info));
 }
-export function getInfoLogin() {
-  const storedData = localStorage.getItem(LOGIN_KEY);
-  return storedData ? JSON.parse(storedData) : {};
+function getInfo(key: string) {
+  const storedData = localStorage.getItem(key);
+  return storedData ? JSON.parse(storedData) : null;
 }
 
-export function removeInfoLogin() {
-  localStorage.removeItem(LOGIN_KEY);
+function removeInfo(key: string) {
+  localStorage.removeItem(key);
 }
+
+const authLocal = {
+  setInfo,
+  getInfo,
+  removeInfo,
+};
+
+export default authLocal;

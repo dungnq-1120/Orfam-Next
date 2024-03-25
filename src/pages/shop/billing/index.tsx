@@ -1,5 +1,5 @@
 import React from "react";
-import Layout from "@/components/layouts/privateLayout";
+import Layout from "@/components/layouts/publicLayout";
 import Checkout from "@/components/features/checkout";
 
 const Billing = () => {

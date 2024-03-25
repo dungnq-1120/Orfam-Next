@@ -1,21 +1,9 @@
-import React from "react";
 import { Quicksand } from "next/font/google";
-import { Header } from "../header";
-import Footer from "../footer";
+
 const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <div className={`${quicksand.className}`}>
-      <header>
-        <Header />
-      </header>
-      <main>{children}</main>
-      <footer>
-        <Footer />
-      </footer>
-    </div>
-  );
+const PrivateLayout = ({ children }: { children: React.ReactNode }) => {
+  return <div className={quicksand.className}>{children}</div>;
 };
 
-export default Layout;
+export default PrivateLayout;
