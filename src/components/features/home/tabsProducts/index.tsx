@@ -35,7 +35,6 @@ const TabsProducts = () => {
                 ))}
               </TabsList>
             </div>
-
             {tabData.map((tab) => (
               <TabsContent className="flex flex-wrap justify-center gap-4" key={tab.label} value={tab.value}>
                 {Array.from({ length: 5 }).map((_, index) => (

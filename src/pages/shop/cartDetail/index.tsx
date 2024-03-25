@@ -1,5 +1,5 @@
 import ProductDetail from "@/components/features/cart/productDetail";
-import Layout from "@/components/layouts/privateLayout";
+import Layout from "@/components/layouts/publicLayout";
 import React from "react";
 
 const CartDetail = () => {

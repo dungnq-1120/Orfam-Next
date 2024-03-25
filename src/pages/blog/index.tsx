@@ -1,5 +1,5 @@
 import BlogContainer from "@/components/features/blog/blogContainer";
-import Layout from "@/components/layouts/privateLayout";
+import PublicLayout from "@/components/layouts/publicLayout";
 import React from "react";
 
 const Blog = () => {
@@ -10,6 +10,6 @@ const Blog = () => {
   );
 };
 Blog.getLayout = function getLayout(page: React.ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <PublicLayout>{page}</PublicLayout>;
 };
 export default Blog;

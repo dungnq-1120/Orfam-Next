@@ -1,5 +1,5 @@
 import ProductCartList from "@/components/features/cart/productCartList";
-import Layout from "@/components/layouts/privateLayout";
+import Layout from "@/components/layouts/publicLayout";
 import React from "react";
 
 const CartListProducts = () => {

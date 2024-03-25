@@ -4,7 +4,7 @@ import contact_2 from "@/image/banner/contact-big-bg2.webp";
 import contact_3 from "@/image/banner/contact-big-bg3.webp";
 import contact_4 from "@/image/banner/contact-big-bg4.webp";
 import map from "@/image/banner/map.png";
-import Layout from "@/components/layouts/privateLayout";
+import PublicLayout from "@/components/layouts/publicLayout";
 import Image from "next/image";
 import InputForm from "@/shared/input";
 import { Button } from "@/shared/button";
@@ -77,7 +77,7 @@ const Contact = () => {
 };
 
 Contact.getLayout = function getLayout(page: React.ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <PublicLayout>{page}</PublicLayout>;
 };
 
 export default Contact;

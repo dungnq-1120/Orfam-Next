@@ -1,6 +1,6 @@
 import React from "react";
 import type { ReactElement } from "react";
-import Layout from "@/components/layouts/privateLayout";
+import PublicLayout from "@/components/layouts/publicLayout";
 import Banner from "@/components/features/home/banner";
 import Introduce from "@/components/features/home/introduce";
 import TabsProducts from "@/components/features/home/tabsProducts";
@@ -19,7 +19,7 @@ const Home = () => (
 );
 
 Home.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <PublicLayout>{page}</PublicLayout>;
 };
 
 export default Home;

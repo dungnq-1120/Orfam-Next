@@ -2,7 +2,7 @@ import AboutIntroduction from "@/components/features/about/aboutContainer";
 import AboutInfo from "@/components/features/about/aboutInfo";
 import AboutVideo from "@/components/features/about/aboutVideo";
 import BannerAbout from "@/components/features/about/bannerAbout";
-import Layout from "@/components/layouts/privateLayout";
+import PublicLayout from "@/components/layouts/publicLayout";
 import React from "react";
 
 const About = () => {
@@ -17,7 +17,7 @@ const About = () => {
 };
 
 About.getLayout = function getLayout(page: React.ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <PublicLayout>{page}</PublicLayout>;
 };
 
 export default About;
