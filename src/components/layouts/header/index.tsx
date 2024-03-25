@@ -13,19 +13,17 @@ import { useEffect, useState } from "react";
 import ModalSearch from "@/components/features/modalSearch";
 import { useRouter } from "next/router";
 import authLocal from "@/utils/localStorage.utils";
-import LoadingPage from "@/components/features/loading";
 
 export const Header = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { removeInfo, getInfo } = authLocal;
   const [isOpenUser, setIsOpenUser] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [tokenActive, setTokenActive] = useState(null);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
     const token = getInfo("KEY_TOKEN");
-    setTokenActive(token);
+    setToken(token);
   }, [router]);
 
   function openModal() {
@@ -33,7 +31,6 @@ export const Header = () => {
   }
   return (
     <>
-      <LoadingPage isLoading={isLoading} />
       <nav className="nav fixed top-0 w-full bg-white z-9999 flex justify-between items-center shadow-shadow1 h-20 pl-4 pr-5">
         <Image className="w-12 h-12 hidden md:block" src={barsIcon} alt="" />
         <div className="logo">
@@ -69,7 +66,7 @@ export const Header = () => {
           >
             <User className="w-5 h-5 text-blue-ct7" />
           </Button>
-          {tokenActive ? (
+          {token ? (
             <ul className={`absolute right-0 bg-white shadow-xl top-16 text-blue-ct7 z-5xl w-52 ${isOpenUser ? "block" : "hidden"}`}>
               <li className="p-3 border-1 cursor-pointer hover:text-green-600 text-center">Account information</li>
               <li className="p-3 border-1 cursor-pointer hover:text-green-600 text-center">My order</li>
@@ -78,7 +75,6 @@ export const Header = () => {
                   onClick={() => {
                     removeInfo("KEY_TOKEN");
                     router.push("/login");
-                    setIsLoading(true);
                   }}
                   className="w-full h-full text-blue-ct7  bg-transparent text-base cursor-pointer p-3 hover:text-red-600"
                 >
@@ -93,7 +89,6 @@ export const Header = () => {
                 onClick={() => {
                   removeInfo("KEY_TOKEN");
                   router.push("/login");
-                  setIsLoading(true);
                 }}
               >
                 Log in

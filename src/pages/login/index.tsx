@@ -36,20 +36,16 @@ const Login = () => {
 
   const router = useRouter();
   const [errors, setErrors] = useState("");
-  const { trigger } = useSWRMutation("/auth/login", fetcherPost);
+  const { trigger, isMutating } = useSWRMutation("/auth/login", fetcherPost);
   const { setInfo } = authLocal;
-  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (data: LoginData) => {
-    setIsLoading(true);
     const token = (await trigger(data)) as TToken;
-    
+
     if (token && token.access_token) {
       setInfo(token, "KEY_TOKEN");
       router.push("/");
-      setIsLoading(false);
     } else {
-      setIsLoading(false);
       setErrors("Incorrect email or password");
     }
   };
@@ -58,7 +54,7 @@ const Login = () => {
 
   return (
     <div className="login w-full h-screen flex justify-center items-center bg-slate-200 p-5 s:h-full xs:pt-4 xs:pb-4">
-      <LoadingPage isLoading={isLoading} />
+      <LoadingPage isLoading={isMutating} />
       <div className="form-Login flex justify-center items-center w-96 shadow-shadow1 bg-white rounded-lg p-6 sm:w-11/12 xs:w-full">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">

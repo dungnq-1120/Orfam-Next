@@ -2,7 +2,7 @@ import Image from "next/image";
 import React from "react";
 import loading from "@/image/banner/loading_3.gif";
 
-const LoadingPage = ({ isLoading }: { isLoading: boolean }) => {
+const Loading = ({ isLoading }: { isLoading: boolean }) => {
   return (
     <div className={isLoading ? "loading fixed top-0 w-screen h-screen bg-white flex items-center justify-center z-40" : "hidden"}>
       <Image src={loading} alt="loading" />
@@ -10,4 +10,4 @@ const LoadingPage = ({ isLoading }: { isLoading: boolean }) => {
   );
 };
 
-export default LoadingPage;
+export default Loading;

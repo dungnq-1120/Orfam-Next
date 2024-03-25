@@ -5,8 +5,7 @@ import Footer from "../footer";
 
 const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
-  
+const PublicLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className={`${quicksand.className}`}>
       <header>
@@ -20,4 +19,4 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default Layout;
+export default PublicLayout;
