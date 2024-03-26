@@ -1,22 +1,16 @@
 import React from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/shared/tabs/index";
-import cherry from "@/image/product/product-img-15.webp";
 import CardProduct from "../../card";
 import { TabsContent } from "@/shared/tabs/index";
-
-interface Props {
-  label: string;
-  value: string;
-}
+import rippleLoading from "@/image/banner/Ripple-1s-200px.gif";
+import spinnerLoading from "@/image/banner/Spinner-1s-200px.gif";
+import Image from "next/image";
+import { useProducts } from "@/hooks/useProducts";
+import { useCategories } from "@/hooks/useCategory";
 
 const TabsProducts = () => {
-  const tabData: Props[] = [
-    { label: "Fruit Drink", value: "fruit-drink" },
-    { label: "Fresh Meat", value: "fresh-meat" },
-    { label: "Vegetables", value: "vegetables" },
-    { label: "Biscuits Snack", value: "biscuit-snack" },
-  ];
-
+  const { products } = useProducts();
+  const { categories } = useCategories();
   return (
     <div className="tabsProducts p-10 flex justify-center">
       <div className="w-full border-t-2 py-16 ">
@@ -25,23 +19,55 @@ const TabsProducts = () => {
           <h3 className="text-3xl font-bold text-blue-ct7 mt-4 mb-8">Weekly Food Offers</h3>
         </div>
         <div className="tabs">
-          <Tabs defaultValue="fruit-drink" className="w-full m-auto ">
+          <Tabs defaultValue="Fresh Fruits" className="w-full m-auto ">
             <div className="flex justify-center items-center mb-6 ">
-              <TabsList className="w-2/5 py-6 bg-blue-ct7 xl:w-3/5 nm:w-4/5 sm:bg-transparent md:!w-full md:bg md:mb-10">
-                {tabData.map((tab) => (
-                  <TabsTrigger key={tab.value} className="flex-1 -translate-y-2/4  md:rounded-none sm:-translate-y-0 bg-blue-ct7 text-white" value={tab.value}>
-                    {tab.label}
-                  </TabsTrigger>
-                ))}
+              <TabsList className="w-3/5 py-6 bg-blue-ct7 lg:w-4/5 nm:w-4/5 sm:bg-transparent md:!w-full md:bg md:mb-10">
+                {categories ? (
+                  categories.map((category) => {
+                    return (
+                      <TabsTrigger
+                        key={category.id}
+                        className="flex-1 -translate-y-2/4 md:rounded-none sm:-translate-y-0 bg-blue-ct7 text-white"
+                        value={category.typeProduct}
+                      >
+                        {category.typeProduct}
+                      </TabsTrigger>
+                    );
+                  })
+                ) : (
+                  <div className="xl:w-3/5 nm:w-4/5 bg-blue-ct7 flex justify-center items-center sm:h-14">
+                    <Image src={spinnerLoading} alt="" className="w-10 h-10 -mt-5 sm:mt-0" />
+                  </div>
+                )}
               </TabsList>
             </div>
-            {tabData.map((tab) => (
-              <TabsContent className="flex flex-wrap justify-center gap-4" key={tab.label} value={tab.value}>
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <CardProduct key={index} imageUrl={cherry} productName={tab.label} productDescription="Chicken from USA" salePercentage="50%" />
-                ))}
-              </TabsContent>
-            ))}
+            {categories ? (
+              categories.map((category) => {
+                return (
+                  <TabsContent className="flex flex-wrap justify-center gap-4 xs:mt-20 " key={category.id} value={category.typeProduct}>
+                    {products
+                      ? products
+                          .filter((product) => product.categories.typeProduct === category.typeProduct)
+                          .slice(0, 6)
+                          .map((filteredProduct) => (
+                            <CardProduct
+                              key={filteredProduct.id}
+                              imageUrl={filteredProduct.image}
+                              productType={filteredProduct.categories.typeProduct}
+                              productTitle={filteredProduct.title}
+                              price={filteredProduct.price}
+                              salePercentage={filteredProduct.status}
+                              rating={filteredProduct.rating.rate}
+                              className="w-56"
+                            />
+                          ))
+                      : ""}
+                  </TabsContent>
+                );
+              })
+            ) : (
+              <Image src={rippleLoading} alt="" className="w-56 h-56 m-auto" />
+            )}
           </Tabs>
         </div>
         <p className="text-center mt-8 font-medium text-blue-ct7">

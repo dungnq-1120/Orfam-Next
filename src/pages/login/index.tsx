@@ -15,7 +15,7 @@ import useSWRMutation from "swr/mutation";
 import { fetcherPost } from "@/services/callApiService";
 import { LoginData } from "./type";
 import LoginLayout from "@/components/layouts/loginLayout";
-import LoadingPage from "@/components/features/loading";
+import Loading from "@/components/features/loading";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email format").trim(),
@@ -54,7 +54,7 @@ const Login = () => {
 
   return (
     <div className="login w-full h-screen flex justify-center items-center bg-slate-200 p-5 s:h-full xs:pt-4 xs:pb-4">
-      <LoadingPage isLoading={isMutating} />
+      <Loading isLoading={isMutating} />
       <div className="form-Login flex justify-center items-center w-96 shadow-shadow1 bg-white rounded-lg p-6 sm:w-11/12 xs:w-full">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">

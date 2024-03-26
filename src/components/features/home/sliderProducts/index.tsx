@@ -2,11 +2,13 @@ import React, { useRef } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import cherry from "@/image/product/product-img-15.webp";
 import previous from "@/image/icon/left.png";
 import CardProduct from "../../card";
 import { Button } from "@/shared/button";
 import Image from "next/image";
+import useSWR from "swr";
+import { fetcherGet } from "@/services/callApiService";
+import { ApiResponseProductCategory } from "@/services/typeApi";
 
 const SpecialProducts = () => {
   const sliderRef = useRef<Slider>(null);
@@ -15,8 +17,8 @@ const SpecialProducts = () => {
     dots: false,
     infinite: true,
     speed: 500,
-    slidesToShow: 6,
-    slidesToScroll: 1,
+    slidesToShow: 5,
+    slidesToScroll: 2,
     arrows: false,
     responsive: [
       {
@@ -66,6 +68,9 @@ const SpecialProducts = () => {
       sliderRef.current.slickPrev();
     }
   };
+
+  const { data: products } = useSWR<ApiResponseProductCategory[]>("/products?_expand=categories", fetcherGet);
+
   return (
     <div className="specialProducts pt-16 pb-10">
       <div className="content-heading text-center">
@@ -77,9 +82,22 @@ const SpecialProducts = () => {
         <div className="">
           <div className="slider-container">
             <Slider ref={sliderRef} {...settings}>
-              {Array.from({ length: 6 }).map((_, index) => (
-                <CardProduct key={index} imageUrl={cherry} productName="Cherry" productDescription="Chicken from USA" salePercentage="50%" />
-              ))}
+              {products
+                ? products.map((product) => {
+                    return (
+                      <CardProduct
+                        key={product.id}
+                        imageUrl={product.image}
+                        productType={product.categories.typeProduct}
+                        productTitle={product.title}
+                        price={product.price}
+                        salePercentage={product.status}
+                        rating={product.rating.rate}
+                        className="w-56"
+                      />
+                    );
+                  })
+                : null}
             </Slider>
           </div>
           <Button types="success" className="prev-btn absolute rounded-full px-2 py-2 -left-4 top-2/4 -translate-y-2/4" onClick={goToPrevSlide}>
