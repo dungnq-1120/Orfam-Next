@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/shared/tabs/index";
 import CardProduct from "../../card";
 import { TabsContent } from "@/shared/tabs/index";
@@ -9,8 +9,10 @@ import { useProducts } from "@/hooks/useProducts";
 import { useCategories } from "@/hooks/useCategory";
 
 const TabsProducts = () => {
-  const { products } = useProducts();
+  const [id, setId] = useState(1);
+  const { products } = useProducts(`?categoriesId=${id}`);
   const { categories } = useCategories();
+
   return (
     <div className="tabsProducts p-10 flex justify-center">
       <div className="w-full border-t-2 py-16 ">
@@ -28,9 +30,12 @@ const TabsProducts = () => {
                       <TabsTrigger
                         key={category.id}
                         className="flex-1 -translate-y-2/4 md:rounded-none sm:-translate-y-0 bg-blue-ct7 text-white"
-                        value={category.typeProduct}
+                        value={category.name}
+                        onClick={() => {
+                          setId(category.id);
+                        }}
                       >
-                        {category.typeProduct}
+                        {category.name}
                       </TabsTrigger>
                     );
                   })
@@ -44,20 +49,19 @@ const TabsProducts = () => {
             {categories ? (
               categories.map((category) => {
                 return (
-                  <TabsContent className="flex flex-wrap justify-center gap-4 xs:mt-20 " key={category.id} value={category.typeProduct}>
+                  <TabsContent className="flex flex-wrap justify-center gap-4 xs:mt-20 " key={category.id} value={category.name}>
                     {products
                       ? products
-                          .filter((product) => product.categories.typeProduct === category.typeProduct)
                           .slice(0, 6)
-                          .map((filteredProduct) => (
+                          .map((product) => (
                             <CardProduct
-                              key={filteredProduct.id}
-                              imageUrl={filteredProduct.image}
-                              productType={filteredProduct.categories.typeProduct}
-                              productTitle={filteredProduct.title}
-                              price={filteredProduct.price}
-                              salePercentage={filteredProduct.status}
-                              rating={filteredProduct.rating.rate}
+                              key={product.id}
+                              imageUrl={product.image}
+                              productType={category.name}
+                              productTitle={product.title}
+                              price={product.price}
+                              salePercentage={product.status}
+                              rating={product.rating.rate}
                               className="w-56"
                             />
                           ))

@@ -3,11 +3,11 @@ import useSWR from "swr";
 
 interface PropsTab {
   id: number;
-  typeProduct: string;
+  name: string;
 }
 
-export function useCategories() {
-  const { data: categories } = useSWR<PropsTab[]>("/categories", fetcherGet);
+export function useCategories(query?: string) {
+  const { data: categories } = useSWR<PropsTab[]>(`/categories${query ? `${query}` : ""}`, fetcherGet);
 
   return {
     categories,

@@ -6,9 +6,7 @@ import previous from "@/image/icon/left.png";
 import CardProduct from "../../card";
 import { Button } from "@/shared/button";
 import Image from "next/image";
-import useSWR from "swr";
-import { fetcherGet } from "@/services/callApiService";
-import { ApiResponseProductCategory } from "@/services/typeApi";
+import { useProducts } from "@/hooks/useProducts";
 
 const SpecialProducts = () => {
   const sliderRef = useRef<Slider>(null);
@@ -69,7 +67,7 @@ const SpecialProducts = () => {
     }
   };
 
-  const { data: products } = useSWR<ApiResponseProductCategory[]>("/products?_expand=categories", fetcherGet);
+  const { products } = useProducts("?_expand=categories");
 
   return (
     <div className="specialProducts pt-16 pb-10">
@@ -88,7 +86,7 @@ const SpecialProducts = () => {
                       <CardProduct
                         key={product.id}
                         imageUrl={product.image}
-                        productType={product.categories.typeProduct}
+                        productType={product.categories.name}
                         productTitle={product.title}
                         price={product.price}
                         salePercentage={product.status}
@@ -97,7 +95,7 @@ const SpecialProducts = () => {
                       />
                     );
                   })
-                : null}
+                : ""}
             </Slider>
           </div>
           <Button types="success" className="prev-btn absolute rounded-full px-2 py-2 -left-4 top-2/4 -translate-y-2/4" onClick={goToPrevSlide}>

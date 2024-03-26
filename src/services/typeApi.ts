@@ -25,7 +25,7 @@ export interface ApiResponseProductCategory {
   };
   categories: {
     id: number;
-    typeProduct: string;
+    name: string;
   };
 }
 export interface ProductData {
@@ -34,7 +34,6 @@ export interface ProductData {
     _limit: number;
     _page: number;
     _totalRows: number;
-    // Other properties if any
   };
-  // Other properties if any
+
 }
