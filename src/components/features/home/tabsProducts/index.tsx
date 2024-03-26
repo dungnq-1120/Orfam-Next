@@ -9,8 +9,8 @@ import { useProducts } from "@/hooks/useProducts";
 import { useCategories } from "@/hooks/useCategory";
 
 const TabsProducts = () => {
-  const [id, setId] = useState(1);
-  const { products } = useProducts(`?categoriesId=${id}`);
+  const [idCategory, setIdCategory] = useState(1);
+  const { products } = useProducts(`?categoriesId=${idCategory}`);
   const { categories } = useCategories();
 
   return (
@@ -32,7 +32,7 @@ const TabsProducts = () => {
                         className="flex-1 -translate-y-2/4 md:rounded-none sm:-translate-y-0 bg-blue-ct7 text-white"
                         value={category.name}
                         onClick={() => {
-                          setId(category.id);
+                          setIdCategory(category.id);
                         }}
                       >
                         {category.name}
