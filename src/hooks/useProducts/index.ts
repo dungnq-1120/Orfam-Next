@@ -2,8 +2,9 @@ import { fetcherGet } from "@/services/callApiService";
 import { ApiResponseProductCategory } from "@/services/typeApi";
 import useSWR from "swr";
 
-export function useProducts(query?: string) {
-  const { data: products } = useSWR<ApiResponseProductCategory[]>(`/products${query ? `${query}` : ""}`, fetcherGet, {
+export function useProducts(query?: object) {
+  const url = "/products";
+  const { data: products } = useSWR<ApiResponseProductCategory[]>([url, query], ([url, query]: [string, object?]) => fetcherGet(url, query), {
     revalidateIfStale: false,
   });
 

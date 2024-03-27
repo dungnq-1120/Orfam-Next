@@ -7,6 +7,7 @@ import CardProduct from "../../card";
 import { Button } from "@/shared/button";
 import Image from "next/image";
 import { useProducts } from "@/hooks/useProducts";
+import rippleLoading from "@/image/banner/Ripple-1s-200px.gif";
 
 const SpecialProducts = () => {
   const sliderRef = useRef<Slider>(null);
@@ -67,8 +68,9 @@ const SpecialProducts = () => {
     }
   };
 
-  const { products } = useProducts("?_expand=categories");
-
+  const { products } = useProducts({
+    _expand: "categories",
+  });
   return (
     <div className="specialProducts pt-16 pb-10">
       <div className="content-heading text-center">
@@ -80,22 +82,24 @@ const SpecialProducts = () => {
         <div className="">
           <div className="slider-container">
             <Slider ref={sliderRef} {...settings}>
-              {products
-                ? products.map((product) => {
-                    return (
-                      <CardProduct
-                        key={product.id}
-                        imageUrl={product.image}
-                        productType={product.categories.name}
-                        productTitle={product.title}
-                        price={product.price}
-                        salePercentage={product.status}
-                        rating={product.rating.rate}
-                        className="w-56"
-                      />
-                    );
-                  })
-                : ""}
+              {products ? (
+                products.map((product) => {
+                  return (
+                    <CardProduct
+                      key={product.id}
+                      imageUrl={product.image}
+                      category={product.categories.name}
+                      productTitle={product.title}
+                      price={product.price}
+                      salePercentage={product.status}
+                      rating={product.rating.rate}
+                      className="w-56"
+                    />
+                  );
+                })
+              ) : (
+                <Image src={rippleLoading} alt="" className="w-56 h-56-mt-5 sm:mt-0" />
+              )}
             </Slider>
           </div>
           <Button types="success" className="prev-btn absolute rounded-full px-2 py-2 -left-4 top-2/4 -translate-y-2/4" onClick={goToPrevSlide}>

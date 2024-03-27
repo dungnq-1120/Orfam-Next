@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   imageUrl: string;
-  productType: string;
+  category: string;
   productTitle: string;
   salePercentage: string;
   price: number;
@@ -15,7 +15,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const CardProduct = React.forwardRef<HTMLDivElement, Props>(
-  ({ imageUrl, productType, productTitle, salePercentage, price, rating, className, ...props }, ref) => {
+  ({ imageUrl, category, productTitle, salePercentage, price, rating, className, ...props }, ref) => {
     return (
       <Card ref={ref} className={cn("cursor-pointer relative overflow-hidden group", className)} {...props}>
         <div className="overflow-hidden w-full h-56">
@@ -28,7 +28,7 @@ const CardProduct = React.forwardRef<HTMLDivElement, Props>(
           />
         </div>
         <CardContent className="bg-gray-100 text-center pt-2 w-full">
-          <h4 className="text-xs font-semibold text-blue-ct7">{productType}</h4>
+          <h4 className="text-xs font-semibold text-blue-ct7">{category}</h4>
           <p className="text-ctBlue7 text-sm mt-3 mb-3 font-semibold text-blue-ct7 truncate px-2">{productTitle}</p>
           <Rate rating={rating} />
           <h4 className="mt-2">

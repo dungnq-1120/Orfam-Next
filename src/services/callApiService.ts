@@ -11,10 +11,10 @@ const fetcherPost = async (url: string, { arg }: { arg: {} }) => {
   }
 };
 
-const fetcherGet = async <T>(url: string): Promise<T> => {
+const fetcherGet = async <T>(url: string, query?: object): Promise<T> => {
   try {
     const restClient = new RestClient();
-    const response = await restClient.get(url);
+    const response = await restClient.get(url, query);
     return response as T;
   } catch (error) {
     throw new Error(`Error fetching data: ${error}`);

@@ -6,11 +6,12 @@ import rippleLoading from "@/image/banner/Ripple-1s-200px.gif";
 import spinnerLoading from "@/image/banner/Spinner-1s-200px.gif";
 import Image from "next/image";
 import { useProducts } from "@/hooks/useProducts";
-import { useCategories } from "@/hooks/useCategory";
+import { useCategories } from "@/hooks/useCategories";
 
 const TabsProducts = () => {
   const [idCategory, setIdCategory] = useState(1);
-  const { products } = useProducts(`?categoriesId=${idCategory}`);
+  const { products } = useProducts({ categoriesId: idCategory });
+
   const { categories } = useCategories();
 
   return (
@@ -50,22 +51,24 @@ const TabsProducts = () => {
               categories.map((category) => {
                 return (
                   <TabsContent className="flex flex-wrap justify-center gap-4 xs:mt-20 " key={category.id} value={category.name}>
-                    {products
-                      ? products
-                          .slice(0, 6)
-                          .map((product) => (
-                            <CardProduct
-                              key={product.id}
-                              imageUrl={product.image}
-                              productType={category.name}
-                              productTitle={product.title}
-                              price={product.price}
-                              salePercentage={product.status}
-                              rating={product.rating.rate}
-                              className="w-56"
-                            />
-                          ))
-                      : ""}
+                    {products ? (
+                      products
+                        .slice(0, 6)
+                        .map((product) => (
+                          <CardProduct
+                            key={product.id}
+                            imageUrl={product.image}
+                            category={category.name}
+                            productTitle={product.title}
+                            price={product.price}
+                            salePercentage={product.status}
+                            rating={product.rating.rate}
+                            className="w-56"
+                          />
+                        ))
+                    ) : (
+                      <Image src={rippleLoading} alt="" className="w-56 h-56-mt-5 sm:mt-0" />
+                    )}
                   </TabsContent>
                 );
               })
