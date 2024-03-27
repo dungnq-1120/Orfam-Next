@@ -13,7 +13,7 @@ import useSWRMutation from "swr/mutation";
 import { useRouter } from "next/router";
 import { TFormRegister } from "@/shared/form/type";
 import { fetcherPost } from "@/services/callApiService";
-import authLocal from "@/utils/localStorage.utils";
+import authLocal from "@/utils/localStorage";
 import LoginLayout from "@/components/layouts/loginLayout";
 import Loading from "@/components/features/loading";
 

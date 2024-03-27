@@ -9,7 +9,7 @@ import { Button } from "@/shared/button";
 import Image from "next/image";
 import logo from "@/image/logo/Logo.png";
 import Checkbox from "@/shared/checkbox";
-import authLocal from "@/utils/localStorage.utils";
+import authLocal from "@/utils/localStorage";
 import { useRouter } from "next/router";
 import useSWRMutation from "swr/mutation";
 import { fetcherPost } from "@/services/callApiService";

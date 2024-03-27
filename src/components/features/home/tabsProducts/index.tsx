@@ -2,17 +2,15 @@ import React, { useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/shared/tabs/index";
 import CardProduct from "../../card";
 import { TabsContent } from "@/shared/tabs/index";
-import rippleLoading from "@/image/banner/Ripple-1s-200px.gif";
-import spinnerLoading from "@/image/banner/Spinner-1s-200px.gif";
-import Image from "next/image";
 import { useProducts } from "@/hooks/useProducts";
 import { useCategories } from "@/hooks/useCategories";
+import isDefined from "@/utils/isDefine";
+import Loadings from "../../../../shared/loadings";
 
 const TabsProducts = () => {
   const [idCategory, setIdCategory] = useState(1);
-  const { products } = useProducts({ categoriesId: idCategory });
-
-  const { categories } = useCategories();
+  const { products, isLoading: loadingProducts } = useProducts({ categoriesId: idCategory });
+  const { categories, isLoading: loadingCategories } = useCategories();
 
   return (
     <div className="tabsProducts p-10 flex justify-center">
@@ -25,7 +23,8 @@ const TabsProducts = () => {
           <Tabs defaultValue="Fresh Fruits" className="w-full m-auto ">
             <div className="flex justify-center items-center mb-6 ">
               <TabsList className="w-3/5 py-6 bg-blue-ct7 lg:w-4/5 nm:w-4/5 sm:bg-transparent md:!w-full md:bg md:mb-10">
-                {categories ? (
+                {loadingCategories && <Loadings containerClassName="-mt-3" />}
+                {isDefined(categories) &&
                   categories.map((category) => {
                     return (
                       <TabsTrigger
@@ -39,19 +38,16 @@ const TabsProducts = () => {
                         {category.name}
                       </TabsTrigger>
                     );
-                  })
-                ) : (
-                  <div className="xl:w-3/5 nm:w-4/5 bg-blue-ct7 flex justify-center items-center sm:h-14">
-                    <Image src={spinnerLoading} alt="" className="w-10 h-10 -mt-5 sm:mt-0" />
-                  </div>
-                )}
+                  })}
               </TabsList>
             </div>
-            {categories ? (
+            {loadingCategories && <Loadings types="primary" size="md" />}
+            {categories &&
               categories.map((category) => {
                 return (
                   <TabsContent className="flex flex-wrap justify-center gap-4 xs:mt-20 " key={category.id} value={category.name}>
-                    {products ? (
+                    {loadingProducts && <Loadings types="primary" size="md" />}
+                    {isDefined(products) &&
                       products
                         .slice(0, 6)
                         .map((product) => (
@@ -65,16 +61,10 @@ const TabsProducts = () => {
                             rating={product.rating.rate}
                             className="w-56"
                           />
-                        ))
-                    ) : (
-                      <Image src={rippleLoading} alt="" className="w-56 h-56-mt-5 sm:mt-0" />
-                    )}
+                        ))}
                   </TabsContent>
                 );
-              })
-            ) : (
-              <Image src={rippleLoading} alt="" className="w-56 h-56 m-auto" />
-            )}
+              })}
           </Tabs>
         </div>
         <p className="text-center mt-8 font-medium text-blue-ct7">

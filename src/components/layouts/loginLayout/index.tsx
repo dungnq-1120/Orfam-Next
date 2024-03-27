@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Quicksand } from "next/font/google";
 import { useRouter } from "next/router";
-import authLocal from "@/utils/localStorage.utils";
+import authLocal from "@/utils/localStorage";
 
 const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 
 const LoginLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const { getInfo } = authLocal;
-  const [shouldRender, setShouldRender] = useState(false); 
+  const [shouldRender, setShouldRender] = useState(false);
 
   useEffect(() => {
     const token = getInfo("KEY_TOKEN");
@@ -16,7 +16,7 @@ const LoginLayout = ({ children }: { children: React.ReactNode }) => {
     if (token) {
       router.push("/");
     } else {
-      setShouldRender(true); 
+      setShouldRender(true);
     }
   }, [router]);
 

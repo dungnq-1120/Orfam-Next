@@ -12,7 +12,7 @@ import userIcon from "@/image/icon/user.png";
 import { useEffect, useState } from "react";
 import ModalSearch from "@/components/features/modalSearch";
 import { useRouter } from "next/router";
-import authLocal from "@/utils/localStorage.utils";
+import authLocal from "@/utils/localStorage";
 
 export const Header = () => {
   const router = useRouter();
