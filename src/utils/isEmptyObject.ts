@@ -1,5 +1,5 @@
-import { isNil } from "./isNil";
+import { isObject } from "./isObject";
 
 export function isEmptyObject(value: any): boolean {
-  return typeof value === "object" && !isNil(value) && Object.keys(value).length === 0;
+  return isObject(value) && Object.keys(value).length === 0;
 }
