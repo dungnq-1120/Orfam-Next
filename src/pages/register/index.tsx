@@ -13,9 +13,9 @@ import useSWRMutation from "swr/mutation";
 import { useRouter } from "next/router";
 import { TFormRegister } from "@/shared/form/type";
 import { fetcherPost } from "@/services/callApiService";
-import authLocal from "@/utils/localStorage.utils";
+import authLocal from "@/utils/localStorage";
 import LoginLayout from "@/components/layouts/loginLayout";
-import LoadingPage from "@/components/features/loading";
+import Loading from "@/components/features/loading";
 
 const registerSchema = z
   .object({
@@ -74,7 +74,7 @@ const Register = () => {
 
   return (
     <div className="register w-screen h-screen flex justify-center items-center bg-slate-200 p-5 s:h-full xs:pt-4 xs:pb-4">
-      <LoadingPage isLoading={isMutating} />
+      <Loading isLoading={isMutating} />
       <div className="form-register flex justify-center items-center max-w-lg shadow-shadow1 bg-white rounded-lg p-6 sm:w-11/12 xs:w-full">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
