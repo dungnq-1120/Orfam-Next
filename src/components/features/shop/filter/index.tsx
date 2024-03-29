@@ -5,7 +5,7 @@ import Rate from "../../rate";
 
 const FilterProduct = () => {
   return (
-    <div className="filter-product overflow-y-scroll h-[600px] self-start bg-white p-10 w-1/4 rounded-xl shadow-2xl sticky top-24 xl:p-5 lg:w-full lg:relative lg:top-0 lg:mb-10">
+    <div className="filter-product overflow-y-scroll h-[510px] self-start bg-white px-10 py-6 w-1/4 rounded-xl shadow-2xl sticky top-32 xl:p-5 lg:w-full lg:relative lg:top-0 lg:mb-10">
       <div className="filter-categories">
         <h3 className="text-sm text-blue-ct7 font-semibold">PRODUCT CATEGORIES</h3>
         <ul className="mt-5">

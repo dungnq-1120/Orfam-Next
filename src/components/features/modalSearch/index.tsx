@@ -2,9 +2,13 @@ import { Search } from "@/icons/info/Search";
 import { Button } from "@/shared/button";
 import InputForm from "@/shared/input";
 import { Dialog, Transition } from "@headlessui/react";
-import { SetStateAction, Fragment } from "react";
+import { SetStateAction, Fragment, useState } from "react";
 import closeIcon from "@/image/icon/close.svg";
 import Image from "next/image";
+import useProductsStore from "@/store/useProductsStore";
+import { Quicksand } from "next/font/google";
+import { useRouter } from "next/router";
+const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 
 interface Props {
   setIsOpen: React.Dispatch<SetStateAction<boolean>>;
@@ -12,9 +16,26 @@ interface Props {
 }
 
 export default function ModalSearch({ setIsOpen, isOpen }: Props) {
-  function closeModal() {
+  const [searchValue, setSearchValue] = useState<string>("");
+  const router = useRouter();
+
+  const closeModal = () => {
     setIsOpen(false);
-  }
+  };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
+
+  const saveProducts = useProductsStore((state) => state.saveProducts);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    router.push("/shop");
+    saveProducts(searchValue.trim());
+    setSearchValue("");
+    closeModal();
+  };
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -42,17 +63,23 @@ export default function ModalSearch({ setIsOpen, isOpen }: Props) {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full p-16 xs:px-3 relative transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all">
-                <Dialog.Title as="h3" className="text-lg text-center font-medium leading-6 text-blue-ct7 xs:text-sm">
+              <Dialog.Panel className="w-full p-16 xs:px-3 relative transform overflow-hidden rounded-lg bg-white text-left align-middle shadow-xl transition-all">
+                <Dialog.Title as="h3" className={`text-lg html font-bold text-center leading-6 text-blue-ct7 xs:text-sm ${quicksand.className}`}>
                   WHAT ARE YOU LOOKING FOR?
                 </Dialog.Title>
-                <div className="mt-2 max-w-3xl m-auto flex gap-1">
-                  <InputForm className="border-2 border-gray py-3 w-full text-sm xs:py-2" placeholder="Search Product..." />
-                  <Button className="rounded-lg px-3 py-3 bg-blue-ct5 xs:px-3 xs:py-2">
-                    <Search className="w-5 h-5 text-white" />
-                  </Button>
-                </div>
-
+                <form onSubmit={handleSubmit}>
+                  <div className="mt-2 max-w-3xl m-auto flex gap-1">
+                    <InputForm
+                      className={`border-2 font-sans border-gray py-3 w-full font-medium text-sm xs:py-2 ${quicksand.className}`}
+                      placeholder="Search Product..."
+                      value={searchValue}
+                      onChange={(e) => handleSearch(e)}
+                    />
+                    <Button type="submit" className="rounded-lg px-3 py-3 bg-blue-ct5 xs:px-3 xs:py-2">
+                      <Search className="w-5 h-5 text-white" />
+                    </Button>
+                  </div>
+                </form>
                 <div className="mt-4 absolute top-0 right-5 xs:right-3">
                   <Button
                     type="button"

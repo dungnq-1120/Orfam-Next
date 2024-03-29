@@ -1,21 +1,21 @@
 import { fetcherGet } from "@/services/callApiService";
-import { ApiResponseProductCategory } from "@/services/typeApi";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 
-export function useProducts(query?: object) {
+export function useProducts<T = any>(query?: object) {
   const url = "/products";
-  const { data: products, isLoading } = useSWR<ApiResponseProductCategory[]>(
-    [url, query],
-    ([url, query]: [string, object?]) => fetcherGet(url, query),
-    {
-      revalidateIfStale: false,
-    }
-  );
+
+  const {
+    data: products,
+    isLoading,
+    mutate,
+  } = useSWR<T>([url, query], ([url, query]: [string, object?]) => fetcherGet(url, query), {
+    revalidateIfStale: false,
+  });
 
   const refreshProducts = () => {
-    mutate(url);
+    mutate();
   };
-  
+
   return {
     products,
     isLoading,
