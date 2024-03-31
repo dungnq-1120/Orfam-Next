@@ -70,7 +70,7 @@ const CardList = () => {
           <h4 className="text-sm text-blue-ct7 font-semibold">
             Showing
             <span className="text-green-600 font-semibold ml-1">
-              <span>{products?.data[0]?.id} </span> -<span> {products?.data[products?.data.length - 1]?.id} </span>
+              <span>{products?.data[0]?.id || 0} </span> -<span> {products?.data[products?.data.length - 1]?.id || 0} </span>
             </span>
             of
             <span className="text-green-600 font-semibold"> {products?.pagination._totalRows}</span> Products
