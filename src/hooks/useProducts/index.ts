@@ -1,7 +1,7 @@
 import { fetcherGet } from "@/services/callApiService";
 import useSWR from "swr";
 
-export function useProducts<T = any>(query?: object) {
+export function useProducts<T>(query?: object) {
   const url = "/products";
 
   const {

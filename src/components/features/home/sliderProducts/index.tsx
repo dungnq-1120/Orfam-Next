@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { use, useRef } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -8,7 +8,8 @@ import { Button } from "@/shared/button";
 import Image from "next/image";
 import { useProducts } from "@/hooks/useProducts";
 import isDefined from "@/utils/isDefine";
-import Loadings from "@/shared/loadings";
+import Loading from "@/shared/loading";
+import { ApiResponseProductCategory } from "@/services/typeApi";
 
 const SpecialProducts = () => {
   const sliderRef = useRef<Slider>(null);
@@ -69,7 +70,7 @@ const SpecialProducts = () => {
     }
   };
 
-  const { products, isLoading } = useProducts({
+  const { products, isLoading } = useProducts<ApiResponseProductCategory[]>({
     _expand: "categories",
   });
 
@@ -83,7 +84,7 @@ const SpecialProducts = () => {
       <div className="slider-products w-11/12 m-auto py-20 relative">
         <div className="">
           <div className="slider-container">
-            {isLoading && <Loadings types="primary" size="md" />}
+            {isLoading && <Loading types="primary" size="md" />}
             <Slider className="flex" ref={sliderRef} {...settings}>
               {isDefined(products) &&
                 products.map((product) => {
@@ -95,7 +96,7 @@ const SpecialProducts = () => {
                       productTitle={product.title}
                       price={product.price}
                       salePercentage={product.status}
-                      rating={product.rating.rate}
+                      rating={product.rate}
                       className="w-56"
                     />
                   );

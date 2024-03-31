@@ -16,7 +16,7 @@ import authLocal from "@/utils/localStorage";
 
 export const Header = () => {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const { removeInfo, getInfo } = authLocal;
   const [isOpenUser, setIsOpenUser] = useState<boolean>(false);
   const [token, setToken] = useState(null);
@@ -25,8 +25,6 @@ export const Header = () => {
     const token = getInfo("KEY_TOKEN");
     setToken(token);
   }, [router]);
-
-
 
   return (
     <>
@@ -55,7 +53,7 @@ export const Header = () => {
         <div className="list-option flex gap-2 relative">
           <Button
             onClick={() => {
-              setIsOpen(true);
+              setIsOpenModal(true);
             }}
             className="rounded-full px-3 py-3 bg-blue-200"
           >
@@ -121,7 +119,7 @@ export const Header = () => {
           </li>
         </ul>
       </nav>
-      <ModalSearch setIsOpen={setIsOpen} isOpen={isOpen} />
+      <ModalSearch setIsOpenModal={setIsOpenModal} isOpenModal={isOpenModal} />
     </>
   );
 };

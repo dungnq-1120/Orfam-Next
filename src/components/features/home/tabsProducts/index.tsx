@@ -5,11 +5,12 @@ import { TabsContent } from "@/shared/tabs/index";
 import { useProducts } from "@/hooks/useProducts";
 import { useCategories } from "@/hooks/useCategories";
 import isDefined from "@/utils/isDefine";
-import Loadings from "../../../../shared/loadings";
+import Loading from "../../../../shared/loading";
+import { ApiResponseProduct } from "@/services/typeApi";
 
 const TabsProducts = () => {
   const [idCategory, setIdCategory] = useState(1);
-  const { products, isLoading: loadingProducts } = useProducts({ categoriesId: idCategory });
+  const { products, isLoading: loadingProducts } = useProducts<ApiResponseProduct[]>({ categoriesId: idCategory });
   const { categories, isLoading: loadingCategories } = useCategories();
 
   return (
@@ -23,7 +24,7 @@ const TabsProducts = () => {
           <Tabs defaultValue="Fresh Fruits" className="w-full m-auto ">
             <div className="flex justify-center items-center mb-6 ">
               <TabsList className="w-3/5 py-6 bg-blue-ct7 lg:w-4/5 nm:w-4/5 sm:bg-transparent md:!w-full md:bg md:mb-10">
-                {loadingCategories && <Loadings containerClassName="-mt-3" />}
+                {loadingCategories && <Loading containerClassName="-mt-3" />}
                 {isDefined(categories) &&
                   categories.map((category) => {
                     return (
@@ -41,12 +42,12 @@ const TabsProducts = () => {
                   })}
               </TabsList>
             </div>
-            {loadingCategories && <Loadings types="primary" size="md" />}
+            {loadingCategories && <Loading types="primary" size="md" />}
             {categories &&
               categories.map((category) => {
                 return (
                   <TabsContent className="flex flex-wrap justify-center gap-4 xs:mt-20 " key={category.id} value={category.name}>
-                    {loadingProducts && <Loadings types="primary" size="md" />}
+                    {loadingProducts && <Loading types="primary" size="md" />}
                     {isDefined(products) &&
                       products
                         .slice(0, 6)
@@ -58,7 +59,7 @@ const TabsProducts = () => {
                             productTitle={product.title}
                             price={product.price}
                             salePercentage={product.status}
-                            rating={product.rating.rate}
+                            rating={product.rate}
                             className="w-56"
                           />
                         ))}

@@ -1,17 +1,14 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
-import { Button } from "../button";
-interface Props {
+import { Fragment, forwardRef } from "react";
+import { cn } from "@/lib/utils";
+
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
+  modalClass?: string;
   isOpen: boolean;
-  message: string;
-  title: string;
-  textOk?: string;
-  textCancel?: string;
-  okOK: () => void;
   onCancel: () => void;
 }
 
-export default function Modal({ isOpen, message, title, textOk, textCancel,okOK ,onCancel }: Props) {
+const Modal = forwardRef<HTMLDivElement, Props>(({ children, isOpen, onCancel, modalClass, className, ...rest }, ref) => {
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -25,7 +22,7 @@ export default function Modal({ isOpen, message, title, textOk, textCancel,okOK 
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-blue-ct5 z-5xl" />
+            <div {...rest} ref={ref} className={cn("fixed inset-0 bg-blue-ct5 z-5xl", className)} />
           </Transition.Child>
 
           <div className="fixed z-6xl inset-0 overflow-y-auto">
@@ -39,28 +36,13 @@ export default function Modal({ isOpen, message, title, textOk, textCancel,okOK 
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                    {message}
-                  </Dialog.Title>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">{title}</p>
-                  </div>
-
-                  <div className="mt-4">
-                    <Button
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={okOK}
-                    >
-                      {textOk || "OK"}
-                    </Button>
-                    <Button
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={onCancel}
-                    >
-                      {textCancel || "Cancel"}
-                    </Button>
-                  </div>
+                <Dialog.Panel
+                  className={cn(
+                    "w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all",
+                    modalClass
+                  )}
+                >
+                  {children}
                 </Dialog.Panel>
               </Transition.Child>
             </div>
@@ -69,4 +51,8 @@ export default function Modal({ isOpen, message, title, textOk, textCancel,okOK 
       </Transition>
     </>
   );
-}
+});
+
+Modal.displayName = "Modal";
+
+export default Modal;

@@ -2,7 +2,7 @@ import { Search } from "@/icons/info/Search";
 import { Button } from "@/shared/button";
 import InputForm from "@/shared/input";
 import { Dialog, Transition } from "@headlessui/react";
-import { SetStateAction, Fragment, useState } from "react";
+import { Fragment, useState } from "react";
 import closeIcon from "@/image/icon/close.svg";
 import Image from "next/image";
 import useProductsStore from "@/store/useProductsStore";
@@ -11,34 +11,34 @@ import { useRouter } from "next/router";
 const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 
 interface Props {
-  setIsOpen: React.Dispatch<SetStateAction<boolean>>;
-  isOpen: boolean;
+  setIsOpenModal: (value: boolean) => void;
+  isOpenModal: boolean;
 }
 
-export default function ModalSearch({ setIsOpen, isOpen }: Props) {
+export default function ModalSearch({ setIsOpenModal, isOpenModal }: Props) {
   const [searchValue, setSearchValue] = useState<string>("");
   const router = useRouter();
 
   const closeModal = () => {
-    setIsOpen(false);
+    setIsOpenModal(false);
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
   };
 
-  const saveProducts = useProductsStore((state) => state.saveProducts);
+  const saveSearchValue = useProductsStore((state) => state.saveSearchValue);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     router.push("/shop");
-    saveProducts(searchValue.trim());
+    saveSearchValue(searchValue.trim());
     setSearchValue("");
     closeModal();
   };
 
   return (
-    <Transition appear show={isOpen} as={Fragment}>
+    <Transition appear show={isOpenModal} as={Fragment}>
       <Dialog as="div" className="relative z-5xl" onClose={closeModal}>
         <Transition.Child
           as={Fragment}
@@ -73,7 +73,7 @@ export default function ModalSearch({ setIsOpen, isOpen }: Props) {
                       className={`border-2 font-sans border-gray py-3 w-full font-medium text-sm xs:py-2 ${quicksand.className}`}
                       placeholder="Search Product..."
                       value={searchValue}
-                      onChange={(e) => handleSearch(e)}
+                      onChange={handleSearch}
                     />
                     <Button type="submit" className="rounded-lg px-3 py-3 bg-blue-ct5 xs:px-3 xs:py-2">
                       <Search className="w-5 h-5 text-white" />

@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Dropdown from "@/shared/dropdown";
 import CardProduct from "../../card";
 import { useProducts } from "@/hooks/useProducts";
 import isDefined from "@/utils/isDefine";
-import Loadings from "@/shared/loadings";
-import { ApiResponseProductCategory } from "@/services/typeApi";
+import Loading from "@/shared/loading";
+import { ProductDataCategory } from "@/services/typeApi";
 import { Button } from "@/shared/button";
 import { useRouter } from "next/router";
 import useProductsStore from "@/store/useProductsStore";
-import { isEmptyString } from "@/utils/isEmptyString";
+import { calculateTotalPages } from "@/utils/totalPage";
 
 const CardList = () => {
   const options = [
@@ -20,36 +20,41 @@ const CardList = () => {
 
   const router = useRouter();
   const initialPage = parseInt(router.query._page as string) || 1;
-  const [pages, setPages] = useState<number>(initialPage);
-  const productsSearch = useProductsStore((state) => state.productsSearch);
-  const { products, isLoading } = useProducts({ _expand: "categories", title_like: productsSearch, _page: pages, _limit: 10 });
+  const [page, setPage] = useState<number>(initialPage);
+  const LIMIT = 10;
+
+  const { searchValue, productCategoryId, productBrandId, productRate } = useProductsStore((state) => ({
+    searchValue: state.searchValue,
+    productCategoryId: state.productCategoryId,
+    productBrandId: state.productBrandId,
+    productRate: state.productRate,
+  }));
+
+  const { products, isLoading } = useProducts<ProductDataCategory>({
+    _expand: ["categories", "brands"],
+    title_like: searchValue,
+    _page: searchValue === "" ? page : 1,
+    _limit: 10,
+    categoriesId: productCategoryId !== null ? productCategoryId : null,
+    brandsId: productBrandId !== null ? productBrandId : null,
+    rate: productRate !== null ? productRate : null,
+  });
 
   useEffect(() => {
-    if (!isEmptyString(productsSearch)) {
-      setPages(1);
-      router.push({
-        query: {
-          title_like: productsSearch,
-          _limit: 10,
-          _page: 1,
-        },
-      });
-    } else {
-      setPages(initialPage);
-    }
-  }, [initialPage, productsSearch]);
+    setPage(initialPage);
+  }, [initialPage]);
 
-  const totalPages = products?.pagination && Math.ceil(products.pagination._totalRows / (products.pagination._limit || 10));
-
-  const handlePageChange = (page: number) => {
-    setPages(page);
+  const totalPages = calculateTotalPages(products, LIMIT);
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
     router.push({
       query: {
-        _limit: 10,
-        _page: page,
+        _limit: LIMIT,
+        _page: newPage,
       },
     });
   };
+
   return (
     <>
       <div className="card-shop w-3/4 lg:w-full">
@@ -65,7 +70,7 @@ const CardList = () => {
           <h4 className="text-sm text-blue-ct7 font-semibold">
             Showing
             <span className="text-green-600 font-semibold ml-1">
-              1 - <span>{products?.pagination._limit} </span>
+              <span>{products?.data[0]?.id} </span> -<span> {products?.data[products?.data.length - 1]?.id} </span>
             </span>
             of
             <span className="text-green-600 font-semibold"> {products?.pagination._totalRows}</span> Products
@@ -73,9 +78,9 @@ const CardList = () => {
           <Dropdown options={options} />
         </div>
         <div className="flex flex-wrap gap-3 mt-5 justify-center">
-          {isLoading && <Loadings types="primary" size="md" />}
+          {isLoading && <Loading types="primary" size="md" containerClassName="h-[500px]" />}
           {isDefined(products) &&
-            products.data.map((product: ApiResponseProductCategory) => (
+            products.data.map((product) => (
               <CardProduct
                 key={product.id}
                 imageUrl={product.image}
@@ -83,7 +88,7 @@ const CardList = () => {
                 productTitle={product.title}
                 price={product.price}
                 salePercentage={product.status}
-                rating={product.rating.rate}
+                rating={product.rate}
                 className="w-56"
               />
             ))}
@@ -92,7 +97,7 @@ const CardList = () => {
           {isDefined(totalPages) &&
             Array.from({ length: totalPages }, (_, index) => (
               <Button
-                className={`w-10 h-10 rounded-full  ${index + 1 === pages && "bg-orange-500"} `}
+                className={`w-10 h-10 rounded-full  ${index + 1 === initialPage && "bg-orange-500"} `}
                 key={index}
                 onClick={() => handlePageChange(index + 1)}
               >

@@ -12,6 +12,8 @@ const fetcherPost = async (url: string, { arg }: { arg: {} }) => {
 };
 
 const fetcherGet = async <T>(url: string, query?: object): Promise<T> => {
+  console.log(query);
+
   try {
     const restClient = new RestClient();
     const response = await restClient.get(url, query);

@@ -1,83 +1,110 @@
-import { Button } from "@/shared/button";
 import Checkbox from "@/shared/checkbox";
-import React from "react";
+import React, { ChangeEvent, useState } from "react";
 import Rate from "../../rate";
+import { useCategories } from "@/hooks/useCategories";
+import isDefined from "@/utils/isDefine";
+import { useBrands } from "@/hooks/useBrand";
+import useProductsStore from "@/store/useProductsStore";
+import { useRouter } from "next/router";
+import { Button } from "@/shared/button";
+
+type FilterType = "selectedCategoryId" | "selectedBrandId" | "selectedRate";
+type SaveAction = (value: number | null) => void;
 
 const FilterProduct = () => {
+  const router = useRouter();
+  const rates = [1, 2, 3, 4, 5];
+  const { categories } = useCategories();
+  const { brands } = useBrands();
+
+  const [filters, setFilters] = useState({
+    selectedCategoryId: null,
+    selectedBrandId: null,
+    selectedRate: null,
+  });
+
+  const storeActions = useProductsStore((state) => ({
+    saveProductCategoryId: state.saveProductCategoryId,
+    saveSearchValue: state.saveSearchValue,
+    saveProductBrandId: state.saveProductBrandId,
+    saveProductRate: state.saveProductRate,
+  }));
+
+  const handleFilterChange = (filterType: FilterType, id: number, saveAction: SaveAction) => {
+    const newValue = filters[filterType] === id ? null : id;
+    setFilters({ ...filters, [filterType]: newValue });
+    saveAction(newValue);
+    storeActions.saveSearchValue("");
+    router.push({
+      query: { _limit: 10, _page: 1 },
+    });
+  };
+
+  const handleResetFilter = () => {
+    setFilters({
+      selectedCategoryId: null,
+      selectedBrandId: null,
+      selectedRate: null,
+    });
+    storeActions.saveProductCategoryId(null);
+    storeActions.saveSearchValue("");
+    storeActions.saveProductBrandId(null);
+    storeActions.saveProductRate(null);
+  };
+  
   return (
     <div className="filter-product overflow-y-scroll h-[510px] self-start bg-white px-10 py-6 w-1/4 rounded-xl shadow-2xl sticky top-32 xl:p-5 lg:w-full lg:relative lg:top-0 lg:mb-10">
       <div className="filter-categories">
         <h3 className="text-sm text-blue-ct7 font-semibold">PRODUCT CATEGORIES</h3>
         <ul className="mt-5">
-          <li className="flex items-center gap-1 my-2">
-            <Checkbox className="focus:shadow-none" />
-            <h4 className="text-sm text-blue-ct7 font-medium">
-              Vegetables <span>(2)</span>
-            </h4>
-          </li>
-          <li className="flex items-center gap-1 my-2">
-            <Checkbox className="focus:shadow-none" />
-            <h4 className="text-sm text-blue-ct7 font-medium">
-              Vegetables <span>(2)</span>
-            </h4>
-          </li>
-          <li className="flex items-center gap-1 my-2">
-            <Checkbox className="focus:shadow-none" />
-            <h4 className="text-sm text-blue-ct7 font-medium">
-              Vegetables <span>(2)</span>
-            </h4>
-          </li>
+          {isDefined(categories) &&
+            categories.map((category) => (
+              <li key={category.id} className="flex items-center gap-1 my-2">
+                <Checkbox
+                  checked={filters.selectedCategoryId === category.id}
+                  className="focus:shadow-none"
+                  onChange={() => handleFilterChange("selectedCategoryId", category.id, storeActions.saveProductCategoryId)}
+                />
+                <h4 className="text-sm text-blue-ct7 font-medium ml-2">{category.name}</h4>
+              </li>
+            ))}
         </ul>
-      </div>
-      <div className="filter-price mt-4 border-t-1 border-b-1 border-green-ct5 py-5">
-        <h3 className="text-sm text-blue-ct7 font-semibold">FILTER BY PRICE</h3>
-        <input type="range" className="range-track accent-green-ct5 w-full h-1 appearance-none bg-green-ct5 rounded-lg" />
-        <h4 className="my-4">
-          $<span>0</span> - $<span>400</span>
-        </h4>
-        <Button types="success">FILTER</Button>
       </div>
       <div className="filter-brand mt-4">
         <h3 className="text-sm text-blue-ct7 font-semibold">FILTER BY BRAND</h3>
         <ul className="mt-5">
-          <li className="flex items-center gap-2 my-2">
-            <Checkbox className="focus:shadow-none" />
-            <h4 className="text-sm text-blue-ct7 font-medium">
-              Super Market <span>(2)</span>
-            </h4>
-          </li>
+          {isDefined(brands) &&
+            brands.map((brand) => (
+              <li key={brand.id} className="flex items-center gap-2 my-2">
+                <Checkbox
+                  checked={filters.selectedBrandId === brand.id}
+                  className="focus:shadow-none"
+                  onChange={() => handleFilterChange("selectedBrandId", brand.id, storeActions.saveProductBrandId)}
+                />
+                <h4 className="text-sm text-blue-ct7 font-medium">{brand.name}</h4>
+              </li>
+            ))}
         </ul>
       </div>
-      <div className="filter-rating mt-4 border-t-1 border-green-ct5 pt-5">
+      <div className="filter-rating mt-4">
         <h3 className="text-sm text-blue-ct7 font-semibold">FILTER BY RATING</h3>
         <ul className="mt-5">
-          <li className="flex items-center gap-2 my-2">
-            <Checkbox className="focus:shadow-none" />
-            <Rate rating={5} />
-            <span className="text-blue-ct7 text-sm font-medium">(5 start)</span>
-          </li>
-          <li className="flex items-center gap-2 my-2">
-            <Checkbox className="focus:shadow-none" />
-            <Rate rating={4} />
-            <span className="text-blue-ct7 text-sm font-medium">(4 start)</span>
-          </li>
-          <li className="flex items-center gap-2 my-2">
-            <Checkbox className="focus:shadow-none" />
-            <Rate rating={3} />
-            <span className="text-blue-ct7 text-sm font-medium">(3 start)</span>
-          </li>
-          <li className="flex items-center gap-2 my-2">
-            <Checkbox className="focus:shadow-none" />
-            <Rate rating={2} />
-            <span className="text-blue-ct7 text-sm font-medium">(2 start)</span>
-          </li>
-          <li className="flex items-center gap-2 my-2">
-            <Checkbox className="focus:shadow-none" />
-            <Rate rating={1} />
-            <span className="text-blue-ct7 text-sm font-medium">(1 start)</span>
-          </li>
+          {rates.map((rate) => (
+            <li key={rate} className="flex items-center gap-2 my-2">
+              <Checkbox
+                checked={filters.selectedRate === rate}
+                className="focus:shadow-none"
+                onChange={() => handleFilterChange("selectedRate", rate, storeActions.saveProductRate)}
+              />
+              <Rate rating={rate} />
+              <span className="text-blue-ct7 text-sm font-medium">({rate} star)</span>
+            </li>
+          ))}
         </ul>
       </div>
+      <Button onClick={handleResetFilter} className="w-full">
+        Reset Filter
+      </Button>
     </div>
   );
 };
