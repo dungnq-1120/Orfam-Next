@@ -9,35 +9,31 @@ import { Button } from "@/shared/button";
 import { useRouter } from "next/router";
 import useProductsStore from "@/store/useProductsStore";
 import { calculateTotalPages } from "@/utils/totalPage";
+import { useShallow } from "zustand/react/shallow";
+import { LIMIT } from "@/utils/const";
 
 const CardList = () => {
-  const options = [
-    { id: 1, name: "Price Low To High" },
-    { id: 2, name: "Default sorting" },
-    { id: 3, name: "New Arrivals" },
-    { id: 4, name: "Price High To Low" },
-  ];
-
   const router = useRouter();
   const initialPage = parseInt(router.query._page as string) || 1;
   const [page, setPage] = useState<number>(initialPage);
-  const LIMIT = 10;
 
-  const { searchValue, productCategoryId, productBrandId, productRate } = useProductsStore((state) => ({
-    searchValue: state.searchValue,
-    productCategoryId: state.productCategoryId,
-    productBrandId: state.productBrandId,
-    productRate: state.productRate,
-  }));
+  const { searchValue, productCategoryId, productBrandId, productRate } = useProductsStore(
+    useShallow((state) => ({
+      searchValue: state.searchValue,
+      productCategoryId: state.productCategoryId,
+      productBrandId: state.productBrandId,
+      productRate: state.productRate,
+    }))
+  );
 
   const { products, isLoading } = useProducts<ProductDataCategory>({
     _expand: ["categories", "brands"],
     title_like: searchValue,
     _page: searchValue === "" ? page : 1,
     _limit: 10,
-    categoriesId: productCategoryId !== null ? productCategoryId : null,
-    brandsId: productBrandId !== null ? productBrandId : null,
-    rate: productRate !== null ? productRate : null,
+    categoriesId: productCategoryId,
+    brandsId: productBrandId,
+    rate: productRate,
   });
 
   useEffect(() => {
@@ -57,7 +53,7 @@ const CardList = () => {
 
   return (
     <>
-      <div className="card-shop w-3/4 lg:w-full">
+      <div className="card-shop w-[80%] lg:w-full">
         <div className="shop-text-heading bg-[url('https://orfarm-next-js.vercel.app/assets/img/banner/shop-bg-1.jpg')] text-white text-center py-10 rounded-xl">
           <h4 className="text-sm text-yellow-300 font-semibold sm:text-xs">THE SALAD</h4>
           <h3 className="text-2xl my-3 font-bold sm:text-xl">
@@ -75,9 +71,8 @@ const CardList = () => {
             of
             <span className="text-green-600 font-semibold"> {products?.pagination._totalRows}</span> Products
           </h4>
-          <Dropdown options={options} />
         </div>
-        <div className="flex flex-wrap gap-3 mt-5 justify-center">
+        <div className="flex flex-wrap gap-4 mt-5 justify-center">
           {isLoading && <Loading types="primary" size="md" containerClassName="h-[500px]" />}
           {isDefined(products) &&
             products.data.map((product) => (
@@ -89,7 +84,7 @@ const CardList = () => {
                 price={product.price}
                 salePercentage={product.status}
                 rating={product.rate}
-                className="w-56"
+                className="w-60"
               />
             ))}
         </div>

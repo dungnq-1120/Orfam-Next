@@ -5,10 +5,10 @@ export interface Products {
   productBrandId: number | null;
   searchValue: string;
   productRate: number | null;
-  saveSearchValue: (updatedProducts: string) => void;
-  saveProductCategoryId: (productCategoryId: number | null) => void;
-  saveProductBrandId: (productCategoryId: number | null) => void;
-  saveProductRate: (productRate: number | null) => void;
+  setSearchValue: (updatedProducts: string) => void;
+  setProductCategoryId: (productCategoryId: number | null) => void;
+  setProductBrandId: (productCategoryId: number | null) => void;
+  setProductRate: (productRate: number | null) => void;
 }
 
 const useProductsStore = create<Products>((set) => ({
@@ -16,10 +16,10 @@ const useProductsStore = create<Products>((set) => ({
   productCategoryId: null,
   productBrandId: null,
   productRate: null,
-  saveSearchValue: (updatedProducts) => set({ searchValue: updatedProducts }),
-  saveProductCategoryId: (productCategoryId) => set({ productCategoryId: productCategoryId }),
-  saveProductBrandId: (productBrandId) => set({ productBrandId: productBrandId }),
-  saveProductRate: (productRate) => set({ productRate: productRate }),
+  setSearchValue: (updatedProducts) => set({ searchValue: updatedProducts }),
+  setProductCategoryId: (productCategoryId) => set({ productCategoryId: productCategoryId }),
+  setProductBrandId: (productBrandId) => set({ productBrandId: productBrandId }),
+  setProductRate: (productRate) => set({ productRate: productRate }),
 }));
 
 export default useProductsStore;

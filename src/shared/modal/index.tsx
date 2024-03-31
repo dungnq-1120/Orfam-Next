@@ -4,14 +4,14 @@ import { cn } from "@/lib/utils";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   modalClass?: string;
-  isOpen: boolean;
-  onCancel: () => void;
+  isOpenModal: boolean;
+  onCancel: (value: boolean) => void;
 }
 
-const Modal = forwardRef<HTMLDivElement, Props>(({ children, isOpen, onCancel, modalClass, className, ...rest }, ref) => {
+const Modal = forwardRef<HTMLDivElement, Props>(({ children, isOpenModal, onCancel, modalClass, className, ...rest }, ref) => {
   return (
     <>
-      <Transition appear show={isOpen} as={Fragment}>
+      <Transition appear show={isOpenModal} as={Fragment}>
         <Dialog as="div" className="relative z-5xl" onClose={onCancel}>
           <Transition.Child
             as={Fragment}
@@ -36,14 +36,7 @@ const Modal = forwardRef<HTMLDivElement, Props>(({ children, isOpen, onCancel, m
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel
-                  className={cn(
-                    "w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all",
-                    modalClass
-                  )}
-                >
-                  {children}
-                </Dialog.Panel>
+                <Dialog.Panel className={cn(modalClass)}>{children}</Dialog.Panel>
               </Transition.Child>
             </div>
           </div>

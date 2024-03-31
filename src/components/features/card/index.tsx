@@ -17,7 +17,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 const CardProduct = React.forwardRef<HTMLDivElement, Props>(
   ({ imageUrl, category, productTitle, salePercentage, price, rating, className, ...props }, ref) => {
     return (
-      <Card ref={ref} className={cn("cursor-pointer relative overflow-hidden group", className)} {...props}>
+      <Card ref={ref} className={cn("cursor-pointer relative overflow-hidden group border-2 border-white", className)} {...props}>
         <div className="overflow-hidden w-full h-56">
           <Image
             src={imageUrl}

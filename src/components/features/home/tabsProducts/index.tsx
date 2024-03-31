@@ -5,8 +5,9 @@ import { TabsContent } from "@/shared/tabs/index";
 import { useProducts } from "@/hooks/useProducts";
 import { useCategories } from "@/hooks/useCategories";
 import isDefined from "@/utils/isDefine";
-import Loading from "../../../../shared/loading";
+
 import { ApiResponseProduct } from "@/services/typeApi";
+import Loading from "@/shared/loading";
 
 const TabsProducts = () => {
   const [idCategory, setIdCategory] = useState(1);

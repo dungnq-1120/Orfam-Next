@@ -7,9 +7,15 @@ import { useBrands } from "@/hooks/useBrand";
 import useProductsStore from "@/store/useProductsStore";
 import { useRouter } from "next/router";
 import { Button } from "@/shared/button";
+import { useShallow } from "zustand/react/shallow";
 
-type FilterType = "selectedCategoryId" | "selectedBrandId" | "selectedRate";
-type SaveAction = (value: number | null) => void;
+enum FilterType {
+  selectedCategoryId = "selectedCategoryId",
+  selectedBrandId = "selectedBrandId",
+  selectedRate = "selectedRate",
+}
+
+type setAction = (value: number | null) => void;
 
 const FilterProduct = () => {
   const router = useRouter();
@@ -23,18 +29,21 @@ const FilterProduct = () => {
     selectedRate: null,
   });
 
-  const storeActions = useProductsStore((state) => ({
-    saveProductCategoryId: state.saveProductCategoryId,
-    saveSearchValue: state.saveSearchValue,
-    saveProductBrandId: state.saveProductBrandId,
-    saveProductRate: state.saveProductRate,
-  }));
+  const storeActions = useProductsStore(
+    useShallow((state) => ({
+      setProductCategoryId: state.setProductCategoryId,
+      setSearchValue: state.setSearchValue,
+      setProductBrandId: state.setProductBrandId,
+      setProductRate: state.setProductRate,
+    }))
+  );
 
-  const handleFilterChange = (filterType: FilterType, id: number, saveAction: SaveAction) => {
+  const handleFilterChange = (filterType: FilterType, id: number, setAction: setAction) => {
     const newValue = filters[filterType] === id ? null : id;
+    //chức năng khi checkbox thì chỉ checked 1 checkbox
     setFilters({ ...filters, [filterType]: newValue });
-    saveAction(newValue);
-    storeActions.saveSearchValue("");
+    setAction(newValue);
+    storeActions.setSearchValue("");
     router.push({
       query: { _limit: 10, _page: 1 },
     });
@@ -46,12 +55,11 @@ const FilterProduct = () => {
       selectedBrandId: null,
       selectedRate: null,
     });
-    storeActions.saveProductCategoryId(null);
-    storeActions.saveSearchValue("");
-    storeActions.saveProductBrandId(null);
-    storeActions.saveProductRate(null);
+    storeActions.setProductCategoryId(null);
+    storeActions.setProductBrandId(null);
+    storeActions.setProductRate(null);
   };
-  
+
   return (
     <div className="filter-product overflow-y-scroll h-[510px] self-start bg-white px-10 py-6 w-1/4 rounded-xl shadow-2xl sticky top-32 xl:p-5 lg:w-full lg:relative lg:top-0 lg:mb-10">
       <div className="filter-categories">
@@ -63,14 +71,14 @@ const FilterProduct = () => {
                 <Checkbox
                   checked={filters.selectedCategoryId === category.id}
                   className="focus:shadow-none"
-                  onChange={() => handleFilterChange("selectedCategoryId", category.id, storeActions.saveProductCategoryId)}
+                  onChange={() => handleFilterChange(FilterType.selectedCategoryId, category.id, storeActions.setProductCategoryId)}
                 />
                 <h4 className="text-sm text-blue-ct7 font-medium ml-2">{category.name}</h4>
               </li>
             ))}
         </ul>
       </div>
-      <div className="filter-brand mt-4">
+      <div className="filter-brand mt-4 border-t-2 pt-4 border-green-ct5">
         <h3 className="text-sm text-blue-ct7 font-semibold">FILTER BY BRAND</h3>
         <ul className="mt-5">
           {isDefined(brands) &&
@@ -79,14 +87,14 @@ const FilterProduct = () => {
                 <Checkbox
                   checked={filters.selectedBrandId === brand.id}
                   className="focus:shadow-none"
-                  onChange={() => handleFilterChange("selectedBrandId", brand.id, storeActions.saveProductBrandId)}
+                  onChange={() => handleFilterChange(FilterType.selectedBrandId, brand.id, storeActions.setProductBrandId)}
                 />
                 <h4 className="text-sm text-blue-ct7 font-medium">{brand.name}</h4>
               </li>
             ))}
         </ul>
       </div>
-      <div className="filter-rating mt-4">
+      <div className="filter-rating mt-4 border-t-2 pt-4 border-green-ct5">
         <h3 className="text-sm text-blue-ct7 font-semibold">FILTER BY RATING</h3>
         <ul className="mt-5">
           {rates.map((rate) => (
@@ -94,7 +102,7 @@ const FilterProduct = () => {
               <Checkbox
                 checked={filters.selectedRate === rate}
                 className="focus:shadow-none"
-                onChange={() => handleFilterChange("selectedRate", rate, storeActions.saveProductRate)}
+                onChange={() => handleFilterChange(FilterType.selectedRate, rate, storeActions.setProductRate)}
               />
               <Rate rating={rate} />
               <span className="text-blue-ct7 text-sm font-medium">({rate} star)</span>
@@ -102,9 +110,12 @@ const FilterProduct = () => {
           ))}
         </ul>
       </div>
-      <Button onClick={handleResetFilter} className="w-full">
-        Reset Filter
-      </Button>
+      <div className="reset-filter mt-4 border-t-2 pt-4 border-green-ct5">
+        <h3 className="text-sm text-blue-ct7 font-semibold">RESET FILTER</h3>
+        <Button onClick={handleResetFilter} className="w-full mt-3">
+          Reset Filter
+        </Button>
+      </div>
     </div>
   );
 };
