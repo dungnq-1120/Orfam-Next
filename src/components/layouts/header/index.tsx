@@ -16,7 +16,7 @@ import authLocal from "@/utils/localStorage";
 
 export const Header = () => {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const { removeInfo, getInfo } = authLocal;
   const [isOpenUser, setIsOpenUser] = useState<boolean>(false);
   const [token, setToken] = useState(null);
@@ -26,9 +26,6 @@ export const Header = () => {
     setToken(token);
   }, [router]);
 
-  function openModal() {
-    setIsOpen(true);
-  }
   return (
     <>
       <nav className="nav fixed top-0 w-full bg-white z-9999 flex justify-between items-center shadow-shadow1 h-20 pl-4 pr-5">
@@ -54,7 +51,12 @@ export const Header = () => {
           </li>
         </ul>
         <div className="list-option flex gap-2 relative">
-          <Button onClick={openModal} className="rounded-full px-3 py-3 bg-blue-200">
+          <Button
+            onClick={() => {
+              setIsOpenModal(true);
+            }}
+            className="rounded-full px-3 py-3 bg-blue-200"
+          >
             <Search className="w-5 h-5 text-blue-ct7" />
           </Button>
           <Button
@@ -117,7 +119,7 @@ export const Header = () => {
           </li>
         </ul>
       </nav>
-      <ModalSearch setIsOpen={setIsOpen} isOpen={isOpen} />
+      <ModalSearch setIsOpenModal={setIsOpenModal} isOpenModal={isOpenModal} />
     </>
   );
 };

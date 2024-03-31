@@ -7,6 +7,7 @@ import TabsProducts from "@/components/features/home/tabsProducts";
 import AboutUs from "@/components/features/home/about";
 import SpecialProducts from "@/components/features/home/sliderProducts";
 import BlogPost from "@/components/features/home/blogPost";
+
 const Home = () => (
   <>
     <Banner />

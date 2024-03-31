@@ -31,7 +31,7 @@ const defaultClassLoading = cva("animate-spin border-4 border-t-transparent roun
   },
 });
 
-const Loadings = forwardRef<HTMLDivElement, Props>(({ className, containerClassName, types, size, fullScreen, ...props }, ref) => {
+const Loading = forwardRef<HTMLDivElement, Props>(({ className, containerClassName, types, size, fullScreen, ...props }, ref) => {
   const defaultClass = defaultClassLoading({
     className,
     types,
@@ -45,6 +45,6 @@ const Loadings = forwardRef<HTMLDivElement, Props>(({ className, containerClassN
   );
 });
 
-Loadings.displayName = "Loadings";
+Loading.displayName = "Loading";
 
-export default Loadings;
+export default Loading;

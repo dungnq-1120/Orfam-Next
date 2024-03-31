@@ -17,7 +17,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 const CardProduct = React.forwardRef<HTMLDivElement, Props>(
   ({ imageUrl, category, productTitle, salePercentage, price, rating, className, ...props }, ref) => {
     return (
-      <Card ref={ref} className={cn("cursor-pointer relative overflow-hidden group", className)} {...props}>
+      <Card ref={ref} className={cn("cursor-pointer relative overflow-hidden group border-2 border-white", className)} {...props}>
         <div className="overflow-hidden w-full h-56">
           <Image
             src={imageUrl}
@@ -32,7 +32,7 @@ const CardProduct = React.forwardRef<HTMLDivElement, Props>(
           <p className="text-ctBlue7 text-sm mt-3 mb-3 font-semibold text-blue-ct7 truncate px-2">{productTitle}</p>
           <Rate rating={rating} />
           <h4 className="mt-2">
-            <span className="text-red-600 text-lg font-bold mr-2">${price}</span>
+            <span className="text-red-600 text-lg font-bold mr-2">${price.toFixed(2)}</span>
             <del className="text-slate-500 text-sm">$70.00</del>
             <Button types="primary" size="full" className="rounded-none mt-1 py-3 duration-500 group-hover:bg-green-ct5 group-hover:opacity-100">
               ADD TO CART
