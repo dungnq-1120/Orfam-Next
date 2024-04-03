@@ -9,7 +9,7 @@ import Image from "next/image";
 import { useProducts } from "@/hooks/useProducts";
 import isDefined from "@/utils/isDefine";
 import Loading from "@/shared/loading";
-import { ApiResponseProductCategory } from "@/services/typeApi";
+import { ApiResponseProductCategory } from "@/services/type";
 
 const SpecialProducts = () => {
   const sliderRef = useRef<Slider>(null);
@@ -90,6 +90,7 @@ const SpecialProducts = () => {
                 products.map((product) => {
                   return (
                     <CardProduct
+                      idProduct={product.id}
                       key={product.id}
                       imageUrl={product.image}
                       category={product.categories.name}

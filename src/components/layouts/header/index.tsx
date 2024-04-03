@@ -13,6 +13,9 @@ import { useEffect, useState } from "react";
 import ModalSearch from "@/components/features/modalSearch";
 import { useRouter } from "next/router";
 import authLocal from "@/utils/localStorage";
+import { useCarts } from "@/hooks/useCart";
+import isDefined from "@/utils/isDefine";
+import { ApiResponseProductBrandAndCategory } from "@/services/type";
 
 export const Header = () => {
   const router = useRouter();
@@ -20,7 +23,7 @@ export const Header = () => {
   const { removeInfo, getInfo } = authLocal;
   const [isOpenUser, setIsOpenUser] = useState<boolean>(false);
   const [token, setToken] = useState(null);
-
+  const { carts } = useCarts<ApiResponseProductBrandAndCategory[]>();
   useEffect(() => {
     const token = getInfo("KEY_TOKEN");
     setToken(token);
@@ -97,8 +100,11 @@ export const Header = () => {
               </li>
             </ul>
           )}
-          <Button className="rounded-full px-3 py-3 bg-orange-ct2 md:hidden">
+          <Button onClick={() => router.push("/shop/carts")} className="rounded-full px-3 py-3 bg-orange-ct2 md:hidden relative">
             <CartIcon className="w-5 h-5 text-blue-ct7" />
+            <span className="absolute -right-1 -top-1 text-white bg-[#ff0000] w-5 h-5 flex justify-center items-center rounded-full text-md bg-">
+              {isDefined(carts) && carts.length}
+            </span>
           </Button>
         </div>
       </nav>

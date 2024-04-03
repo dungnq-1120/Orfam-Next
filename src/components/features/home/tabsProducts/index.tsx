@@ -5,11 +5,12 @@ import { TabsContent } from "@/shared/tabs/index";
 import { useProducts } from "@/hooks/useProducts";
 import { useCategories } from "@/hooks/useCategories";
 import isDefined from "@/utils/isDefine";
-
-import { ApiResponseProduct } from "@/services/typeApi";
+import { ApiResponseProduct } from "@/services/type";
 import Loading from "@/shared/loading";
+import { useRouter } from "next/router";
 
 const TabsProducts = () => {
+  const router = useRouter();
   const [idCategory, setIdCategory] = useState(1);
   const { products, isLoading: loadingProducts } = useProducts<ApiResponseProduct[]>({ categoriesId: idCategory });
   const { categories, isLoading: loadingCategories } = useCategories();
@@ -55,6 +56,7 @@ const TabsProducts = () => {
                         .map((product) => (
                           <CardProduct
                             key={product.id}
+                            idProduct={product.id}
                             imageUrl={product.image}
                             category={category.name}
                             productTitle={product.title}

@@ -17,7 +17,7 @@ interface Props {
 }
 
 export default function ModalSearch({ setIsOpenModal, isOpenModal }: Props) {
-  const [searchValue, setSearchValue] = useState<string>("");
+  const [search, setSearch] = useState<string>("");
   const router = useRouter();
 
   const closeModal = () => {
@@ -28,13 +28,13 @@ export default function ModalSearch({ setIsOpenModal, isOpenModal }: Props) {
     setSearchValue(e.target.value);
   };
 
-  const saveSearchValue = useProductsStore((state) => state.saveSearchValue);
+  const setSearchValue = useProductsStore((state) => state.setSearchValue);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     router.push("/shop");
-    saveSearchValue(searchValue.trim());
-    setSearchValue("");
+    setSearchValue(search.trim());
+    setSearch("");
     closeModal();
   };
 
@@ -49,7 +49,7 @@ export default function ModalSearch({ setIsOpenModal, isOpenModal }: Props) {
             <InputForm
               className={`border-2 font-sans border-gray py-3 w-full font-medium text-sm xs:py-2 ${quicksand.className}`}
               placeholder="Search Product..."
-              value={searchValue}
+              value={search}
               onChange={handleSearch}
             />
             <Button type="submit" className="rounded-lg px-3 py-3 bg-blue-ct5 xs:px-3 xs:py-2">

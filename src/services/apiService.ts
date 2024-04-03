@@ -1,3 +1,4 @@
+import authLocal from "@/utils/localStorage";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
 const BASE_URL = "http://localhost:8000";
@@ -47,21 +48,30 @@ export default class RestClient {
       ...config,
     });
   }
-  async put<T>(url: string, data = {}, config: RestClientConfig = {}) {
+
+  async patch<T>(url: string, data = {}, config: RestClientConfig = {}) {
     return this.executeRequest<T>(url, {
-      method: "PUT",
+      method: "PATCH",
       data,
       ...config,
     });
   }
-
+  
+  async delete<T>(url: string, config: RestClientConfig = {}) {
+    return this.executeRequest<T>(url, {
+      method: "DELETE",
+      ...config,
+    });
+  }
+  
   async executeRequest<T>(url: string, config: RestClientConfig): Promise<T> {
-    const token = localStorage.getItem("token") || "";
+    const { getInfo } = authLocal;
+    const token: TToken = getInfo("KEY_TOKEN");
 
     let finalHeaderConfig = {
       ...config.headers,
       ...this.config.headers,
-      authorization: `Bearer ${token}`,
+      authorization: `Bearer ${token?.access_token || ""}`,
     };
 
     if (config.isFormData) {
@@ -97,7 +107,6 @@ export default class RestClient {
               // Redirect to login page or do something else
             }
           } catch (refreshError) {
-
             // Handle refresh token error
             // Redirect to login page or do something else
           }
@@ -118,3 +127,10 @@ export default class RestClient {
     return null; // Placeholder, replace with refreshed token
   }
 }
+// async put<T>(url: string, data = {}, config: RestClientConfig = {}) {
+//   return this.executeRequest<T>(url, {
+//     method: "PUT",
+//     data,
+//     ...config,
+//   });
+// }

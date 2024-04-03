@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import Dropdown from "@/shared/dropdown";
+import React, { useEffect, useState } from "react";
 import CardProduct from "../../card";
 import { useProducts } from "@/hooks/useProducts";
 import isDefined from "@/utils/isDefine";
 import Loading from "@/shared/loading";
-import { ProductDataCategory } from "@/services/typeApi";
+import { ProductDataCategory } from "@/services/type";
 import { Button } from "@/shared/button";
 import { useRouter } from "next/router";
 import useProductsStore from "@/store/useProductsStore";
@@ -78,6 +77,7 @@ const CardList = () => {
             products.data.map((product) => (
               <CardProduct
                 key={product.id}
+                idProduct={product.id}
                 imageUrl={product.image}
                 category={product.categories.name}
                 productTitle={product.title}

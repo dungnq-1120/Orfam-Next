@@ -61,6 +61,7 @@ const config = {
           ct1: "#d6c9ff",
         },
         green: {
+          ct4:"#96ae009e",
           ct5: "#96ae00",
           ct6: "#718300",
         },
