@@ -127,10 +127,3 @@ export default class RestClient {
     return null; // Placeholder, replace with refreshed token
   }
 }
-// async put<T>(url: string, data = {}, config: RestClientConfig = {}) {
-//   return this.executeRequest<T>(url, {
-//     method: "PUT",
-//     data,
-//     ...config,
-//   });
-// }

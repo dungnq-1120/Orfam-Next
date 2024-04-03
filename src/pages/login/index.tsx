@@ -41,7 +41,6 @@ const Login = () => {
 
   const onSubmit = async (data: LoginData) => {
     const token = (await trigger(data)) as TToken;
-    console.log(token);
 
     if (token && token.access_token) {
       setInfo(token, "KEY_TOKEN");

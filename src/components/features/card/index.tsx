@@ -34,7 +34,6 @@ const CardProduct = React.forwardRef<HTMLDivElement, Props>(
     const { trigger: postData } = useSWRMutation("/carts", fetcherPost);
     const { trigger: patchData } = useSWRMutation("/carts", fetcherPatch);
 
-
     const handleAddCart = (id: string | number) => {
       if (!products || !carts) return;
 
@@ -52,7 +51,7 @@ const CardProduct = React.forwardRef<HTMLDivElement, Props>(
       }
     };
     return (
-      <Card ref={ref} className={cn("cursor-pointer relative overflow-hidden border-2 border-white", className)}>
+      <Card {...props} ref={ref} className={cn("cursor-pointer relative overflow-hidden border-2 border-white", className)}>
         <div onClick={() => handelDetailProduct(idProduct)} className="overflow-hidden w-full h-56 relative group">
           <Image
             src={imageUrl}

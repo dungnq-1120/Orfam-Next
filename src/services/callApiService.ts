@@ -9,7 +9,6 @@ const fetcherPost = async (url: string, { arg }: { arg: {} }) => {
     return response;
   } catch (error) {
     return error;
-    // throw new Error(`Error posting data: ${error}`);
   }
 };
 
