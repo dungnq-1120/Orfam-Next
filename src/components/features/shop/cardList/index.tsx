@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
-import CardProduct from "../../card";
+
+import { useRouter } from "next/router";
+import { useShallow } from "zustand/react/shallow";
 import { useProducts } from "@/hooks/useProducts";
-import isDefined from "@/utils/isDefine";
+import useProductsStore from "@/store/useProductsStore";
+
+import { Button } from "@/shared/button";
 import Loading from "@/shared/loading";
 import { ProductDataCategory } from "@/services/type";
-import { Button } from "@/shared/button";
-import { useRouter } from "next/router";
-import useProductsStore from "@/store/useProductsStore";
+import CardProduct from "../../card";
+
 import { calculateTotalPages } from "@/utils/totalPage";
-import { useShallow } from "zustand/react/shallow";
+import isDefined from "@/utils/isDefine";
 import { LIMIT } from "@/utils/const";
 
 const CardList = () => {

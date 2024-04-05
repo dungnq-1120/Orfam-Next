@@ -1,5 +1,5 @@
-import { fetcherGet } from "@/services/callApiService";
 import useSWR, { mutate } from "swr";
+import { fetcherGet } from "@/services/callApiService";
 
 interface PropsTab {
   id: number;

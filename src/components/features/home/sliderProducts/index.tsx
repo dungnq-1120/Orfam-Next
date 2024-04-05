@@ -1,15 +1,21 @@
 import React, { useRef } from "react";
+import Image from "next/image";
 import Slider from "react-slick";
+
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import previous from "@/image/icon/left.png";
+
+import { useProducts } from "@/hooks/useProducts";
+
 import CardProduct from "../../card";
 import { Button } from "@/shared/button";
-import Image from "next/image";
-import { useProducts } from "@/hooks/useProducts";
-import isDefined from "@/utils/isDefine";
 import Loading from "@/shared/loading";
+
 import { ApiResponseProductCategory } from "@/services/type";
+
+import isDefined from "@/utils/isDefine";
+
+import previous from "@/image/icon/left.png";
 
 const SpecialProducts = () => {
   const sliderRef = useRef<Slider>(null);

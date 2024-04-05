@@ -1,18 +1,21 @@
 import React from "react";
 import Image from "next/image";
-import { Card, CardContent } from "@/shared/card";
-import { Button } from "@/shared/button";
-import Rate from "../rate";
-import { cn } from "@/lib/utils";
-import eyeImg from "@/image/icon/eye.svg";
+
 import { useRouter } from "next/router";
-import { fetcherPatch, fetcherPost } from "@/services/callApiService";
+import { useShallow } from "zustand/react/shallow";
 import useSWRMutation from "swr/mutation";
-import { ApiResponseProductBrandAndCategory } from "@/services/type";
 import { useProducts } from "@/hooks/useProducts";
 import { useCarts } from "@/hooks/useCart";
 import useToastStore from "@/store/useToast";
-import { useShallow } from "zustand/react/shallow";
+
+import { Card, CardContent } from "@/shared/card";
+import { Button } from "@/shared/button";
+
+import { cn } from "@/lib/utils";
+import { fetcherPatch, fetcherPost } from "@/services/callApiService";
+import { ApiResponseProductBrandAndCategory } from "@/services/type";
+import Rate from "../rate";
+import eyeImg from "@/image/icon/eye.svg";
 
 interface Props extends Omit<React.HTMLAttributes<HTMLDivElement>, "id"> {
   id: number;

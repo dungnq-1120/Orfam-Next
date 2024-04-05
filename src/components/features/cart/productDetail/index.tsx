@@ -1,9 +1,12 @@
 import React from "react";
+import Image from "next/image";
+
 import InfoProduct from "./infoProduct";
 import Description from "./description";
+
 import packet from "@/image/icon/package.svg";
 import protect from "@/image/icon/protect.svg";
-import Image from "next/image";
+
 
 const ProductDetail = () => {
   return (

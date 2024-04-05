@@ -1,13 +1,17 @@
-import { Search } from "@/icons/info/Search";
+import { useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { Dialog } from "@headlessui/react";
+
+import useProductsStore from "@/store/useProductsStore";
+
 import { Button } from "@/shared/button";
 import InputForm from "@/shared/input";
-import { Dialog } from "@headlessui/react";
-import { useState } from "react";
+import { Search } from "@/icons/info/Search";
+
 import closeIcon from "@/image/icon/close.svg";
-import Image from "next/image";
-import useProductsStore from "@/store/useProductsStore";
 import { Quicksand } from "next/font/google";
-import { useRouter } from "next/router";
+
 import Modal from "@/shared/modal";
 const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 

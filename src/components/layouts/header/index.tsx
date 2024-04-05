@@ -1,21 +1,27 @@
-import logo from "@/image/logo/Logo.png";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+
+import { useCarts } from "@/hooks/useCart";
+import { useRouter } from "next/router";
+
+import ModalSearch from "@/components/features/modalSearch";
+
 import { Button } from "@/shared/button";
 import { Search } from "@/icons/info/Search";
 import { User } from "@/icons/info/User";
 import { CartIcon } from "@/icons/info/Cart";
-import Image from "next/image";
-import Link from "next/link";
+
+import { ApiResponseProductBrandAndCategory } from "@/services/type";
+
+import authLocal from "@/utils/localStorage";
+import isDefined from "@/utils/isDefine";
+
+import logo from "@/image/logo/Logo.png";
 import homeIcon from "@/image/icon/home.png";
 import barsIcon from "@/image/icon/bars-3.png";
 import cartIcon from "@/image/icon/cart.png";
 import userIcon from "@/image/icon/user.png";
-import { useEffect, useState } from "react";
-import ModalSearch from "@/components/features/modalSearch";
-import { useRouter } from "next/router";
-import authLocal from "@/utils/localStorage";
-import { useCarts } from "@/hooks/useCart";
-import isDefined from "@/utils/isDefine";
-import { ApiResponseProductBrandAndCategory } from "@/services/type";
 
 export const Header = () => {
   const router = useRouter();

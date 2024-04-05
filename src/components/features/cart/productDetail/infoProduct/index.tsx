@@ -1,16 +1,22 @@
 import React, { useState } from "react";
-import payments from "@/image/icon/payment-2.webp";
 import Image from "next/image";
+
 import { Button } from "@/shared/button";
 import InputForm from "@/shared/input";
+
 import { useRouter } from "next/router";
 import { useProducts } from "@/hooks/useProducts";
-import Loading from "@/components/features/loading";
-import isDefined from "@/utils/isDefine";
-import { ApiResponseProductBrandAndCategory } from "@/services/type";
 import { useCarts } from "@/hooks/useCart";
 import useSWRMutation from "swr/mutation";
+
+import { ApiResponseProductBrandAndCategory } from "@/services/type";
 import { fetcherPatch, fetcherPost } from "@/services/callApiService";
+
+import Loading from "@/components/features/loading";
+
+import isDefined from "@/utils/isDefine";
+
+import payments from "@/image/icon/payment-2.webp";
 
 const InfoProduct = () => {
   const router = useRouter();

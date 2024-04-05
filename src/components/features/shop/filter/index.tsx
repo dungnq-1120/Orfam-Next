@@ -1,13 +1,16 @@
-import Checkbox from "@/shared/checkbox";
-import React, { ChangeEvent, useState } from "react";
-import Rate from "../../rate";
+import React, { useState } from "react";
+
 import { useCategories } from "@/hooks/useCategories";
-import isDefined from "@/utils/isDefine";
 import { useBrands } from "@/hooks/useBrand";
-import useProductsStore from "@/store/useProductsStore";
 import { useRouter } from "next/router";
-import { Button } from "@/shared/button";
 import { useShallow } from "zustand/react/shallow";
+import useProductsStore from "@/store/useProductsStore";
+
+import { Button } from "@/shared/button";
+import Checkbox from "@/shared/checkbox";
+
+import isDefined from "@/utils/isDefine";
+import Rate from "../../rate";
 
 enum FilterType {
   selectedCategoryId = "selectedCategoryId",

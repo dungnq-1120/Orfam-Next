@@ -1,6 +1,8 @@
-import { Button } from "@/shared/button";
 import Image from "next/image";
 import React from "react";
+
+import { Button } from "@/shared/button";
+
 import banner from "@/image/banner/slider-bg-4.webp";
 import leafFirst from "@/image/banner-remove-bg/slider-shape-1.webp";
 import leafSecond from "@/image/banner-remove-bg/slider-shape-2.webp";

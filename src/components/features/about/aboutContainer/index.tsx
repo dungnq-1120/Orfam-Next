@@ -1,6 +1,6 @@
 import React from "react";
-import large_leaves from "@/image/banner/about-inner-bg.webp";
 import Image from "next/image";
+import large_leaves from "@/image/banner/about-inner-bg.webp";
 import checkSuccess from "@/image/icon/check.svg";
 import leaf_sprouts from "@/image/icon/icon.png";
 import rotating_leaves from "@/image/icon/icon_1_.png";

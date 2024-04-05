@@ -1,13 +1,16 @@
 import React from "react";
+import Image from "next/image";
+
+import PublicLayout from "@/components/layouts/publicLayout";
+
+import InputForm from "@/shared/input";
+import { Button } from "@/shared/button";
+
+import map from "@/image/banner/map.png";
 import contact_1 from "@/image/banner/contact-big-bg1.webp";
 import contact_2 from "@/image/banner/contact-big-bg2.webp";
 import contact_3 from "@/image/banner/contact-big-bg3.webp";
 import contact_4 from "@/image/banner/contact-big-bg4.webp";
-import map from "@/image/banner/map.png";
-import PublicLayout from "@/components/layouts/publicLayout";
-import Image from "next/image";
-import InputForm from "@/shared/input";
-import { Button } from "@/shared/button";
 
 const Contact = () => {
   const addresses = [

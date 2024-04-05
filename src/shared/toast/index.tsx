@@ -1,8 +1,9 @@
 import React, { forwardRef, useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { Bounce } from "react-toastify";
 import useToastStore from "@/store/useToast";
+import { ToastContainer, toast } from "react-toastify";
+import { Bounce } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   type?: "info" | "success" | "warning" | "error";

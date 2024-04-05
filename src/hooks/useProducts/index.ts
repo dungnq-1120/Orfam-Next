@@ -1,5 +1,5 @@
-import { fetcherGet } from "@/services/callApiService";
 import useSWR from "swr";
+import { fetcherGet } from "@/services/callApiService";
 
 export function useProducts<T>(query?: object) {
   const url = "/products";

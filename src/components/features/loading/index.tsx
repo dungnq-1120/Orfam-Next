@@ -1,5 +1,6 @@
-import Image from "next/image";
 import React from "react";
+import Image from "next/image";
+
 import loading from "@/image/banner/loading_3.gif";
 
 const Loading = ({ isLoading }: { isLoading: boolean }) => {

@@ -1,12 +1,17 @@
 import React, { useState } from "react";
-import { Tabs, TabsList, TabsTrigger } from "@/shared/tabs/index";
-import CardProduct from "../../card";
-import { TabsContent } from "@/shared/tabs/index";
+
 import { useProducts } from "@/hooks/useProducts";
 import { useCategories } from "@/hooks/useCategories";
-import isDefined from "@/utils/isDefine";
-import { ApiResponseProduct } from "@/services/type";
+
+import { Tabs, TabsList, TabsTrigger } from "@/shared/tabs/index";
 import Loading from "@/shared/loading";
+import { TabsContent } from "@/shared/tabs/index";
+
+import { ApiResponseProduct } from "@/services/type";
+
+import CardProduct from "../../card";
+
+import isDefined from "@/utils/isDefine";
 
 const TabsProducts = () => {
   const [idCategory, setIdCategory] = useState(1);

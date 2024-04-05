@@ -1,9 +1,12 @@
+import React from "react";
+
+import useToastStore from "@/store/useToast";
+
 import CardList from "@/components/features/shop/cardList";
 import FilterProduct from "@/components/features/shop/filter";
 import Layout from "@/components/layouts/publicLayout";
+
 import Toast from "@/shared/toast";
-import useToastStore from "@/store/useToast";
-import React from "react";
 
 const Shop = () => {
   const { isOpen, message, type } = useToastStore((state) => ({

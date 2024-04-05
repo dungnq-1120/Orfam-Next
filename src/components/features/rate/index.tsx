@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+
 import star from "@/image/icon/star-svgrepo-com.svg";
 
 interface RateProps {

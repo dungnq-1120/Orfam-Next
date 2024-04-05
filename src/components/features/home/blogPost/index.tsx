@@ -1,5 +1,6 @@
-import Image from "next/image";
 import React from "react";
+import Image from "next/image";
+
 import blog1 from "@/image/banner/blog-bg-1.webp";
 import blog2 from "@/image/banner/blog-bg-2.webp";
 import blog3 from "@/image/banner/blog-bg-3.webp";

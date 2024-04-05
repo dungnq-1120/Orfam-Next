@@ -1,6 +1,6 @@
 import React from "react";
-import bannerBlog from "@/image/banner/sashimi.jpg";
 import Image from "next/image";
+import bannerBlog from "@/image/banner/sashimi.jpg";
 import blogDetail_1 from "@/image/banner/blog-details-sm-1.webp";
 import blogDetail_2 from "@/image/banner/blog-details-sm-2.webp";
 import blogDetail_3 from "@/image/banner/blog-details-sm-3.webp";

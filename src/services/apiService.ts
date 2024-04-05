@@ -1,6 +1,5 @@
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import authLocal from "@/utils/localStorage";
-import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
-import { useRouter } from "next/router";
 
 const BASE_URL = "http://localhost:8000";
 

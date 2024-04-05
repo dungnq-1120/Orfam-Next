@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
 import Image from "next/image";
+import { Fragment } from "react";
+import { Dialog, Transition } from "@headlessui/react";
 import videoImage from "@/image/banner/video-bg-1.webp";
 import play from "@/image/icon/play.svg";
 
