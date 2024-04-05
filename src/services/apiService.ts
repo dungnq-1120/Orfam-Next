@@ -98,26 +98,19 @@ export default class RestClient {
         const errorCode: number = error.response!.status;
         if (errorCode === statusCode.UNAUTHORIZED) {
           try {
-            // Call API to refresh token
             const refreshedToken = await this.refreshToken();
             if (refreshedToken) {
-              // Retry the original request with the new token
               return this.executeRequest<T>(url, config);
             } else {
-              // Redirect to login page or do something else
-              window.location.replace("/login"); // Redirect to login page
+              window.location.replace("/login");
             }
           } catch (refreshError) {
-            // Handle refresh token error
-            // Redirect to login page or do something else
-            window.location.replace("/login"); // Redirect to login page
+            window.location.replace("/login");
           }
         } else if (errorCode === statusCode.FORBIDDEN) {
-          // Redirect to home page or handle forbidden error
-          window.location.replace("/home"); // Redirect to home page
+          window.location.replace("/home");
         } else if (errorCode === statusCode.NOT_FOUND) {
-          // Redirect to not found page or handle not found error
-          window.location.replace("/not-found"); // Redirect to not found page
+          window.location.replace("/not-found");
         }
       }
       throw error;
