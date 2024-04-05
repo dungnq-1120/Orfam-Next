@@ -2,7 +2,6 @@ import RestClient from "./apiService";
 import { ApiResponseProductBrandAndCategory } from "./type";
 
 const restClient = new RestClient();
-
 const fetcherPost = async (url: string, { arg }: { arg: {} }) => {
   try {
     const response = await restClient.post(url, arg);

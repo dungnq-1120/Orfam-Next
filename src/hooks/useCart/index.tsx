@@ -1,4 +1,4 @@
-import { fetcherDelete, fetcherGet } from "@/services/callApiService";
+import { fetcherGet } from "@/services/callApiService";
 import useSWR from "swr";
 
 export function useCarts<T>(query?: object) {
@@ -16,8 +16,9 @@ export function useCarts<T>(query?: object) {
   };
 
   return {
-    carts,
+    carts: carts || [],
     isLoading,
     refreshCarts,
   };
 }
+

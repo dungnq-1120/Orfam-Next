@@ -1,5 +1,6 @@
 import authLocal from "@/utils/localStorage";
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+import { useRouter } from "next/router";
 
 const BASE_URL = "http://localhost:8000";
 
@@ -56,14 +57,14 @@ export default class RestClient {
       ...config,
     });
   }
-  
+
   async delete<T>(url: string, config: RestClientConfig = {}) {
     return this.executeRequest<T>(url, {
       method: "DELETE",
       ...config,
     });
   }
-  
+
   async executeRequest<T>(url: string, config: RestClientConfig): Promise<T> {
     const { getInfo } = authLocal;
     const token: TToken = getInfo("KEY_TOKEN");
@@ -73,7 +74,6 @@ export default class RestClient {
       ...this.config.headers,
       authorization: `Bearer ${token?.access_token || ""}`,
     };
-
     if (config.isFormData) {
       finalHeaderConfig = {
         ...finalHeaderConfig,
@@ -105,25 +105,28 @@ export default class RestClient {
               return this.executeRequest<T>(url, config);
             } else {
               // Redirect to login page or do something else
+              window.location.replace("/login"); // Redirect to login page
             }
           } catch (refreshError) {
             // Handle refresh token error
             // Redirect to login page or do something else
+            window.location.replace("/login"); // Redirect to login page
           }
         } else if (errorCode === statusCode.FORBIDDEN) {
           // Redirect to home page or handle forbidden error
+          window.location.replace("/home"); // Redirect to home page
         } else if (errorCode === statusCode.NOT_FOUND) {
           // Redirect to not found page or handle not found error
+          window.location.replace("/not-found"); // Redirect to not found page
         }
       }
       throw error;
     }
   }
 
-  async refreshToken(): Promise<string | null> {
-    // const refreshToken = localStorage.getItem("refreshToken") || "";
-
-    // Logic to refresh token
-    return null; // Placeholder, replace with refreshed token
+  async refreshToken(): Promise<string> {
+    const { getInfo } = authLocal;
+    const token: TToken = getInfo("KEY_TOKEN");
+    return token.access_token;
   }
 }

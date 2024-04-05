@@ -9,52 +9,51 @@ import Image from "next/image";
 import useSWRMutation from "swr/mutation";
 import { fetcherDelete, fetcherPatch } from "@/services/callApiService";
 import { calculateTotalPrice } from "@/utils/totalPrice";
+import useToastStore from "@/store/useToast";
+import { useShallow } from "zustand/react/shallow";
 
 const ProductCartList = () => {
   const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>();
-  const { trigger: patchData } = useSWRMutation("/carts", fetcherPatch);
-  const { trigger: deleteData } = useSWRMutation("/carts", fetcherDelete);
-  const [totalPrice, setTotalPrice] = useState<string>("0");
-  const [subtotal, setSubtotal] = useState<string>("0");
+  const { trigger: updateCart } = useSWRMutation("/carts", fetcherPatch);
+  const { trigger: deleteCart } = useSWRMutation("/carts", fetcherDelete);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const { setType, setIsOpen, setMessage } = useToastStore(
+    useShallow((state) => ({
+      setType: state.setType,
+      setIsOpen: state.setIsOpen,
+      setMessage: state.setMessage,
+    }))
+  );
 
-  const handleQuantityChange = (id: string | number, quantity: number) => {
-    if (carts) {
-      const updatedCarts = carts.map((cart) => {
-        if (cart.id === id) {
-          return { ...cart, quantity };
-        }
-        return cart;
-      });
-      const totalPrice = calculateTotalPrice(updatedCarts, (item) => item.price * item.quantity);
-      const cart = updatedCarts.find((cart) => cart.id === id);
-      if (cart) {
-        setTotalPrice(totalPrice);
-        patchData(cart);
+  const updateCartQuantity = (id: number, delta: number) => {
+    const cartIndex = carts.findIndex((cart) => cart.id === id);
+    if (cartIndex !== -1) {
+      const newQuantity = carts[cartIndex].quantity + delta;
+      if (newQuantity > 0) {
+        const newCart = { ...carts[cartIndex], quantity: newQuantity };
+        updateCart(newCart);
         refreshCarts();
       }
     }
   };
 
-  const handleDeleteProduct = (id: string | number) => {
-    if (carts) {
-      const cart = carts.find((cart) => cart.id === id);
-      if (cart) {
-        const totalPrice = calculateTotalPrice(carts, (item) => item.price * item.quantity);
-        setTotalPrice(totalPrice);
-        deleteData(cart);
-        refreshCarts();
-      }
+  const handleDeleteProduct = (id: number) => {
+    const cartIndex = carts.findIndex((cart) => cart.id === id);
+    if (cartIndex !== -1) {
+      const newCart = { ...carts[cartIndex] };
+      deleteCart(newCart);
+      refreshCarts();
+      setIsOpen(true);
+      setMessage(`${newCart.title} -1 Remove from cart`);
+      setType("warning");
     }
   };
 
   useEffect(() => {
-    if (carts) {
-      const totalPrice = calculateTotalPrice(carts, (item) => item.price * item.quantity);
-      const subtotal = calculateTotalPrice(carts, (item) => item.price);
-      setSubtotal(subtotal);
-      setTotalPrice(totalPrice);
-    }
+    const totalPrice = calculateTotalPrice(carts);
+    setTotalPrice(totalPrice);
   }, [carts]);
+
   return (
     <div className="product-cart-list mt-20 py-16 px-4">
       <div className="nm:overflow-x-auto">
@@ -85,7 +84,7 @@ const ProductCartList = () => {
                       <div className="flex justify-center">
                         <div className="inline-flex items-center bg-gray-100 shadow-lg rounded-3xl py-1 w-28 xs:!flex xs:mt-4">
                           <Button
-                            onClick={() => handleQuantityChange(cart.id, cart.quantity - 1)}
+                            onClick={() => updateCartQuantity(cart.id, -1)}
                             className="text-blue-ct6 px-0 py-0 w-full h-full flex justify-center items-center text-4xl leading-none bg-transparent"
                           >
                             -
@@ -96,7 +95,7 @@ const ProductCartList = () => {
                             readOnly
                           />
                           <Button
-                            onClick={() => handleQuantityChange(cart.id, cart.quantity + 1)}
+                            onClick={() => updateCartQuantity(cart.id, 1)}
                             className="text-blue-ct6 px-0 py-0 w-full h-full flex justify-center items-center text-2xl bg-transparent"
                           >
                             +
@@ -127,13 +126,9 @@ const ProductCartList = () => {
           <li>
             <h3 className="text-2xl mb-2 text-blue-ct7 font-medium">Cart Totals</h3>
           </li>
-          <li className="border-1 flex justify-between text-blue-ct7 font-semibold p-3 border-b-0">
-            <h4>Subtotal</h4>
-            <span className="text-red-600 font-semibold">${Number(subtotal).toFixed(2)}</span>
-          </li>
           <li className="border-1 flex justify-between text-blue-ct7 font-semibold p-3 ">
             <h4>Total</h4>
-            <span className="text-green-500 font-semibold">${totalPrice}</span>
+            <span className="text-green-500 font-semibold">${totalPrice.toFixed(2)}</span>
           </li>
           <li>
             <Button types="success" className="px-8 py-3 rounded-3xl opacity-100 mt-3 text-sm font-semibold hover:bg-blue-ct7 hover:opacity-100">

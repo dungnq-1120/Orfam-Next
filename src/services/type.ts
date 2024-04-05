@@ -1,5 +1,5 @@
 export interface ApiResponseProduct {
-  id: number | string;
+  id: number;
   title: string;
   quantity: number;
   categoriesId: number;

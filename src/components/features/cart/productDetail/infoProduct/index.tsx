@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import payments from "@/image/icon/payment-2.webp";
 import Image from "next/image";
 import { Button } from "@/shared/button";
@@ -14,55 +14,29 @@ import { fetcherPatch, fetcherPost } from "@/services/callApiService";
 
 const InfoProduct = () => {
   const router = useRouter();
-  const [cartProduct, setCartProduct] = useState<ApiResponseProductBrandAndCategory | null>(null);
-  const [productQuantity, setProductQuantity] = useState<ApiResponseProductBrandAndCategory | null>(null);
+  const [productQuantity, setProductQuantity] = useState<number>(1);
   const { products, isLoading } = useProducts<ApiResponseProductBrandAndCategory[]>({ _expand: ["categories", "brands"], id: router.query.id });
   const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>();
-  const { trigger: patchData } = useSWRMutation("/carts", fetcherPatch);
-  const { trigger: postData } = useSWRMutation("/carts", fetcherPost);
+  const { trigger: updateCart } = useSWRMutation("/carts", fetcherPatch);
+  const { trigger: addToCart } = useSWRMutation("/carts", fetcherPost);
 
-  const handlePlusQuantity = (id: string | number) => {
-    if (cartProduct) {
-      const newCartProduct = { ...cartProduct, quantity: (cartProduct.quantity += 1) };
-      setCartProduct(newCartProduct);
-    } else {
-      if (products) {
-        const product = products.find((product) => product.id === id);
-        if (product) {
-          const newCartProduct = { ...product, quantity: (product.quantity += 1) };
-          setProductQuantity(newCartProduct);
-        }
-      }
-    }
-  };
+  const handleAddCart = (id: number, product: ApiResponseProductBrandAndCategory) => {
+    const cartIndex = carts.findIndex((cart) => cart.id === id);
 
-  const handleAddCart = () => {
-    if (cartProduct) {
-      patchData(cartProduct);
+    if (cartIndex === -1) {
+      const newCart = { ...product, quantity: productQuantity };
+      addToCart(newCart);
     } else {
-      if (productQuantity) {
-        postData(productQuantity);
-        refreshCarts();
-      }
+      const newCart = { ...product, quantity: productQuantity + carts[cartIndex].quantity };
+      updateCart(newCart);
     }
+    refreshCarts();
   };
-  
-  useEffect(() => {
-    if (carts) {
-      const cart = carts.find((cart) => {
-        return cart.id == Number(router.query.id);
-      });
-      if (cart) {
-        setCartProduct(cart);
-      }
-    }
-  }, [router.query.id, carts]);
 
   return (
     <div className="info-product gap-2 w-full">
       {<Loading isLoading={isLoading} />}
       {isDefined(products) &&
-        isDefined(carts) &&
         products.map((product) => (
           <div key={product.id} className=" shadow-xl p-5">
             <div className="py-5 inline-block">
@@ -98,24 +72,31 @@ const InfoProduct = () => {
                 <div className="quantity-product flex items-center gap-5 py-6 border-b-1 xs:block">
                   <span className="text-sm font-semibold text-blue-ct7 xs:block xs:text-center">QTY:</span>
                   <div className="inline-flex items-center bg-gray-100 rounded-3xl py-1 w-28 xs:!flex xs:w-full xs:mt-4">
-                    <Button className="text-blue-ct7 px-0 py-0 w-full h-full flex justify-center items-center text-4xl leading-none bg-transparent">
+                    <Button
+                      onClick={() => {
+                        if (productQuantity > 1) {
+                          setProductQuantity(productQuantity - 1);
+                        }
+                      }}
+                      className="text-blue-ct7 px-0 py-0 w-full h-full flex justify-center items-center text-4xl leading-none bg-transparent"
+                    >
                       -
                     </Button>
                     <InputForm
                       className="text-blue-ct7 p-0 font-semibold w-full text-center h-full border-0 bg-transparent"
-                      value={cartProduct ? cartProduct.quantity : productQuantity?.quantity ?? product.quantity}
+                      value={productQuantity}
                       readOnly
                     />
                     <Button
                       onClick={() => {
-                        handlePlusQuantity(product.id);
+                        setProductQuantity(productQuantity + 1);
                       }}
                       className="text-blue-ct7 px-0 py-0 w-full h-full flex justify-center items-center text-2xl bg-transparent"
                     >
                       +
                     </Button>
                   </div>
-                  <Button onClick={handleAddCart} types="success" className="py-3 px-12 rounded-3xl xs:w-full xs:mt-4">
+                  <Button onClick={() => handleAddCart(product.id, product)} types="success" className="py-3 px-12 rounded-3xl xs:w-full xs:mt-4">
                     ADD TO CART
                   </Button>
                 </div>

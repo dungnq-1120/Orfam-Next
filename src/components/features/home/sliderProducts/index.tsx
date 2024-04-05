@@ -90,11 +90,11 @@ const SpecialProducts = () => {
                 products.map((product) => {
                   return (
                     <CardProduct
-                      idProduct={product.id}
+                      id={product.id}
                       key={product.id}
-                      imageUrl={product.image}
+                      thumbnail={product.image}
                       category={product.categories.name}
-                      productTitle={product.title}
+                      name={product.title}
                       price={product.price}
                       salePercentage={product.status}
                       rating={product.rate}

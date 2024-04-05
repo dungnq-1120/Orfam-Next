@@ -24,6 +24,7 @@ export const Header = () => {
   const [isOpenUser, setIsOpenUser] = useState<boolean>(false);
   const [token, setToken] = useState(null);
   const { carts } = useCarts<ApiResponseProductBrandAndCategory[]>();
+  
   useEffect(() => {
     const token = getInfo("KEY_TOKEN");
     setToken(token);
@@ -100,7 +101,7 @@ export const Header = () => {
               </li>
             </ul>
           )}
-          <Button onClick={() => router.push("/shop/carts")} className="rounded-full px-3 py-3 bg-orange-ct2 md:hidden relative">
+          <Button onClick={() => router.push("/carts")} className="rounded-full px-3 py-3 bg-orange-ct2 md:hidden relative">
             <CartIcon className="w-5 h-5 text-blue-ct7" />
             <span className="absolute -right-1 -top-1 text-white bg-[#ff0000] w-5 h-5 flex justify-center items-center rounded-full text-md bg-">
               {isDefined(carts) && carts.length}

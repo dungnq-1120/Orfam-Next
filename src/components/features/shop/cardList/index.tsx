@@ -77,10 +77,10 @@ const CardList = () => {
             products.data.map((product) => (
               <CardProduct
                 key={product.id}
-                idProduct={product.id}
-                imageUrl={product.image}
+                id={product.id}
+                thumbnail={product.image}
                 category={product.categories.name}
-                productTitle={product.title}
+                name={product.title}
                 price={product.price}
                 salePercentage={product.status}
                 rating={product.rate}

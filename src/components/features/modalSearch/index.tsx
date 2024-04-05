@@ -1,8 +1,8 @@
 import { Search } from "@/icons/info/Search";
 import { Button } from "@/shared/button";
 import InputForm from "@/shared/input";
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Dialog } from "@headlessui/react";
+import { useState } from "react";
 import closeIcon from "@/image/icon/close.svg";
 import Image from "next/image";
 import useProductsStore from "@/store/useProductsStore";
@@ -17,15 +17,15 @@ interface Props {
 }
 
 export default function ModalSearch({ setIsOpenModal, isOpenModal }: Props) {
-  const [search, setSearch] = useState<string>("");
+  const [valueSearch, setValueSearch] = useState<string>("");
   const router = useRouter();
 
   const closeModal = () => {
     setIsOpenModal(false);
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
+  const handleSearchValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValueSearch(e.target.value);
   };
 
   const setSearchValue = useProductsStore((state) => state.setSearchValue);
@@ -33,8 +33,8 @@ export default function ModalSearch({ setIsOpenModal, isOpenModal }: Props) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     router.push("/shop");
-    setSearchValue(search.trim());
-    setSearch("");
+    setSearchValue(valueSearch.trim());
+    setValueSearch("");
     closeModal();
   };
 
@@ -49,8 +49,8 @@ export default function ModalSearch({ setIsOpenModal, isOpenModal }: Props) {
             <InputForm
               className={`border-2 font-sans border-gray py-3 w-full font-medium text-sm xs:py-2 ${quicksand.className}`}
               placeholder="Search Product..."
-              value={search}
-              onChange={handleSearch}
+              value={valueSearch}
+              onChange={handleSearchValue}
             />
             <Button type="submit" className="rounded-lg px-3 py-3 bg-blue-ct5 xs:px-3 xs:py-2">
               <Search className="w-5 h-5 text-white" />
