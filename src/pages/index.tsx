@@ -1,5 +1,8 @@
 import React from "react";
 import type { ReactElement } from "react";
+
+import useToastStore from "@/store/useToast";
+
 import PublicLayout from "@/components/layouts/publicLayout";
 import Banner from "@/components/features/home/banner";
 import Introduce from "@/components/features/home/introduce";
@@ -8,16 +11,26 @@ import AboutUs from "@/components/features/home/about";
 import SpecialProducts from "@/components/features/home/sliderProducts";
 import BlogPost from "@/components/features/home/blogPost";
 
-const Home = () => (
-  <>
-    <Banner />
-    <Introduce />
-    <TabsProducts />
-    <AboutUs />
-    <SpecialProducts />
-    <BlogPost />
-  </>
-);
+import Toast from "@/shared/toast";
+
+const Home = () => {
+  const { isOpen, message } = useToastStore((state) => ({
+    isOpen: state.isOpen,
+    message: state.message,
+  }));
+
+  return (
+    <>
+      <Toast isOpen={isOpen} message={message} />
+      <Banner />
+      <Introduce />
+      <TabsProducts />
+      <AboutUs />
+      <SpecialProducts />
+      <BlogPost />
+    </>
+  );
+};
 
 Home.getLayout = function getLayout(page: ReactElement) {
   return <PublicLayout>{page}</PublicLayout>;

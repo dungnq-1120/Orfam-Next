@@ -1,7 +1,9 @@
 import React from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/tabs";
-import productDes from "@/image/banner/product-video1.webp";
 import Image from "next/image";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/tabs";
+
+import productDes from "@/image/banner/product-video1.webp";
 
 interface Props {
   label: string;

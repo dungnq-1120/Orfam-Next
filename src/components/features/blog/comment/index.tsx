@@ -1,9 +1,9 @@
 import React from "react";
+import Image from "next/image";
+import { Button } from "@/shared/button";
 import avatar from "@/image/logo/blog-details-author.webp";
 import avatarClient_1 from "@/image/logo/comment-1.webp";
 import avatarClient_3 from "@/image/logo/comment-3.webp";
-import Image from "next/image";
-import { Button } from "@/shared/button";
 
 const BlogComment = () => {
   return (

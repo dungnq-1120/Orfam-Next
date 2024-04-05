@@ -1,5 +1,6 @@
 import React from "react";
 import { Quicksand } from "next/font/google";
+
 import { Header } from "../header";
 import Footer from "../footer";
 

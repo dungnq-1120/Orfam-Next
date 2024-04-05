@@ -1,8 +1,8 @@
 import React from "react";
+import Image from "next/image";
 import plant_tree from "@/image/banner/about-1.webp";
 import stamp from "@/image/banner/about-2.webp";
 import blueberry from "@/image/banner/about-3.webp";
-import Image from "next/image";
 
 const AboutInfo = () => {
   const aboutInfo = [

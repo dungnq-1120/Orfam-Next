@@ -1,5 +1,6 @@
-import Image from "next/image";
 import React from "react";
+import Image from "next/image";
+
 import about from "@/image/banner-remove-bg/about-img-1.webp";
 import icon from "@/image/icon/icon.png";
 import icon_1 from "@/image/icon/icon_1_.png";

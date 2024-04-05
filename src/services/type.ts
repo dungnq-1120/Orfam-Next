@@ -1,6 +1,7 @@
 export interface ApiResponseProduct {
-  id: number | string;
+  id: number;
   title: string;
+  quantity: number;
   categoriesId: number;
   status: string;
   price: number;
@@ -17,7 +18,7 @@ export interface ApiResponseProductCategory extends ApiResponseProduct {
   };
 }
 
-export interface ApiResponseProductBrand extends ApiResponseProduct {
+export interface ApiResponseProductBrandAndCategory extends ApiResponseProductCategory {
   brands: {
     id: number;
     name: string;

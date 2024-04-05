@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import authLocal from "@/utils/localStorage";
 
 const BASE_URL = "http://localhost:8000";
 
@@ -47,23 +48,31 @@ export default class RestClient {
       ...config,
     });
   }
-  async put<T>(url: string, data = {}, config: RestClientConfig = {}) {
+
+  async patch<T>(url: string, data = {}, config: RestClientConfig = {}) {
     return this.executeRequest<T>(url, {
-      method: "PUT",
+      method: "PATCH",
       data,
       ...config,
     });
   }
 
+  async delete<T>(url: string, config: RestClientConfig = {}) {
+    return this.executeRequest<T>(url, {
+      method: "DELETE",
+      ...config,
+    });
+  }
+
   async executeRequest<T>(url: string, config: RestClientConfig): Promise<T> {
-    const token = localStorage.getItem("token") || "";
+    const { getInfo } = authLocal;
+    const token: TToken = getInfo("KEY_TOKEN");
 
     let finalHeaderConfig = {
       ...config.headers,
       ...this.config.headers,
-      authorization: `Bearer ${token}`,
+      authorization: `Bearer ${token?.access_token || ""}`,
     };
-
     if (config.isFormData) {
       finalHeaderConfig = {
         ...finalHeaderConfig,
@@ -88,33 +97,28 @@ export default class RestClient {
         const errorCode: number = error.response!.status;
         if (errorCode === statusCode.UNAUTHORIZED) {
           try {
-            // Call API to refresh token
             const refreshedToken = await this.refreshToken();
             if (refreshedToken) {
-              // Retry the original request with the new token
               return this.executeRequest<T>(url, config);
             } else {
-              // Redirect to login page or do something else
+              window.location.replace("/login");
             }
           } catch (refreshError) {
-
-            // Handle refresh token error
-            // Redirect to login page or do something else
+            window.location.replace("/login");
           }
         } else if (errorCode === statusCode.FORBIDDEN) {
-          // Redirect to home page or handle forbidden error
+          window.location.replace("/home");
         } else if (errorCode === statusCode.NOT_FOUND) {
-          // Redirect to not found page or handle not found error
+          window.location.replace("/not-found");
         }
       }
       throw error;
     }
   }
 
-  async refreshToken(): Promise<string | null> {
-    // const refreshToken = localStorage.getItem("refreshToken") || "";
-
-    // Logic to refresh token
-    return null; // Placeholder, replace with refreshed token
+  async refreshToken(): Promise<string> {
+    const { getInfo } = authLocal;
+    const token: TToken = getInfo("KEY_TOKEN");
+    return token.access_token;
   }
 }

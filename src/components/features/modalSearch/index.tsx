@@ -1,13 +1,17 @@
-import { Search } from "@/icons/info/Search";
+import { useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { Dialog } from "@headlessui/react";
+
+import useProductsStore from "@/store/useProductsStore";
+
 import { Button } from "@/shared/button";
 import InputForm from "@/shared/input";
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Search } from "@/icons/info/Search";
+
 import closeIcon from "@/image/icon/close.svg";
-import Image from "next/image";
-import useProductsStore from "@/store/useProductsStore";
 import { Quicksand } from "next/font/google";
-import { useRouter } from "next/router";
+
 import Modal from "@/shared/modal";
 const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 
@@ -17,24 +21,24 @@ interface Props {
 }
 
 export default function ModalSearch({ setIsOpenModal, isOpenModal }: Props) {
-  const [searchValue, setSearchValue] = useState<string>("");
+  const [valueSearch, setValueSearch] = useState<string>("");
   const router = useRouter();
 
   const closeModal = () => {
     setIsOpenModal(false);
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
+  const handleSearchValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValueSearch(e.target.value);
   };
 
-  const saveSearchValue = useProductsStore((state) => state.saveSearchValue);
+  const setSearchValue = useProductsStore((state) => state.setSearchValue);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     router.push("/shop");
-    saveSearchValue(searchValue.trim());
-    setSearchValue("");
+    setSearchValue(valueSearch.trim());
+    setValueSearch("");
     closeModal();
   };
 
@@ -49,8 +53,8 @@ export default function ModalSearch({ setIsOpenModal, isOpenModal }: Props) {
             <InputForm
               className={`border-2 font-sans border-gray py-3 w-full font-medium text-sm xs:py-2 ${quicksand.className}`}
               placeholder="Search Product..."
-              value={searchValue}
-              onChange={handleSearch}
+              value={valueSearch}
+              onChange={handleSearchValue}
             />
             <Button type="submit" className="rounded-lg px-3 py-3 bg-blue-ct5 xs:px-3 xs:py-2">
               <Search className="w-5 h-5 text-white" />

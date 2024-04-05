@@ -1,9 +1,10 @@
 import React from "react";
+import Image from "next/image";
+
 import icon1 from "@/image/icon/choose-icon1.svg";
 import icon2 from "@/image/icon/choose-icon2.svg";
 import icon3 from "@/image/icon/choose-icon3.svg";
 import icon4 from "@/image/icon/choose-icon4.svg";
-import Image from "next/image";
 
 const AboutUs = () => {
   const aboutInfo = [

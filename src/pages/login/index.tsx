@@ -1,21 +1,26 @@
 import React, { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
+import { useRouter } from "next/router";
+import useSWRMutation from "swr/mutation";
+
+import LoginLayout from "@/components/layouts/loginLayout";
+import Loading from "@/components/features/loading";
+
 import { Form, FormField, FormItem, FormMessage } from "@/shared/form";
 import InputForm from "@/shared/input";
 import { Button } from "@/shared/button";
-import Image from "next/image";
-import logo from "@/image/logo/Logo.png";
 import Checkbox from "@/shared/checkbox";
-import authLocal from "@/utils/localStorage";
-import { useRouter } from "next/router";
-import useSWRMutation from "swr/mutation";
+
 import { fetcherPost } from "@/services/callApiService";
 import { LoginData } from "./type";
-import LoginLayout from "@/components/layouts/loginLayout";
-import Loading from "@/components/features/loading";
+import authLocal from "@/utils/localStorage";
+
+import logo from "@/image/logo/Logo.png";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email format").trim(),

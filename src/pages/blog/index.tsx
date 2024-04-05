@@ -1,6 +1,8 @@
+import React from "react";
+
 import BlogContainer from "@/components/features/blog/blogContainer";
 import PublicLayout from "@/components/layouts/publicLayout";
-import React from "react";
+
 
 const Blog = () => {
   return (

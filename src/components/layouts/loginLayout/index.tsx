@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Quicksand } from "next/font/google";
 import { useRouter } from "next/router";
+
 import authLocal from "@/utils/localStorage";
 
 const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });

@@ -1,9 +1,11 @@
+import React from "react";
+
 import AboutIntroduction from "@/components/features/about/aboutContainer";
 import AboutInfo from "@/components/features/about/aboutInfo";
 import AboutVideo from "@/components/features/about/aboutVideo";
 import BannerAbout from "@/components/features/about/bannerAbout";
 import PublicLayout from "@/components/layouts/publicLayout";
-import React from "react";
+
 
 const About = () => {
   return (

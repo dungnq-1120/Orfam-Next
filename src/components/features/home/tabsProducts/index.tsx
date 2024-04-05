@@ -1,13 +1,17 @@
 import React, { useState } from "react";
-import { Tabs, TabsList, TabsTrigger } from "@/shared/tabs/index";
-import CardProduct from "../../card";
-import { TabsContent } from "@/shared/tabs/index";
+
 import { useProducts } from "@/hooks/useProducts";
 import { useCategories } from "@/hooks/useCategories";
-import isDefined from "@/utils/isDefine";
 
-import { ApiResponseProduct } from "@/services/typeApi";
+import { Tabs, TabsList, TabsTrigger } from "@/shared/tabs/index";
 import Loading from "@/shared/loading";
+import { TabsContent } from "@/shared/tabs/index";
+
+import { ApiResponseProduct } from "@/services/type";
+
+import CardProduct from "../../card";
+
+import isDefined from "@/utils/isDefine";
 
 const TabsProducts = () => {
   const [idCategory, setIdCategory] = useState(1);
@@ -55,9 +59,10 @@ const TabsProducts = () => {
                         .map((product) => (
                           <CardProduct
                             key={product.id}
-                            imageUrl={product.image}
+                            id={product.id}
+                            thumbnail={product.image}
                             category={category.name}
-                            productTitle={product.title}
+                            name={product.title}
                             price={product.price}
                             salePercentage={product.status}
                             rating={product.rate}

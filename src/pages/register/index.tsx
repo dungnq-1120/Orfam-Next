@@ -1,21 +1,26 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormField, FormItem, FormMessage } from "@/shared/form";
-import InputForm from "@/shared/input";
 import Image from "next/image";
-import logo from "@/image/logo/Logo.png";
 import Link from "next/link";
-import Checkbox from "@/shared/checkbox";
-import { Button } from "@/shared/button";
+import { z } from "zod";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 import useSWRMutation from "swr/mutation";
 import { useRouter } from "next/router";
-import { TFormRegister } from "@/shared/form/type";
-import { fetcherPost } from "@/services/callApiService";
-import authLocal from "@/utils/localStorage";
+import { useForm } from "react-hook-form";
+
 import LoginLayout from "@/components/layouts/loginLayout";
 import Loading from "@/components/features/loading";
+
+import { Form, FormField, FormItem, FormMessage } from "@/shared/form";
+import InputForm from "@/shared/input";
+import Checkbox from "@/shared/checkbox";
+import { Button } from "@/shared/button";
+import { TFormRegister } from "@/shared/form/type";
+
+import { fetcherPost } from "@/services/callApiService";
+import authLocal from "@/utils/localStorage";
+
+import logo from "@/image/logo/Logo.png";
 
 const registerSchema = z
   .object({

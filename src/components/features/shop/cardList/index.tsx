@@ -1,15 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
-import Dropdown from "@/shared/dropdown";
-import CardProduct from "../../card";
-import { useProducts } from "@/hooks/useProducts";
-import isDefined from "@/utils/isDefine";
-import Loading from "@/shared/loading";
-import { ProductDataCategory } from "@/services/typeApi";
-import { Button } from "@/shared/button";
+import React, { useEffect, useState } from "react";
+
 import { useRouter } from "next/router";
-import useProductsStore from "@/store/useProductsStore";
-import { calculateTotalPages } from "@/utils/totalPage";
 import { useShallow } from "zustand/react/shallow";
+import { useProducts } from "@/hooks/useProducts";
+import useProductsStore from "@/store/useProductsStore";
+
+import { Button } from "@/shared/button";
+import Loading from "@/shared/loading";
+import { ProductDataCategory } from "@/services/type";
+import CardProduct from "../../card";
+
+import { calculateTotalPages } from "@/utils/totalPage";
+import isDefined from "@/utils/isDefine";
 import { LIMIT } from "@/utils/const";
 
 const CardList = () => {
@@ -78,9 +80,10 @@ const CardList = () => {
             products.data.map((product) => (
               <CardProduct
                 key={product.id}
-                imageUrl={product.image}
+                id={product.id}
+                thumbnail={product.image}
                 category={product.categories.name}
-                productTitle={product.title}
+                name={product.title}
                 price={product.price}
                 salePercentage={product.status}
                 rating={product.rate}

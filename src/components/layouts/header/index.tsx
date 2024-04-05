@@ -1,18 +1,27 @@
-import logo from "@/image/logo/Logo.png";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+
+import { useCarts } from "@/hooks/useCart";
+import { useRouter } from "next/router";
+
+import ModalSearch from "@/components/features/modalSearch";
+
 import { Button } from "@/shared/button";
 import { Search } from "@/icons/info/Search";
 import { User } from "@/icons/info/User";
 import { CartIcon } from "@/icons/info/Cart";
-import Image from "next/image";
-import Link from "next/link";
+
+import { ApiResponseProductBrandAndCategory } from "@/services/type";
+
+import authLocal from "@/utils/localStorage";
+import isDefined from "@/utils/isDefine";
+
+import logo from "@/image/logo/Logo.png";
 import homeIcon from "@/image/icon/home.png";
 import barsIcon from "@/image/icon/bars-3.png";
 import cartIcon from "@/image/icon/cart.png";
 import userIcon from "@/image/icon/user.png";
-import { useEffect, useState } from "react";
-import ModalSearch from "@/components/features/modalSearch";
-import { useRouter } from "next/router";
-import authLocal from "@/utils/localStorage";
 
 export const Header = () => {
   const router = useRouter();
@@ -20,7 +29,8 @@ export const Header = () => {
   const { removeInfo, getInfo } = authLocal;
   const [isOpenUser, setIsOpenUser] = useState<boolean>(false);
   const [token, setToken] = useState(null);
-
+  const { carts } = useCarts<ApiResponseProductBrandAndCategory[]>();
+  
   useEffect(() => {
     const token = getInfo("KEY_TOKEN");
     setToken(token);
@@ -97,8 +107,11 @@ export const Header = () => {
               </li>
             </ul>
           )}
-          <Button className="rounded-full px-3 py-3 bg-orange-ct2 md:hidden">
+          <Button onClick={() => router.push("/carts")} className="rounded-full px-3 py-3 bg-orange-ct2 md:hidden relative">
             <CartIcon className="w-5 h-5 text-blue-ct7" />
+            <span className="absolute -right-1 -top-1 text-white bg-[#ff0000] w-5 h-5 flex justify-center items-center rounded-full text-md bg-">
+              {isDefined(carts) && carts.length}
+            </span>
           </Button>
         </div>
       </nav>

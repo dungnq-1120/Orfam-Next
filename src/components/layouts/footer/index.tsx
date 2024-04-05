@@ -1,3 +1,8 @@
+import React from "react";
+
+import { Button } from "@/shared/button";
+import InputForm from "@/shared/input";
+
 import { Curated } from "@/icons/feature/Curated";
 import { Delivery } from "@/icons/feature/Delivery";
 import { Discount } from "@/icons/feature/Discount";
@@ -8,9 +13,6 @@ import { Facebook } from "@/icons/socialMedia/Facebook";
 import { Google } from "@/icons/socialMedia/Google";
 import { Twitter } from "@/icons/socialMedia/Twitter";
 import { Youtube } from "@/icons/socialMedia/Youtube";
-import { Button } from "@/shared/button";
-import InputForm from "@/shared/input";
-import React from "react";
 
 const Footer = () => (
   <div className="footer bg-footer bg-no-repeat bg-cover w-full bg-slate-100">
