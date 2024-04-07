@@ -13,13 +13,13 @@ import { Button } from "@/shared/button";
 import { Form, FormField, FormItem, FormMessage } from "@/shared/form";
 import InputForm from "@/shared/input";
 
+import { fetcherPost } from "@/services/callApiService";
+
 import type { ApiResponseProductBrandAndCategory } from "@/services/type";
 import type { TFormBilling, TOptionShip, TOrder, TUser } from "./type";
 
 import isDefined from "@/utils/isDefine";
 import { calculateTotalPrice } from "@/utils/totalPrice";
-
-import { fetcherPost } from "@/services/callApiService";
 
 const checkoutSchema = z.object({
   name: z.string().min(1, "Please enter your name").trim(),
@@ -131,7 +131,7 @@ const CheckoutInfo = () => {
         <div className="checkout-product-detail w-full border-2 border-green-ct5 p-4 lg:border-0">
           <h3 className="text-blue-ct7 font-semibold text-xl border-b-1 p-3 mb-6">Your order</h3>
           <div className="flex items-center">
-            <ul className="w-3/4 xs:flex-none xs:w-4/5">
+            <ul className="w-3/4 xs:w-4/5">
               <li className="pb-3 text-blue-ct7 font-semibold">Product</li>
               {isDefined(carts) &&
                 carts.map((cart) => {
@@ -144,7 +144,7 @@ const CheckoutInfo = () => {
               <li className="border-1 border-x-0 border-t-1 py-3 font-medium text-blue-ct7 sm:text-sm">Shipping</li>
               <li className="border-1 border-x-0 border-t-0 py-3 font-medium text-blue-ct7">Order Total</li>
             </ul>
-            <ul className="w-1/4 xs:flex-none xs:w-1/5">
+            <ul className="w-1/4 xs:w-1/5">
               <li className="pb-3 text-blue-ct7 font-semibold xs:text-end">Total</li>
               {isDefined(carts) &&
                 carts.map((cart) => {
@@ -161,10 +161,7 @@ const CheckoutInfo = () => {
             </ul>
           </div>
 
-          <Button
-            className="px-16 w-full py-3 duration-500 hover:bg-green-ct5 sm:w-full xs:text-xs  mt-6"
-            onClick={form.handleSubmit(onSubmit)}
-          >
+          <Button className="px-16 w-full py-3 duration-500 hover:bg-green-ct5 sm:w-full xs:text-xs  mt-6" onClick={form.handleSubmit(onSubmit)}>
             Place order
           </Button>
         </div>

@@ -7,9 +7,10 @@ import { useShallow } from "zustand/react/shallow";
 import InfoProduct from "./infoProduct";
 import Description from "./description";
 
+import Toast from "@/shared/toast";
+
 import packet from "@/image/icon/package.svg";
 import protect from "@/image/icon/protect.svg";
-import Toast from "@/shared/toast";
 
 const ProductDetail = () => {
   const { isOpen, message, type } = useToastStore(

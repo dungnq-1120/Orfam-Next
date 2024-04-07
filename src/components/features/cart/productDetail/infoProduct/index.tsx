@@ -27,7 +27,7 @@ const InfoProduct = () => {
   const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>();
   const { trigger: updateCart } = useSWRMutation("/carts", fetcherPatch);
   const { trigger: addToCart } = useSWRMutation("/carts", fetcherPost);
-  
+
   const { setType, setIsOpen, setMessage } = useToastStore(
     useShallow((state) => ({
       setType: state.setType,
