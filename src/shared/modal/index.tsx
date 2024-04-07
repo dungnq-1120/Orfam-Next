@@ -1,5 +1,7 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, forwardRef } from "react";
+import { Quicksand } from "next/font/google";
+const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 import { cn } from "@/lib/utils";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
@@ -12,7 +14,7 @@ const Modal = forwardRef<HTMLDivElement, Props>(({ children, isOpenModal, onCanc
   return (
     <>
       <Transition appear show={isOpenModal} as={Fragment}>
-        <Dialog as="div" className="relative z-5xl" onClose={onCancel}>
+        <Dialog as="div" className={`relative z-5xl ${quicksand.className}`} onClose={onCancel}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"

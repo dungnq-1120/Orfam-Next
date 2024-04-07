@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import Image from "next/image";
 
+import { useRouter } from "next/router";
 import { useCarts } from "@/hooks/useCart";
 import { useShallow } from "zustand/react/shallow";
 import useSWRMutation from "swr/mutation";
@@ -13,14 +14,17 @@ import { ApiResponseProductBrandAndCategory } from "@/services/type";
 import { fetcherDelete, fetcherPatch } from "@/services/callApiService";
 import { calculateTotalPrice } from "@/utils/totalPrice";
 import isDefined from "@/utils/isDefine";
+import { isEmptyArray } from "@/utils/isEmptyArray";
 
 import bin from "@/image/icon/bin.svg";
 
 const ProductCartList = () => {
+  const router = useRouter();
   const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>();
   const { trigger: updateCart } = useSWRMutation("/carts", fetcherPatch);
   const { trigger: deleteCart } = useSWRMutation("/carts", fetcherDelete);
   const [totalPrice, setTotalPrice] = useState<number>(0);
+
   const { setType, setIsOpen, setMessage } = useToastStore(
     useShallow((state) => ({
       setType: state.setType,
@@ -135,7 +139,19 @@ const ProductCartList = () => {
             <span className="text-green-500 font-semibold">${totalPrice.toFixed(2)}</span>
           </li>
           <li>
-            <Button types="success" className="px-8 py-3 rounded-3xl opacity-100 mt-3 text-sm font-semibold hover:bg-blue-ct7 hover:opacity-100">
+            <Button
+              onClick={() => {
+                if (isEmptyArray(carts)) {
+                  setIsOpen(true);
+                  setMessage("Please select products into the shopping cart");
+                  setType("error");
+                } else {
+                  router.push("/checkout");
+                }
+              }}
+              types="success"
+              className="px-8 py-3 rounded-3xl opacity-100 mt-3 text-sm font-semibold hover:bg-blue-ct7 hover:opacity-100"
+            >
               PROCEED TO CHECKOUT
             </Button>
           </li>

@@ -36,8 +36,9 @@ const CardProduct = React.forwardRef<HTMLDivElement, Props>(
     const { trigger: addToCart } = useSWRMutation("/carts", fetcherPost);
     const { trigger: updateCart } = useSWRMutation("/carts", fetcherPatch);
 
-    const { setIsOpen, setMessage } = useToastStore(
+    const { setIsOpen, setMessage, setType } = useToastStore(
       useShallow((state) => ({
+        setType: state.setType,
         setIsOpen: state.setIsOpen,
         setMessage: state.setMessage,
       }))
@@ -54,10 +55,12 @@ const CardProduct = React.forwardRef<HTMLDivElement, Props>(
         if (!cart) {
           addToCart(product);
           refreshCarts();
+          setType("success");
           setIsOpen(true);
           setMessage(`${product.title} successfully added to cart`);
         } else {
           const newCart = { ...cart, quantity: (cart.quantity += 1) };
+          setType("success");
           updateCart(newCart);
           setIsOpen(true);
           setMessage(`1 ${product.title} updated to cart`);

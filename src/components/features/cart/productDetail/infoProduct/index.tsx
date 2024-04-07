@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import { useProducts } from "@/hooks/useProducts";
 import { useCarts } from "@/hooks/useCart";
 import useSWRMutation from "swr/mutation";
+import { useShallow } from "zustand/react/shallow";
+import useToastStore from "@/store/useToast";
 
 import { ApiResponseProductBrandAndCategory } from "@/services/type";
 import { fetcherPatch, fetcherPost } from "@/services/callApiService";
@@ -25,6 +27,14 @@ const InfoProduct = () => {
   const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>();
   const { trigger: updateCart } = useSWRMutation("/carts", fetcherPatch);
   const { trigger: addToCart } = useSWRMutation("/carts", fetcherPost);
+  
+  const { setType, setIsOpen, setMessage } = useToastStore(
+    useShallow((state) => ({
+      setType: state.setType,
+      setIsOpen: state.setIsOpen,
+      setMessage: state.setMessage,
+    }))
+  );
 
   const handleAddCart = (id: number, product: ApiResponseProductBrandAndCategory) => {
     const cartIndex = carts.findIndex((cart) => cart.id === id);
@@ -32,9 +42,15 @@ const InfoProduct = () => {
     if (cartIndex === -1) {
       const newCart = { ...product, quantity: productQuantity };
       addToCart(newCart);
+      setType("success");
+      setIsOpen(true);
+      setMessage(`${product.title} successfully added to cart`);
     } else {
       const newCart = { ...product, quantity: productQuantity + carts[cartIndex].quantity };
       updateCart(newCart);
+      updateCart(newCart);
+      setIsOpen(true);
+      setMessage(`1 ${product.title} updated to cart`);
     }
     refreshCarts();
   };
