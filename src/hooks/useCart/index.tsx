@@ -21,4 +21,3 @@ export function useCarts<T>(query?: object) {
     refreshCarts,
   };
 }
-

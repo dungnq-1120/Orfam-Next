@@ -7,6 +7,8 @@ import Footer from "../footer";
 const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 
 const PublicLayout = ({ children }: { children: React.ReactNode }) => {
+  console.log("1");
+
   return (
     <div className={`${quicksand.className}`}>
       <header>

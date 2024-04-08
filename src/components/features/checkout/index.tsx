@@ -29,9 +29,14 @@ const checkoutSchema = z.object({
 });
 
 const CheckoutInfo = () => {
-  const [selectedOption, setSelectedOption] = useState<TOptionShip>({ type: "standard", price: 7, label: "Standard delivery" });
-  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const deliveryOptions = [
+    { type: "fast", price: 10, label: "Fast delivery" },
+    { type: "standard", price: 7, label: "Standard delivery" },
+  ];
+  
   const router = useRouter();
+  const [selectedOption, setSelectedOption] = useState<TOptionShip>(deliveryOptions[0]);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
   const { carts } = useCarts<ApiResponseProductBrandAndCategory[]>();
   const { orders, refreshOrders } = useOrders<TOrder[]>();
   const { user } = useUser<TUser>();
@@ -54,15 +59,9 @@ const CheckoutInfo = () => {
     { name: "address", placeholder: "Consignee address" } as const,
   ];
 
-  const deliveryOptions = [
-    { type: "fast", price: 10, label: "Fast delivery" },
-    { type: "standard", price: 7, label: "Standard delivery" },
-  ];
-
   const onSubmit = (data: TFormBilling) => {
     if (user) {
       addOrder({ ...data, shipping: selectedOption, carts });
-      console.log({ ...data, shipping: selectedOption.price, carts });
       refreshOrders();
       router.push("/bill");
     }
@@ -83,7 +82,7 @@ const CheckoutInfo = () => {
         address: "",
       });
     }
-  }, [carts, selectedOption.price, user, form]);
+  }, [carts, selectedOption.price, user]);
 
   return (
     <>
@@ -134,26 +133,22 @@ const CheckoutInfo = () => {
             <ul className="w-3/4 xs:w-4/5">
               <li className="pb-3 text-blue-ct7 font-semibold">Product</li>
               {isDefined(carts) &&
-                carts.map((cart) => {
-                  return (
-                    <li key={cart.id} className="border-1 truncate border-x-0 border-b-0 py-3 pl-2 font-medium text-blue-ct7 sm:text-xs xs:pl-0 ">
-                      {cart.title} x{cart.quantity}
-                    </li>
-                  );
-                })}
+                carts.map((cart) => (
+                  <li key={cart.id} className="border-1 truncate border-x-0 border-b-0 py-3 pl-2 font-medium text-blue-ct7 sm:text-xs xs:pl-0 ">
+                    {cart.title} x{cart.quantity}
+                  </li>
+                ))}
               <li className="border-1 border-x-0 border-t-1 py-3 font-medium text-blue-ct7 sm:text-sm">Shipping</li>
               <li className="border-1 border-x-0 border-t-0 py-3 font-medium text-blue-ct7">Order Total</li>
             </ul>
             <ul className="w-1/4 xs:w-1/5">
               <li className="pb-3 text-blue-ct7 font-semibold xs:text-end">Total</li>
               {isDefined(carts) &&
-                carts.map((cart) => {
-                  return (
-                    <li key={cart.id} className="border-1 border-x-0 py-3 font-medium border-b-0 text-green-500 sm:text-xs xs:text-end">
-                      ${(cart.price * cart.quantity).toFixed(2)}
-                    </li>
-                  );
-                })}
+                carts.map((cart) => (
+                  <li key={cart.id} className="border-1 border-x-0 py-3 font-medium border-b-0 text-green-500 sm:text-xs xs:text-end">
+                    ${(cart.price * cart.quantity).toFixed(2)}
+                  </li>
+                ))}
               <li className="border-1 border-x-0 border-t-1 py-3 font-medium text-green-500 sm:text-sm xs:text-end">
                 {selectedOption ? `$${selectedOption.price.toFixed(2)}` : ""}
               </li>

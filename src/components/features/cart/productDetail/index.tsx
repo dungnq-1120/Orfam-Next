@@ -1,28 +1,15 @@
 import React from "react";
 import Image from "next/image";
 
-import useToastStore from "@/store/useToast";
-import { useShallow } from "zustand/react/shallow";
-
 import InfoProduct from "./infoProduct";
 import Description from "./description";
-
-import Toast from "@/shared/toast";
 
 import packet from "@/image/icon/package.svg";
 import protect from "@/image/icon/protect.svg";
 
 const ProductDetail = () => {
-  const { isOpen, message, type } = useToastStore(
-    useShallow((state) => ({
-      isOpen: state.isOpen,
-      message: state.message,
-      type: state.type,
-    }))
-  );
   return (
     <div className="flex gap-5 pb-5 mdd:flex-col">
-      <Toast isOpen={isOpen} message={message} type={type} />
       <div className="w-4/5 mdd:w-full">
         <InfoProduct />
         <Description />

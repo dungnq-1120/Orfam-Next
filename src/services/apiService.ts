@@ -111,6 +111,8 @@ export default class RestClient {
           window.location.replace("/home");
         } else if (errorCode === statusCode.NOT_FOUND) {
           // window.location.replace("/not-found");
+        } else if (errorCode === statusCode.BAD_REQUEST) {
+          console.log("Bad Request:", error.response?.data); // Log the specific error message
         }
       }
       throw error;
