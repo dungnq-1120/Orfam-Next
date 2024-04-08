@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
+import { useRouter } from "next/router";
 import { useCarts } from "@/hooks/useCart";
-import { useShallow } from "zustand/react/shallow";
 import useSWRMutation from "swr/mutation";
-import useToastStore from "@/store/useToast";
 
 import { Button } from "@/shared/button";
 import InputForm from "@/shared/input";
@@ -13,21 +12,17 @@ import { ApiResponseProductBrandAndCategory } from "@/services/type";
 import { fetcherDelete, fetcherPatch } from "@/services/callApiService";
 import { calculateTotalPrice } from "@/utils/totalPrice";
 import isDefined from "@/utils/isDefine";
+import { isEmptyArray } from "@/utils/isEmptyArray";
+import showToast from "@/utils/showToast";
 
 import bin from "@/image/icon/bin.svg";
 
 const ProductCartList = () => {
+  const router = useRouter();
   const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>();
   const { trigger: updateCart } = useSWRMutation("/carts", fetcherPatch);
   const { trigger: deleteCart } = useSWRMutation("/carts", fetcherDelete);
   const [totalPrice, setTotalPrice] = useState<number>(0);
-  const { setType, setIsOpen, setMessage } = useToastStore(
-    useShallow((state) => ({
-      setType: state.setType,
-      setIsOpen: state.setIsOpen,
-      setMessage: state.setMessage,
-    }))
-  );
 
   const updateCartQuantity = (id: number, delta: number) => {
     const cartIndex = carts.findIndex((cart) => cart.id === id);
@@ -47,9 +42,10 @@ const ProductCartList = () => {
       const newCart = { ...carts[cartIndex] };
       deleteCart(newCart);
       refreshCarts();
-      setIsOpen(true);
-      setMessage(`${newCart.title} -1 Remove from cart`);
-      setType("warning");
+      showToast({
+        message: `${newCart.title} -1 Remove from cart`,
+        type: "warning",
+      });
     }
   };
 
@@ -135,7 +131,14 @@ const ProductCartList = () => {
             <span className="text-green-500 font-semibold">${totalPrice.toFixed(2)}</span>
           </li>
           <li>
-            <Button types="success" className="px-8 py-3 rounded-3xl opacity-100 mt-3 text-sm font-semibold hover:bg-blue-ct7 hover:opacity-100">
+            <Button
+              disabled={isEmptyArray(carts)}
+              onClick={() => {
+                router.push("/checkout");
+              }}
+              types="success"
+              className="px-8 py-3 rounded-3xl opacity-100 mt-3 text-sm font-semibold hover:bg-blue-ct7 hover:opacity-100"
+            >
               PROCEED TO CHECKOUT
             </Button>
           </li>

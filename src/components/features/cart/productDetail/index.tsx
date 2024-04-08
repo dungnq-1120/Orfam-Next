@@ -7,7 +7,6 @@ import Description from "./description";
 import packet from "@/image/icon/package.svg";
 import protect from "@/image/icon/protect.svg";
 
-
 const ProductDetail = () => {
   return (
     <div className="flex gap-5 pb-5 mdd:flex-col">

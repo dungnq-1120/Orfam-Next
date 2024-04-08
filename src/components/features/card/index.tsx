@@ -2,18 +2,19 @@ import React from "react";
 import Image from "next/image";
 
 import { useRouter } from "next/router";
-import { useShallow } from "zustand/react/shallow";
 import useSWRMutation from "swr/mutation";
 import { useProducts } from "@/hooks/useProducts";
 import { useCarts } from "@/hooks/useCart";
-import useToastStore from "@/store/useToast";
 
 import { Card, CardContent } from "@/shared/card";
 import { Button } from "@/shared/button";
 
+import type { ApiResponseProductBrandAndCategory } from "@/services/type";
+
 import { cn } from "@/lib/utils";
+import showToast from "@/utils/showToast";
 import { fetcherPatch, fetcherPost } from "@/services/callApiService";
-import { ApiResponseProductBrandAndCategory } from "@/services/type";
+
 import Rate from "../rate";
 import eyeImg from "@/image/icon/eye.svg";
 
@@ -36,13 +37,6 @@ const CardProduct = React.forwardRef<HTMLDivElement, Props>(
     const { trigger: addToCart } = useSWRMutation("/carts", fetcherPost);
     const { trigger: updateCart } = useSWRMutation("/carts", fetcherPatch);
 
-    const { setIsOpen, setMessage } = useToastStore(
-      useShallow((state) => ({
-        setIsOpen: state.setIsOpen,
-        setMessage: state.setMessage,
-      }))
-    );
-
     const handelDetailProduct = (id: number) => {
       router.push(`/shop/products/${id}`);
     };
@@ -54,13 +48,17 @@ const CardProduct = React.forwardRef<HTMLDivElement, Props>(
         if (!cart) {
           addToCart(product);
           refreshCarts();
-          setIsOpen(true);
-          setMessage(`${product.title} successfully added to cart`);
+          showToast({
+            message: `${product.title} successfully added to cart`,
+            type: "success",
+          });
         } else {
           const newCart = { ...cart, quantity: (cart.quantity += 1) };
           updateCart(newCart);
-          setIsOpen(true);
-          setMessage(`1 ${product.title} updated to cart`);
+          showToast({
+            message: `1 ${product.title} updated to cart`,
+            type: "success",
+          });
         }
       }
     };

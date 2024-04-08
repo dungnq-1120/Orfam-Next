@@ -1,7 +1,7 @@
 import React from "react";
-import type { ReactElement } from "react";
+import { ToastContainer } from "react-toastify";
 
-import useToastStore from "@/store/useToast";
+import type { ReactElement } from "react";
 
 import PublicLayout from "@/components/layouts/publicLayout";
 import Banner from "@/components/features/home/banner";
@@ -11,17 +11,10 @@ import AboutUs from "@/components/features/home/about";
 import SpecialProducts from "@/components/features/home/sliderProducts";
 import BlogPost from "@/components/features/home/blogPost";
 
-import Toast from "@/shared/toast";
-
 const Home = () => {
-  const { isOpen, message } = useToastStore((state) => ({
-    isOpen: state.isOpen,
-    message: state.message,
-  }));
-
   return (
     <>
-      <Toast isOpen={isOpen} message={message} />
+      <ToastContainer />
       <Banner />
       <Introduce />
       <TabsProducts />

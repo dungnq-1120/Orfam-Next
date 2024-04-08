@@ -17,6 +17,7 @@ import Loading from "@/components/features/loading";
 import isDefined from "@/utils/isDefine";
 
 import payments from "@/image/icon/payment-2.webp";
+import showToast from "@/utils/showToast";
 
 const InfoProduct = () => {
   const router = useRouter();
@@ -32,9 +33,18 @@ const InfoProduct = () => {
     if (cartIndex === -1) {
       const newCart = { ...product, quantity: productQuantity };
       addToCart(newCart);
+      showToast({
+        message: `${product.title} successfully added to cart`,
+        type: "success",
+      });
     } else {
       const newCart = { ...product, quantity: productQuantity + carts[cartIndex].quantity };
       updateCart(newCart);
+      updateCart(newCart);
+      showToast({
+        message: `1 ${product.title} updated to cart`,
+        type: "success",
+      });
     }
     refreshCarts();
   };

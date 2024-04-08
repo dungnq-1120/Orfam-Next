@@ -1,23 +1,23 @@
 import useSWR from "swr";
 import { fetcherGet } from "@/services/callApiService";
 
-export function useCarts<T>(query?: object) {
-  const url = `/carts`;
+export function useOrders<T>(query?: object) {
+  const url = `/orders`;
   const {
-    data: carts,
+    data: orders,
     isLoading,
     mutate,
   } = useSWR<T>([url, query], ([url, query]: [string, object?]) => fetcherGet(url, query), {
     revalidateIfStale: false,
   });
 
-  const refreshCarts = () => {
+  const refreshOrders = () => {
     mutate(fetcherGet(url, query));
   };
 
   return {
-    carts: carts || [],
+    orders: orders || [],
     isLoading,
-    refreshCarts,
+    refreshOrders,
   };
 }

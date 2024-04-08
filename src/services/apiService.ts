@@ -65,7 +65,7 @@ export default class RestClient {
   }
 
   async executeRequest<T>(url: string, config: RestClientConfig): Promise<T> {
-    const { getInfo } = authLocal;
+    const { getInfo, removeInfo } = authLocal;
     const token: TToken = getInfo("KEY_TOKEN");
 
     let finalHeaderConfig = {
@@ -101,6 +101,7 @@ export default class RestClient {
             if (refreshedToken) {
               return this.executeRequest<T>(url, config);
             } else {
+              removeInfo("KEY_TOKEN");
               window.location.replace("/login");
             }
           } catch (refreshError) {
@@ -109,16 +110,18 @@ export default class RestClient {
         } else if (errorCode === statusCode.FORBIDDEN) {
           window.location.replace("/home");
         } else if (errorCode === statusCode.NOT_FOUND) {
-          window.location.replace("/not-found");
+          // window.location.replace("/not-found");
+        } else if (errorCode === statusCode.BAD_REQUEST) {
+          console.log("Bad Request:", error.response?.data); // Log the specific error message
         }
       }
       throw error;
     }
   }
 
-  async refreshToken(): Promise<string> {
-    const { getInfo } = authLocal;
-    const token: TToken = getInfo("KEY_TOKEN");
-    return token.access_token;
+  async refreshToken(): Promise<string | null> {
+    // const { getInfo } = authLocal;
+    // const token: TToken = getInfo("KEY_TOKEN");
+    return null;
   }
 }
