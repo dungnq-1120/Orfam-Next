@@ -22,13 +22,14 @@ const fetcherPatch = async (url: string, { arg }: { arg: ApiResponseProductBrand
   }
 };
 
-const fetcherPut = async (url: string, { arg }: { arg: TProfile }) => {
-  const patchUrl = `${url}/${arg.userId}`;
+const fetcherPut = async <T extends { userId: number }>(url: string, { arg }: { arg: T }) => {
+  const putUrl = `${url}/${arg.userId}`;
+
   try {
-    const response = await restClient.put(patchUrl, arg);
+    const response = await restClient.put(putUrl, arg);
     return response;
   } catch (error) {
-    throw new Error(`Error put data: ${error}`);
+    throw new Error(`Error putting data: ${error}`);
   }
 };
 

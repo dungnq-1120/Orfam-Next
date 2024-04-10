@@ -11,12 +11,12 @@ import type { TOrder, TUser } from "@/components/features/checkout/type";
 
 import checkSuccess from "@/image/icon/check.svg";
 import { useUser } from "@/hooks/useUser";
+import isDefined from "@/utils/isDefine";
 
 const Bill = () => {
   const { orders } = useOrders<TOrder[]>();
   const { user, refreshUser } = useUser<TUser>();
   const [order, setOrder] = useState<TOrder | null>(null);
-  // console.log(orders);
 
   const router = useRouter();
   useEffect(() => {
@@ -41,11 +41,11 @@ const Bill = () => {
             <span className="text-lg tracking-[.25em]  block">********************************</span>
             <h5 className="mt-5 font-semibold text-lg">Order Information</h5>
 
-            {orders.length > 0 && (
+            {isDefined(order) && (
               <ul>
-                <li className="font-medium">{order && order.name}</li>
-                <li className="my-2 font-medium">{order && order.phone}</li>
-                <li className="font-medium">{order && order.address}</li>
+                <li className="font-medium">{order.name}</li>
+                <li className="my-2 font-medium">{order.phone}</li>
+                <li className="font-medium">{order.address}</li>
               </ul>
             )}
             <h5 className="mt-5 font-semibold text-lg">Payment Methods</h5>

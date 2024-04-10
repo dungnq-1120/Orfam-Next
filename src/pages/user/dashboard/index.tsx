@@ -21,7 +21,7 @@ const DashboardUser = () => {
   const { user } = useUser<TUser>();
   const { profile, refreshProfile } = useProfile<TProfile[]>();
 
-  const dashboard = [
+  const dashboardUser = [
     {
       id: 1,
       content: "MY ACCOUNT",
@@ -34,7 +34,7 @@ const DashboardUser = () => {
     },
   ];
 
-  const [selectedItem, setSelectedItem] = useState(router.pathname === "/user" ? dashboard[0].link : router.pathname);
+  const [selectedItem, setSelectedItem] = useState(router.pathname);
 
   useEffect(() => {
     if (profile) {
@@ -44,10 +44,8 @@ const DashboardUser = () => {
       }
     }
 
-    if (!router.asPath || router.asPath === "/") {
-      router.push(selectedItem);
-    } else {
-      router.push(selectedItem);
+    if (router.pathname === "/user") {
+      router.push(dashboardUser[0].link);
     }
   }, [profile, user, selectedItem]);
 
@@ -86,7 +84,7 @@ const DashboardUser = () => {
           <h6 className="text-sm xs:text-xs">Customer</h6>
         </div>
         <div>
-          {dashboard.map((item) => (
+          {dashboardUser.map((item) => (
             <Button
               onClick={() => {
                 setSelectedItem(item.link);

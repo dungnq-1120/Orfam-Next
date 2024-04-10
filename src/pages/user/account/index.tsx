@@ -3,6 +3,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useSWRMutation from "swr/mutation";
+import { useRouter } from "next/router";
 
 import { useUser } from "@/hooks/useUser";
 import { useProfile } from "@/hooks/useProfile";
@@ -20,6 +21,7 @@ import { fetcherPost, fetcherPut } from "@/services/callApiService";
 import type { TProfile } from "@/services/type";
 
 import showToast from "@/utils/showToast";
+import isDefined from "@/utils/isDefine";
 
 const userInfo = z.object({
   name: z.string().min(1, "Please enter your name").trim(),
@@ -29,6 +31,7 @@ const userInfo = z.object({
 });
 
 const Account = () => {
+  const router = useRouter();
   const { user, refreshUser } = useUser<TUser>();
   const { profile, refreshProfile } = useProfile<TProfile[]>();
   const { trigger: addProfile, isMutating } = useSWRMutation("/profile", fetcherPost);
@@ -74,21 +77,19 @@ const Account = () => {
   };
 
   useEffect(() => {
-    if (profile) {
-      const profileIndex = profile.findIndex((item) => item.userId === user?.id);
-      const profileData = profileIndex !== -1 ? profile[profileIndex] : null;
-      form.reset({
-        name: (profileData && profileData.name) || (user && user.name) || "",
-        phone: (profileData && profileData.phone) || "",
-        email: (profileData && profileData.email) || (user && user.email) || "",
-        address: (profileData && profileData.address) || "",
-      });
-    }
+    const { name, phone, email, address } = profile?.find((item) => item.userId === user?.id) || {};
+
+    form.reset({
+      name: name || user?.name || "",
+      phone: phone || "",
+      email: email || user?.email || "",
+      address: address || "",
+    });
   }, [user, profile]);
 
   return (
-    <>
-      <div className="manage-account text-center text-gray-700">
+    <div className="manage-account text-center text-gray-700">
+      {isDefined(user) ? (
         <div className="manage-account text-center text-gray-700 p-4">
           <h4 className="text-green-ct5 font-semibold text-2xl">EDIT PROFILE</h4>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -119,8 +120,22 @@ const Account = () => {
             </Button>
           </form>
         </div>
-      </div>
-    </>
+      ) : (
+        <div className="flex justify-center items-center h-72">
+          <div>
+            <p className="mb-2 font-medium">You have not logged into Orfarm system.</p>
+            <Button
+              onClick={() => {
+                router.push("/login");
+              }}
+              className="py-3 px-11"
+            >
+              LOGIN
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

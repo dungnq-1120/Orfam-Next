@@ -112,7 +112,6 @@ export default class RestClient {
           window.location.replace("/404");
         } else if (errorCode === statusCode.BAD_REQUEST) {
           removeInfo("KEY_TOKEN");
-          window.location.replace("/login");
         }
       }
       throw error;

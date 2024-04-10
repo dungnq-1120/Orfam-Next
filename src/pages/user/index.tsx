@@ -11,7 +11,7 @@ const User = ({ children }: { children: React.ReactNode }) => {
       <div className="w-1/5 lg:w-2/5 sm:!w-full">
         <DashboardUser />
       </div>
-      <div className="w-4/5 shadow-shadow2 rounded-lg lg:h-3/5 sm:w-full">{children}</div>
+      <div className="w-4/5 shadow-shadow2 rounded-lg lg:h-3/5 self-start sm:w-full">{children}</div>
     </div>
   );
 };
