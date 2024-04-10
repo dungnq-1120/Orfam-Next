@@ -2,7 +2,7 @@ import useSWR from "swr";
 import { fetcherGet } from "@/services/callApiService";
 
 export function useProfile<T>() {
-  const url = `/profile`;
+  const url = "/profile";
   const {
     data: profile,
     isLoading,

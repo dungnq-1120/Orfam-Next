@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import authLocal from "@/utils/localStorage";
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://server-be-kuj4.onrender.com";
 
 const axiosBase = axios.create({
   baseURL: BASE_URL,
@@ -104,8 +104,8 @@ export default class RestClient {
       if (axios.isAxiosError(error)) {
         const errorCode: number = error.response!.status;
         if (errorCode === statusCode.UNAUTHORIZED) {
-          removeInfo("KEY_TOKEN");
           window.location.replace("/login");
+          removeInfo("KEY_TOKEN");
         } else if (errorCode === statusCode.FORBIDDEN) {
           window.location.replace("/home");
         } else if (errorCode === statusCode.NOT_FOUND) {

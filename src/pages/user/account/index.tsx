@@ -57,7 +57,6 @@ const Account = () => {
   const onSubmit = async (data: TFormBilling) => {
     if (user) {
       const profileIndex = profile?.findIndex((item) => item.userId === user.id);
-      console.log(profileIndex);
 
       if (profileIndex === -1) {
         addProfile({ ...data, userId: user.id });
