@@ -1,5 +1,6 @@
+import { TUser } from "@/components/features/checkout/type";
 import RestClient from "./apiService";
-import { ApiResponseProductBrandAndCategory } from "./type";
+import { ApiResponseProductBrandAndCategory, TProfile } from "./type";
 
 const restClient = new RestClient();
 const fetcherPost = async (url: string, { arg }: { arg: {} }) => {
@@ -18,6 +19,16 @@ const fetcherPatch = async (url: string, { arg }: { arg: ApiResponseProductBrand
     return response;
   } catch (error) {
     throw new Error(`Error patch data: ${error}`);
+  }
+};
+
+const fetcherPut = async (url: string, { arg }: { arg: TProfile }) => {
+  const patchUrl = `${url}/${arg.userId}`;
+  try {
+    const response = await restClient.put(patchUrl, arg);
+    return response;
+  } catch (error) {
+    throw new Error(`Error put data: ${error}`);
   }
 };
 
@@ -41,4 +52,4 @@ const fetcherGet = async <T>(url: string, query?: object): Promise<T> => {
   }
 };
 
-export { fetcherPost, fetcherGet, fetcherPatch, fetcherDelete };
+export { fetcherPost, fetcherGet, fetcherPatch, fetcherPut, fetcherDelete };

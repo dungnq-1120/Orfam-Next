@@ -15,7 +15,7 @@ import { Twitter } from "@/icons/socialMedia/Twitter";
 import { Youtube } from "@/icons/socialMedia/Youtube";
 
 const Footer = () => (
-  <div className="footer bg-footer bg-no-repeat bg-cover w-full bg-slate-100">
+  <div className="footer bg-footer bg-no-repeat bg-cover w-full">
     <div className="main-feature flex flex-wrap justify-between p-12 xs:px-2">
       <div className="main-feature-box text-center group mb-5">
         <Delivery className="text-white w-12 h-12 m-auto duration-500 scale-100 group-hover:scale-125 group-hover:text-green-ct5" />

@@ -1,3 +1,6 @@
+import { TFormBilling, TUser } from "@/components/features/checkout/type";
+import { TFormRegister } from "@/shared/form/type";
+
 export interface ApiResponseProduct {
   id: number;
   title: string;
@@ -36,4 +39,14 @@ export interface ProductData {
 
 export interface ProductDataCategory extends ProductData {
   data: ApiResponseProductCategory[];
+}
+
+export interface TProfile {
+  userId?: number;
+  name: string;
+  phone?: string;
+  email: string;
+  address?: string;
+  password?: string;
+  confirmPassword?: string;
 }

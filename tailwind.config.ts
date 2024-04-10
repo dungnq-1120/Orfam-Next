@@ -61,9 +61,10 @@ const config = {
           ct1: "#d6c9ff",
         },
         green: {
-          ct4:"#96ae009e",
+          ct4: "#96ae009e",
           ct5: "#96ae00",
           ct6: "#718300",
+          ct7: "#005037",
         },
         orange: {
           ct2: "#ffc6a1",
@@ -77,6 +78,8 @@ const config = {
         shadowCheck: "0 0 0 0.25rem rgba(13, 110, 253, 0.25)",
         shadowRed: "0 0 0 0.25rem rgba(255, 34, 0, 0.393)",
         shadow1: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
+        shadow2: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+        shadow3: "rgba(255, 255, 255, 0.24) 0px 3px 8px",
       },
       zIndex: {
         "9999": "9999",
@@ -102,10 +105,30 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        scroll: {
+          "0%": { transform: "translateY(-200px)" },
+          "100%": { transform: "translateY(0)" },
+        },
+        scrollTop: {
+          "0%": { transform: "translateY(-400px)", opacity: " 0.5" },
+          "100%": { transform: "translateY(0)", opacity: " 1" },
+        },
+        scrollBottom: {
+          "0%": { transform: "translateY(0)", opacity: " 1" },
+          "100%": { transform: "translateY(-400px)", opacity: " 0" },
+        },
+        wiggle: {
+          "0%, 100%": { transform: "rotate(-3deg)" },
+          "50%": { transform: "rotate(3deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        scroll: "scroll 1s ease-in-out",
+        scrollTop: "scrollTop 0.5s ease-in-out",
+        scrollBottom: "scrollBottom 0.5s ease-in-out",
+        wiggle: "wiggle 1s ease-in-out infinite",
       },
       backgroundImage: {
         footer: "url('https://orfarm-next-js.vercel.app/assets/img/shape/footer-shape-1.svg')",

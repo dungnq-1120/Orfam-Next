@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import { useOrders } from "@/hooks/useOrder";
@@ -7,14 +7,29 @@ import { useOrders } from "@/hooks/useOrder";
 import PublicLayout from "@/components/layouts/publicLayout";
 import { Button } from "@/shared/button";
 
-import type { TOrder } from "@/components/features/checkout/type";
+import type { TOrder, TUser } from "@/components/features/checkout/type";
 
 import checkSuccess from "@/image/icon/check.svg";
+import { useUser } from "@/hooks/useUser";
 
 const Bill = () => {
   const { orders } = useOrders<TOrder[]>();
-  const router = useRouter();
+  const { user, refreshUser } = useUser<TUser>();
+  const [order, setOrder] = useState<TOrder | null>(null);
+  // console.log(orders);
 
+  const router = useRouter();
+  useEffect(() => {
+    if (user) {
+      const ordersIndex = orders.findIndex((order) => order.userId === user.id);
+      console.log(ordersIndex);
+
+      if (ordersIndex !== -1) {
+        setOrder(orders[ordersIndex]);
+        console.log(orders[ordersIndex]);
+      }
+    }
+  }, [orders, user]);
   return (
     <>
       <div className="bill py-12 mt-16">
@@ -28,9 +43,9 @@ const Bill = () => {
 
             {orders.length > 0 && (
               <ul>
-                <li className="font-medium">{orders[0].name}</li>
-                <li className="my-2 font-medium">{orders[0].phone}</li>
-                <li className="font-medium">{orders[0].address}</li>
+                <li className="font-medium">{order && order.name}</li>
+                <li className="my-2 font-medium">{order && order.phone}</li>
+                <li className="font-medium">{order && order.address}</li>
               </ul>
             )}
             <h5 className="mt-5 font-semibold text-lg">Payment Methods</h5>

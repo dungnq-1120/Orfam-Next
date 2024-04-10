@@ -7,7 +7,7 @@ import PublicLayout from "@/components/layouts/publicLayout";
 
 const Shop = () => {
   return (
-    <div className="shop mt-14 bg-slate-100 py-20 px-10 flex gap-5 relative xl:px-5 lg:block">
+    <div className="shop mt-14 py-20 px-10 flex gap-5 relative xl:px-5 lg:block">
       <ToastContainer />
       <FilterProduct />
       <CardList />
