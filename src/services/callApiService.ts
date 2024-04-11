@@ -1,4 +1,3 @@
-import { TUser } from "@/components/features/checkout/type";
 import RestClient from "./apiService";
 import { ApiResponseProductBrandAndCategory, TProfile } from "./type";
 

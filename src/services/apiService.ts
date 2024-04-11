@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import authLocal from "@/utils/localStorage";
 
-const BASE_URL = "https://server-be-kuj4.onrender.com";
+const BASE_URL = process.env.NEXT_PUBLIC_API_HOST
 
 const axiosBase = axios.create({
   baseURL: BASE_URL,
