@@ -64,7 +64,7 @@ const CardProduct = React.forwardRef<HTMLDivElement, Props>(
     };
 
     return (
-      <Card {...props} ref={ref} className={cn("cursor-pointer relative overflow-hidden border-2 border-white", className)}>
+      <Card {...props} ref={ref} className={cn("cursor-pointer relative overflow-hidden border-1 border-gray-200", className)}>
         <div onClick={() => handelDetailProduct(id)} className="overflow-hidden w-full h-56 relative group">
           <Image
             src={thumbnail}

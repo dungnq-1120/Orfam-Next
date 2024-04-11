@@ -33,7 +33,7 @@ const CheckoutInfo = () => {
     { type: "fast", price: 10, label: "Fast delivery" },
     { type: "standard", price: 7, label: "Standard delivery" },
   ];
-  
+
   const router = useRouter();
   const [selectedOption, setSelectedOption] = useState<TOptionShip>(deliveryOptions[0]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -61,7 +61,7 @@ const CheckoutInfo = () => {
 
   const onSubmit = (data: TFormBilling) => {
     if (user) {
-      addOrder({ ...data, shipping: selectedOption, carts });
+      addOrder({ ...data, userId: user.id, shipping: selectedOption, carts });
       refreshOrders();
       router.push("/bill");
     }

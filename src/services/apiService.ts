@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import authLocal from "@/utils/localStorage";
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://server-be-kuj4.onrender.com";
 
 const axiosBase = axios.create({
   baseURL: BASE_URL,
@@ -57,6 +57,14 @@ export default class RestClient {
     });
   }
 
+  async put<T>(url: string, data = {}, config: RestClientConfig = {}) {
+    return this.executeRequest<T>(url, {
+      method: "PUT",
+      data,
+      ...config,
+    });
+  }
+
   async delete<T>(url: string, config: RestClientConfig = {}) {
     return this.executeRequest<T>(url, {
       method: "DELETE",
@@ -96,32 +104,17 @@ export default class RestClient {
       if (axios.isAxiosError(error)) {
         const errorCode: number = error.response!.status;
         if (errorCode === statusCode.UNAUTHORIZED) {
-          try {
-            const refreshedToken = await this.refreshToken();
-            if (refreshedToken) {
-              return this.executeRequest<T>(url, config);
-            } else {
-              removeInfo("KEY_TOKEN");
-              window.location.replace("/login");
-            }
-          } catch (refreshError) {
-            window.location.replace("/login");
-          }
+          window.location.replace("/login");
+          removeInfo("KEY_TOKEN");
         } else if (errorCode === statusCode.FORBIDDEN) {
           window.location.replace("/home");
         } else if (errorCode === statusCode.NOT_FOUND) {
-          // window.location.replace("/not-found");
+          window.location.replace("/404");
         } else if (errorCode === statusCode.BAD_REQUEST) {
-          console.log("Bad Request:", error.response?.data); // Log the specific error message
+          removeInfo("KEY_TOKEN");
         }
       }
       throw error;
     }
-  }
-
-  async refreshToken(): Promise<string | null> {
-    // const { getInfo } = authLocal;
-    // const token: TToken = getInfo("KEY_TOKEN");
-    return null;
   }
 }

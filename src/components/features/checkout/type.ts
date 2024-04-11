@@ -20,6 +20,7 @@ export interface TUser {
 }
 
 export interface TOrder extends TFormBilling {
+  id: number;
   shipping: object;
   userId: number;
   carts: ApiResponseProductBrandAndCategory[];

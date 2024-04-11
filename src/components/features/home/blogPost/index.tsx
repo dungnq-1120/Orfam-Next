@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 import blog1 from "@/image/banner/blog-bg-1.webp";
 import blog2 from "@/image/banner/blog-bg-2.webp";
@@ -7,6 +8,7 @@ import blog3 from "@/image/banner/blog-bg-3.webp";
 import blog4 from "@/image/banner/blog-bg-4.webp";
 
 const BlogPost = () => {
+  const router = useRouter();
   const blogs = [
     {
       type: "LIFESTYLE",
@@ -48,7 +50,13 @@ const BlogPost = () => {
         </div>
         <div className="blogs flex justify-center flex-wrap w-full">
           {blogs.map((item, index) => (
-            <div key={index} className="blog group overflow-hidden p-3 cursor-pointer w-[350px] csm:w-full">
+            <div
+              onClick={() => {
+                router.push("/blog");
+              }}
+              key={index}
+              className="blog group overflow-hidden p-3 cursor-pointer w-[350px] csm:w-full"
+            >
               <div className="image h-52 w-full overflow-hidden rounded-tr-xl rounded-tl-xl">
                 <Image src={item.image} alt="" className="w-full h-full duration-500 group-hover:scale-110 object-cover" />
               </div>
