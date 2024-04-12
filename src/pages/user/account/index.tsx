@@ -9,15 +9,13 @@ import { useProfile } from "@/hooks/useProfile";
 
 import User from "..";
 import PublicLayout from "@/components/layouts/publicLayout";
-import { TFormBilling, TMyProfile, TUser } from "@/components/features/checkout/type";
+import { TFormBilling, TMyProfile } from "@/components/features/checkout/type";
 
 import { FormField, FormItem } from "@/shared/form";
 import InputForm from "@/shared/input";
 import { Button } from "@/shared/button";
 
 import { fetcherPost, fetcherPut } from "@/services/callApiService";
-
-import type { TProfile } from "@/services/type";
 
 import showToast from "@/utils/showToast";
 import isDefined from "@/utils/isDefine";
@@ -32,7 +30,6 @@ const userInfo = z.object({
 const Account = () => {
   const router = useRouter();
   const { profile, refreshProfile } = useProfile<TMyProfile>();
-  console.log(profile);
 
   const { trigger: addProfile, isMutating } = useSWRMutation("/auth/my-profile", fetcherPost);
   const { trigger: updateProfile } = useSWRMutation("/auth/my-profile", fetcherPut);
@@ -55,38 +52,23 @@ const Account = () => {
   ];
 
   const onSubmit = async (data: TFormBilling) => {
-    // if (user) {
-    //   const profileIndex = profile?.findIndex((item) => item.userId === user.id);
-    //   updateProfile({ ...data, userId: user.id });
-    //   // if (profileIndex === -1) {
-    //   //   addProfile({ ...data, userId: user.id });
-    //   //   showToast({
-    //   //     message: "Updated account information successfully",
-    //   //     type: "success",
-    //   //   });
-    //   // } else {
-    //   //   updateProfile({ ...data, userId: user.id });
-    //   //   showToast({
-    //   //     message: "Updated account information successfully",
-    //   //     type: "error",
-    //   //   });
-    //   // }
-    // }
     refreshProfile();
   };
 
   useEffect(() => {
-    form.reset({
-      name: profile && profile.data ? profile.data.name : "",
-      phone: profile && profile.data.phone ? profile.data.phone : "",
-      email: profile && profile.data ? profile.data.email : "",
-      address: profile && profile.data.address ? profile.data.address : "",
-    });
+    if (profile) {
+      form.reset({
+        name: profile.data ? profile.data.name : "",
+        phone: profile.data.phone ? profile.data.phone : "",
+        email: profile.data ? profile.data.email : "",
+        address: profile.data.address ? profile.data.address : "",
+      });
+    }
   }, [profile]);
 
   return (
     <div className="manage-account text-center text-gray-700">
-      {isDefined(profile?.data) ? (
+      {isDefined(profile) ? (
         <div className="manage-account text-center text-gray-700 p-4">
           <h4 className="text-green-ct5 font-semibold text-2xl">EDIT PROFILE</h4>
           <form onSubmit={form.handleSubmit(onSubmit)}>

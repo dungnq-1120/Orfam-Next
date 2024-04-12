@@ -62,11 +62,7 @@ const CheckoutInfo = () => {
   ];
 
   const onSubmit = (data: TFormBilling) => {
-    // if (user) {
-    //   addOrder({ ...data, userId: user.id, shipping: selectedOption, carts });
-    //   refreshOrders();
-    //   router.push("/bill");
-    // }
+    console.log(data);
   };
 
   useEffect(() => {
