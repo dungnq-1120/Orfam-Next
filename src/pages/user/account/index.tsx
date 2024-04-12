@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { useProfile } from "@/hooks/useProfile";
 
 import User from "..";
-import PublicLayout from "@/components/layouts/publicLayout";
+import PrivateLayout from "@/components/layouts/privateLayout";
 import { TFormBilling, TMyProfile } from "@/components/features/checkout/type";
 
 import { FormField, FormItem } from "@/shared/form";
@@ -120,9 +120,9 @@ const Account = () => {
 
 Account.getLayout = function getLayout(page: React.ReactElement) {
   return (
-    <PublicLayout>
+    <PrivateLayout>
       <User>{page}</User>
-    </PublicLayout>
+    </PrivateLayout>
   );
 };
 

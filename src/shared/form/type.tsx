@@ -3,4 +3,5 @@ export interface TFormRegister {
   email: string;
   password: string;
   confirmPassword: string;
+  termsAccepted: boolean;
 }

@@ -3,13 +3,14 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import PrivateLayout from "@/components/layouts/privateLayout";
 import Admin from "..";
+import AdminLayout from "@/components/layouts/AdminLayout";
 
 import { Button } from "@/shared/button";
 import Modal from "@/shared/modal";
 import { FormField, FormItem } from "@/shared/form";
 import InputForm from "@/shared/input";
+
 
 const userInfo = z.object({
   name: z.string().min(1, "Please enter your name").trim(),
@@ -131,9 +132,9 @@ const Users = () => {
 };
 Users.getLayout = function getLayout(page: React.ReactElement) {
   return (
-    <PrivateLayout>
+    <AdminLayout>
       <Admin>{page}</Admin>
-    </PrivateLayout>
+    </AdminLayout>
   );
 };
 export default Users;

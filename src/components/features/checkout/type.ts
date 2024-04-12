@@ -25,6 +25,7 @@ export interface TMyProfile {
     id: number;
     name: string;
     email: string;
+    role: number;
     phone?: string;
     address?: string;
   };
@@ -33,6 +34,5 @@ export interface TMyProfile {
 export interface TOrder extends TFormBilling {
   id: number;
   shipping: object;
-  userId: number;
-  carts: ApiResponseProductBrandAndCategory[];
+  cartsOrder: ApiResponseProductBrandAndCategory[];
 }

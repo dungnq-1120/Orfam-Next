@@ -22,6 +22,7 @@ import { calculateTotalPrice } from "@/utils/totalPrice";
 import { useCarts } from "@/hooks/useCart";
 import { profile } from "console";
 import { useProfile } from "@/hooks/useProfile";
+import useGetCartsUser from "@/hooks/useGetCartsUser";
 
 const checkoutSchema = z.object({
   name: z.string().min(1, "Please enter your name").trim(),
@@ -43,6 +44,7 @@ const CheckoutInfo = () => {
   const { profile } = useProfile<TMyProfile>();
   const { orders, refreshOrders } = useOrders<TOrder[]>();
   const { trigger: addOrder } = useSWRMutation("/orders", fetcherPost);
+  const cartsUser = useGetCartsUser();
 
   const form = useForm({
     resolver: zodResolver(checkoutSchema),
@@ -62,7 +64,8 @@ const CheckoutInfo = () => {
   ];
 
   const onSubmit = (data: TFormBilling) => {
-    console.log(data);
+    addOrder({ ...data, shipping: selectedOption, totalPrice: totalPrice, cartsOrder: cartsUser });
+    router.push("/bill");
   };
 
   useEffect(() => {
@@ -72,12 +75,12 @@ const CheckoutInfo = () => {
       setTotalPrice(totalPrice + selectedOption.price);
     }
 
-    if (profile) {
+    if (profile && !form.getValues().name && !form.getValues().phone && !form.getValues().email && !form.getValues().address) {
       form.reset({
-        name: profile.data.name ? profile.data.name : "",
-        phone: profile.data.phone ? profile.data.phone : "",
-        email: profile.data.email ? profile.data.email : "",
-        address: profile.data.address ? profile.data.address : "",
+        name: profile.data.name,
+        phone: profile.data.phone,
+        email: profile.data.email,
+        address: profile.data.address,
       });
     }
   }, [carts, selectedOption.price, profile]);
@@ -130,8 +133,8 @@ const CheckoutInfo = () => {
           <div className="flex items-center">
             <ul className="w-3/4 xs:w-4/5">
               <li className="pb-3 text-blue-ct7 font-semibold">Product</li>
-              {isDefined(carts) &&
-                carts.map((cart) => (
+              {isDefined(cartsUser) &&
+                cartsUser.map((cart) => (
                   <li key={cart.id} className="border-1 truncate border-x-0 border-b-0 py-3 pl-2 font-medium text-blue-ct7 sm:text-xs xs:pl-0 ">
                     {cart.title} x{cart.quantity}
                   </li>
@@ -140,9 +143,9 @@ const CheckoutInfo = () => {
               <li className="border-1 border-x-0 border-t-0 py-3 font-medium text-blue-ct7">Order Total</li>
             </ul>
             <ul className="w-1/4 xs:w-1/5">
-              <li className="pb-3 text-blue-ct7 font-semibold xs:text-end">Total</li>
-              {isDefined(carts) &&
-                carts.map((cart) => (
+              <li className="pb-3 text-blue-ct7 font-semibold xs:text-end">Price</li>
+              {isDefined(cartsUser) &&
+                cartsUser.map((cart) => (
                   <li key={cart.id} className="border-1 border-x-0 py-3 font-medium border-b-0 text-green-500 sm:text-xs xs:text-end">
                     ${(cart.price * cart.quantity).toFixed(2)}
                   </li>

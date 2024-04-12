@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import Image from "next/image";
 
 import Admin from "..";
-import PrivateLayout from "@/components/layouts/privateLayout";
+import AdminLayout from "@/components/layouts/AdminLayout";
 
 import { Button } from "@/shared/button";
 import Modal from "@/shared/modal";
 
 import cherry from "@/image/product/product-img-15.webp";
+
 
 const Orders = () => {
   const [isOpenModalDetail, setOpenModalDetail] = useState<boolean>(false);
@@ -109,9 +110,9 @@ const Orders = () => {
 
 Orders.getLayout = function getLayout(page: React.ReactElement) {
   return (
-    <PrivateLayout>
+    <AdminLayout>
       <Admin>{page}</Admin>
-    </PrivateLayout>
+    </AdminLayout>
   );
 };
 

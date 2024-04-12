@@ -1,10 +1,10 @@
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import { useOrders } from "@/hooks/useOrder";
 
-import PublicLayout from "@/components/layouts/publicLayout";
+import PrivateLayout from "@/components/layouts/privateLayout";
 import { Button } from "@/shared/button";
 
 import type { TMyProfile, TOrder } from "@/components/features/checkout/type";
@@ -16,8 +16,15 @@ import { useProfile } from "@/hooks/useProfile";
 const Bill = () => {
   const router = useRouter();
   const { orders } = useOrders<TOrder[]>();
-  const [order, setOrder] = useState<TOrder | null>(null);
+  const [order, setOrder] = useState<TOrder>();
   const { profile } = useProfile<TMyProfile>();
+
+  useEffect(() => {
+    if (orders.length > 0 && profile && profile.data) {
+      const orderInfo = orders.find((order) => order.cartsOrder.map((cart) => cart.userId === profile.data.id));
+      setOrder(orderInfo);
+    }
+  }, [orders, profile]);
 
   return (
     <>
@@ -26,15 +33,15 @@ const Bill = () => {
           <div className="line-green bg-green-400 h-2 rounded-lg"></div>
           <div className="content-bill pt-12 text-center shadow-lg pb-10 px-3 rounded-md">
             <Image className="w-14 h-14 m-auto " src={checkSuccess} alt="checkSuccess" />
-            <h4 className="font-semibold  mt-2 text-2xl">Order Success</h4>
-            <span className="text-lg tracking-[.25em]  block">********************************</span>
+            <h4 className="font-semibold  mt-2 text-2xl mb-1 text-green-ct6">Order Success</h4>
+            <span className="text-lg tracking-[.25em] text-green-ct6 block">********************************</span>
             <h5 className="mt-5 font-semibold text-lg">Order Information</h5>
 
             {isDefined(order) && (
-              <ul>
-                <li className="font-medium">{order.name}</li>
-                <li className="my-2 font-medium">{order.phone}</li>
-                <li className="font-medium">{order.address}</li>
+              <ul className="mt-4">
+                <li className="font-semibold text-blue-ct7">Consignee name: {order.name}</li>
+                <li className="my-2 font-semibold text-blue-ct7">Consignee phone: {order.phone}</li>
+                <li className="font-semibold text-blue-ct7">Consignee address: {order.address}</li>
               </ul>
             )}
             <h5 className="mt-5 font-semibold text-lg">Payment Methods</h5>
@@ -56,7 +63,7 @@ const Bill = () => {
 };
 
 Bill.getLayout = function getLayout(page: React.ReactElement) {
-  return <PublicLayout>{page}</PublicLayout>;
+  return <PrivateLayout>{page}</PrivateLayout>;
 };
 
 export default Bill;

@@ -5,6 +5,10 @@ import { useRouter } from "next/router";
 import { useCarts } from "@/hooks/useCart";
 import useSWRMutation from "swr/mutation";
 
+import { useProfile } from "@/hooks/useProfile";
+
+import type { TMyProfile } from "../../checkout/type";
+
 import { Button } from "@/shared/button";
 import InputForm from "@/shared/input";
 
@@ -16,6 +20,7 @@ import { isEmptyArray } from "@/utils/isEmptyArray";
 import showToast from "@/utils/showToast";
 
 import bin from "@/image/icon/bin.svg";
+import useGetCartsUser from "@/hooks/useGetCartsUser";
 
 const ProductCartList = () => {
   const router = useRouter();
@@ -23,6 +28,7 @@ const ProductCartList = () => {
   const { trigger: updateCart } = useSWRMutation("/carts", fetcherPatch);
   const { trigger: deleteCart } = useSWRMutation("/carts", fetcherDelete);
   const [totalPrice, setTotalPrice] = useState<number>(0);
+  const cartsUser = useGetCartsUser();
 
   const updateCartQuantity = (id: number, delta: number) => {
     const cartIndex = carts.findIndex((cart) => cart.id === id);
@@ -52,7 +58,7 @@ const ProductCartList = () => {
   useEffect(() => {
     const totalPrice = calculateTotalPrice(carts);
     setTotalPrice(totalPrice);
-  }, [carts]);
+  }, []);
 
   return (
     <div className="product-cart-list mt-20 py-16 px-4">
@@ -69,8 +75,8 @@ const ProductCartList = () => {
             </tr>
           </thead>
           <tbody>
-            {isDefined(carts) &&
-              carts.map((cart) => {
+            {isDefined(cartsUser) &&
+              cartsUser.map((cart) => {
                 return (
                   <tr key={cart.id}>
                     <td className="border-1">

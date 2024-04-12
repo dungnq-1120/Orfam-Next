@@ -1,6 +1,7 @@
 import React from "react";
 
-import PrivateLayout from "@/components/layouts/privateLayout";
+import AdminLayout from "@/components/layouts/AdminLayout";
+
 import Admin from "..";
 
 const Revenue = () => {
@@ -32,9 +33,9 @@ const Revenue = () => {
 
 Revenue.getLayout = function getLayout(page: React.ReactElement) {
   return (
-    <PrivateLayout>
+    <AdminLayout>
       <Admin>{page}</Admin>
-    </PrivateLayout>
+    </AdminLayout>
   );
 };
 

@@ -26,12 +26,6 @@ const DashboardAdmin = () => {
     },
   ];
 
-  useEffect(() => {
-    if (router.pathname === "/admin") {
-      router.push("/admin/createProduct");
-    }
-  }, [selectedItem]);
-
   return (
     <>
       <div className="h-[460px] top-20 py-10 bg-blue-ct6  w-1/4 rounded-lg text-white px-2 self-start sticky xss:relative xss:top-0 xss:w-full xss:h-full xss:mb-10 xss:shadow-shadow2">

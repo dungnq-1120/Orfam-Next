@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import Admin from "..";
-import PrivateLayout from "@/components/layouts/privateLayout";
+import AdminLayout from "@/components/layouts/AdminLayout";
 
 import { FormField, FormItem } from "@/shared/form";
 import InputForm from "@/shared/input";
@@ -136,9 +136,9 @@ const CreateProduct = () => {
 };
 CreateProduct.getLayout = function getLayout(page: React.ReactElement) {
   return (
-    <PrivateLayout>
+    <AdminLayout>
       <Admin>{page}</Admin>
-    </PrivateLayout>
+    </AdminLayout>
   );
 };
 export default CreateProduct;

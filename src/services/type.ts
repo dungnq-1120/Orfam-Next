@@ -1,6 +1,3 @@
-import { TFormBilling, TUser } from "@/components/features/checkout/type";
-import { TFormRegister } from "@/shared/form/type";
-
 export interface ApiResponseProduct {
   id: number;
   title: string;
@@ -22,6 +19,7 @@ export interface ApiResponseProductCategory extends ApiResponseProduct {
 }
 
 export interface ApiResponseProductBrandAndCategory extends ApiResponseProductCategory {
+  userId: number;
   brands: {
     id: number;
     name: string;
@@ -49,4 +47,9 @@ export interface TProfile {
   address?: string;
   password?: string;
   confirmPassword?: string;
+}
+
+export enum ROLES {
+  CUSTOMER = 0,
+  ADMIN = 1,
 }

@@ -13,13 +13,12 @@ const LoginLayout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const token = getInfo("KEY_TOKEN");
-
     if (token) {
       router.push("/");
     } else {
       setShouldRender(true);
     }
-  }, [router]);
+  }, []);
 
   if (!shouldRender) {
     return null;

@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-import PrivateLayout from "@/components/layouts/privateLayout";
+import AdminLayout from "@/components/layouts/AdminLayout";
 
 import DashboardAdmin from "./dashboardAdmin";
+import { useRouter } from "next/router";
 
 const Admin = ({ children }: { children: React.ReactNode }) => {
+  const router = useRouter();
+  useEffect(() => {
+    if (router.pathname === "/admin") {
+      router.push("/admin/createProduct");
+    }
+  }, []);
   return (
     <div className="flex gap-2 pt-11 px-2 pb-10 mt-12 xss:block  ">
       <DashboardAdmin />
@@ -14,7 +21,7 @@ const Admin = ({ children }: { children: React.ReactNode }) => {
 };
 
 Admin.getLayout = function getLayout(page: React.ReactElement) {
-  return <PrivateLayout>{page}</PrivateLayout>;
+  return <AdminLayout>{page}</AdminLayout>;
 };
 
 export default Admin;

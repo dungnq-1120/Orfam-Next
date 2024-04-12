@@ -23,6 +23,9 @@ import barsIcon from "@/image/icon/bars-3.png";
 import cartIcon from "@/image/icon/cart.png";
 import userIcon from "@/image/icon/user.png";
 import Top from "@/icons/feature/Top";
+import { useProfile } from "@/hooks/useProfile";
+import { TMyProfile } from "@/components/features/checkout/type";
+import useGetCartsUser from "@/hooks/useGetCartsUser";
 
 export const Header = () => {
   const router = useRouter();
@@ -32,7 +35,8 @@ export const Header = () => {
   const { removeInfo, getInfo } = authLocal;
   const [isOpenUser, setIsOpenUser] = useState<boolean>(false);
   const [token, setToken] = useState(null);
-  const { carts } = useCarts<ApiResponseProductBrandAndCategory[]>();
+  const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>();
+  const cartsUser = useGetCartsUser();
 
   const menu: { [key: string]: string } = {
     HOME: "/",
@@ -137,6 +141,7 @@ export const Header = () => {
                 <Button
                   onClick={() => {
                     removeInfo("KEY_TOKEN");
+                    removeInfo("ROLE");
                     router.push("/login");
                   }}
                   className="w-full h-full text-blue-ct7  bg-transparent text-base cursor-pointer p-3 hover:text-red-600"
@@ -161,7 +166,7 @@ export const Header = () => {
           <Button onClick={() => router.push("/carts")} className="rounded-full px-3 py-3 bg-orange-ct2 md:hidden relative">
             <CartIcon className="w-5 h-5 text-blue-ct7" />
             <span className="absolute -right-1 -top-1 text-white bg-[#ff0000] w-5 h-5 flex justify-center items-center rounded-full text-md bg-">
-              {isDefined(carts) && carts.length}
+              {isDefined(cartsUser) && cartsUser.length}
             </span>
           </Button>
         </div>

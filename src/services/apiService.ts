@@ -104,8 +104,8 @@ export default class RestClient {
       if (axios.isAxiosError(error)) {
         const errorCode: number = error.response!.status;
         if (errorCode === statusCode.UNAUTHORIZED) {
-          window.location.replace("/login");
           removeInfo("KEY_TOKEN");
+          removeInfo("ROLE");
         } else if (errorCode === statusCode.FORBIDDEN) {
           window.location.replace("/home");
         } else if (errorCode === statusCode.NOT_FOUND) {

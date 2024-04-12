@@ -6,8 +6,8 @@ import { useProfile } from "@/hooks/useProfile";
 
 import { Button } from "@/shared/button";
 
-import type { TProfile } from "@/services/type";
-import type { TMyProfile, TUser } from "@/components/features/checkout/type";
+import { ROLES } from "@/services/type";
+import type { TMyProfile } from "@/components/features/checkout/type";
 
 import userAvatar from "@/image/logo/favico.png";
 import camera from "@/image/icon/camera.svg";
@@ -16,7 +16,7 @@ const DashboardUser = () => {
   const router = useRouter();
   const [avatar, setAvatar] = useState<File | null>(null);
   const inputAvatarRef = useRef<HTMLInputElement>(null);
-  const { profile, refreshProfile } = useProfile<TMyProfile>();
+  const { profile } = useProfile<TMyProfile>();
 
   const dashboardUser = [
     {
@@ -70,8 +70,8 @@ const DashboardUser = () => {
               <Image className=" w-5 h-5 " src={camera} alt="" />
             </div>
           </div>
-          <h4 className="my-1 font-semibold xs:text-sm">{profile && profile.data.name.toUpperCase()}</h4>
-          <h6 className="text-sm xs:text-xs">Customer</h6>
+          <h4 className="my-2 font-semibold xs:text-sm">{profile && profile.data.name.toUpperCase()}</h4>
+          <h6 className="font-medium text-white text-xs mt-2">{profile && profile.data.role === ROLES.ADMIN ? "ADMIN" : "CUSTOMER"}</h6>
         </div>
         <div>
           {dashboardUser.map((item) => (
