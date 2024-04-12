@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 
 import { useOrders } from "@/hooks/useOrder";
@@ -7,29 +7,18 @@ import { useOrders } from "@/hooks/useOrder";
 import PublicLayout from "@/components/layouts/publicLayout";
 import { Button } from "@/shared/button";
 
-import type { TOrder, TUser } from "@/components/features/checkout/type";
+import type { TMyProfile, TOrder } from "@/components/features/checkout/type";
 
 import checkSuccess from "@/image/icon/check.svg";
-import { useUser } from "@/hooks/useUser";
 import isDefined from "@/utils/isDefine";
+import { useProfile } from "@/hooks/useProfile";
 
 const Bill = () => {
-  const { orders } = useOrders<TOrder[]>();
-  const { user, refreshUser } = useUser<TUser>();
-  const [order, setOrder] = useState<TOrder | null>(null);
-
   const router = useRouter();
-  useEffect(() => {
-    if (user) {
-      const ordersIndex = orders.findIndex((order) => order.userId === user.id);
-      console.log(ordersIndex);
+  const { orders } = useOrders<TOrder[]>();
+  const [order, setOrder] = useState<TOrder | null>(null);
+  const { profile } = useProfile<TMyProfile>();
 
-      if (ordersIndex !== -1) {
-        setOrder(orders[ordersIndex]);
-        console.log(orders[ordersIndex]);
-      }
-    }
-  }, [orders, user]);
   return (
     <>
       <div className="bill py-12 mt-16">

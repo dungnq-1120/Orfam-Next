@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
-import { useUser } from "@/hooks/useUser";
 import { useOrders } from "@/hooks/useOrder";
 
 import Loading from "@/shared/loading";
@@ -17,17 +16,8 @@ import checkSuccess from "@/image/icon/check.svg";
 
 const Order = () => {
   const { orders, isLoading } = useOrders<TOrder[]>();
-  const { user, refreshUser } = useUser<TUser>();
   const [myOrder, setMyOrder] = useState<TOrder | null>(null);
 
-  useEffect(() => {
-    if (user) {
-      const ordersIndex = orders.findIndex((order) => order.userId === user.id);
-      if (ordersIndex !== -1) {
-        setMyOrder(orders[ordersIndex]);
-      }
-    }
-  }, [orders, user]);
 
   return (
     <>

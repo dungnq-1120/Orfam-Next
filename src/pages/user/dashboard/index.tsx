@@ -2,13 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-import { useUser } from "@/hooks/useUser";
 import { useProfile } from "@/hooks/useProfile";
 
 import { Button } from "@/shared/button";
 
 import type { TProfile } from "@/services/type";
-import type { TUser } from "@/components/features/checkout/type";
+import type { TMyProfile, TUser } from "@/components/features/checkout/type";
 
 import userAvatar from "@/image/logo/favico.png";
 import camera from "@/image/icon/camera.svg";
@@ -17,9 +16,7 @@ const DashboardUser = () => {
   const router = useRouter();
   const [avatar, setAvatar] = useState<File | null>(null);
   const inputAvatarRef = useRef<HTMLInputElement>(null);
-  const [profileName, setProfileName] = useState<string | null>("");
-  const { user } = useUser<TUser>();
-  const { profile, refreshProfile } = useProfile<TProfile[]>();
+  const { profile, refreshProfile } = useProfile<TMyProfile>();
 
   const dashboardUser = [
     {
@@ -37,17 +34,10 @@ const DashboardUser = () => {
   const [selectedItem, setSelectedItem] = useState(router.pathname);
 
   useEffect(() => {
-    if (profile) {
-      const profileIndex = profile.findIndex((item) => item.userId === user?.id);
-      if (profileIndex !== -1) {
-        setProfileName(profile[profileIndex].name);
-      }
-    }
-
     if (router.pathname === "/user") {
       router.push(dashboardUser[0].link);
     }
-  }, [profile, user, selectedItem]);
+  }, [profile, selectedItem]);
 
   return (
     <div className="text-white">
@@ -80,7 +70,7 @@ const DashboardUser = () => {
               <Image className=" w-5 h-5 " src={camera} alt="" />
             </div>
           </div>
-          <h4 className="my-1 font-semibold xs:text-sm">{profileName ? profileName.toUpperCase() : user?.name.toUpperCase()}</h4>
+          <h4 className="my-1 font-semibold xs:text-sm">{profile && profile.data.name.toUpperCase()}</h4>
           <h6 className="text-sm xs:text-xs">Customer</h6>
         </div>
         <div>

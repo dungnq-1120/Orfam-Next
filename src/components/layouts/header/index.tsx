@@ -166,45 +166,47 @@ export const Header = () => {
           </Button>
         </div>
       </nav>
-      <nav className="nav fixed bottom-10 left-2/4 -translate-x-2/4 hidden shadow-shadow1 z-40 bg-white w-11/12 rounded-[30px] m-auto md:block ">
-        <ul className="flex justify-between px-20 xs:px-10">
-          <li
-            onClick={() => {
-              router.push("/");
-            }}
-            className="cursor-pointer"
-          >
-            <Image className="w-12 h-12" src={homeIcon} alt="" />
-          </li>
-          <li
-            onClick={() => {
-              setIsOpenModalBars(true);
-            }}
-            className="cursor-pointer"
-          >
-            <Image className="w-12 h-12" src={barsIcon} alt="" />
-          </li>
-          <li
-            onClick={() => {
-              router.push("/carts");
-            }}
-            className="cursor-pointer relative"
-          >
-            <Image className="w-12 h-12" src={cartIcon} alt="" />
-            <span className="absolute -right-1 top-1 text-white bg-[#ff0000] w-4 h-4 flex justify-center items-center rounded-full text-xs font-semibold bg-">
-              {isDefined(carts) && carts.length}
-            </span>
-          </li>
-          <li
-            onClick={() => {
-              router.push("/user");
-            }}
-            className="cursor-pointer"
-          >
-            <Image className="w-12 h-12" src={userIcon} alt="" />
-          </li>
-        </ul>
-      </nav>
+      {!router.pathname.startsWith("/admin") && (
+        <nav className="nav fixed bottom-10 left-2/4 -translate-x-2/4 hidden shadow-shadow1 z-40 bg-white w-11/12 rounded-[30px] m-auto md:block ">
+          <ul className="flex justify-between px-20 xs:px-10">
+            <li
+              onClick={() => {
+                router.push("/");
+              }}
+              className="cursor-pointer"
+            >
+              <Image className="w-12 h-12" src={homeIcon} alt="" />
+            </li>
+            <li
+              onClick={() => {
+                setIsOpenModalBars(true);
+              }}
+              className="cursor-pointer"
+            >
+              <Image className="w-12 h-12" src={barsIcon} alt="" />
+            </li>
+            <li
+              onClick={() => {
+                router.push("/carts");
+              }}
+              className="cursor-pointer relative"
+            >
+              <Image className="w-12 h-12" src={cartIcon} alt="" />
+              <span className="absolute -right-1 top-1 text-white bg-[#ff0000] w-4 h-4 flex justify-center items-center rounded-full text-xs font-semibold bg-">
+                {isDefined(carts) && carts.length}
+              </span>
+            </li>
+            <li
+              onClick={() => {
+                router.push("/user");
+              }}
+              className="cursor-pointer"
+            >
+              <Image className="w-12 h-12" src={userIcon} alt="" />
+            </li>
+          </ul>
+        </nav>
+      )}
       <div>
         <Modal
           modalClass={`bg-white h-screen fixed left-0 w-72 p-3 duration-500 `}

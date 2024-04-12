@@ -5,8 +5,7 @@ import useSWRMutation from "swr/mutation";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCarts } from "@/hooks/useCart";
-import { useUser } from "@/hooks/useUser";
+
 import { useOrders } from "@/hooks/useOrder";
 
 import { Button } from "@/shared/button";
@@ -16,10 +15,13 @@ import InputForm from "@/shared/input";
 import { fetcherPost } from "@/services/callApiService";
 
 import type { ApiResponseProductBrandAndCategory } from "@/services/type";
-import type { TFormBilling, TOptionShip, TOrder, TUser } from "./type";
+import type { TFormBilling, TMyProfile, TOptionShip, TOrder, TUser } from "./type";
 
 import isDefined from "@/utils/isDefine";
 import { calculateTotalPrice } from "@/utils/totalPrice";
+import { useCarts } from "@/hooks/useCart";
+import { profile } from "console";
+import { useProfile } from "@/hooks/useProfile";
 
 const checkoutSchema = z.object({
   name: z.string().min(1, "Please enter your name").trim(),
@@ -38,8 +40,8 @@ const CheckoutInfo = () => {
   const [selectedOption, setSelectedOption] = useState<TOptionShip>(deliveryOptions[0]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const { carts } = useCarts<ApiResponseProductBrandAndCategory[]>();
+  const { profile } = useProfile<TMyProfile>();
   const { orders, refreshOrders } = useOrders<TOrder[]>();
-  const { user } = useUser<TUser>();
   const { trigger: addOrder } = useSWRMutation("/orders", fetcherPost);
 
   const form = useForm({
@@ -60,11 +62,11 @@ const CheckoutInfo = () => {
   ];
 
   const onSubmit = (data: TFormBilling) => {
-    if (user) {
-      addOrder({ ...data, userId: user.id, shipping: selectedOption, carts });
-      refreshOrders();
-      router.push("/bill");
-    }
+    // if (user) {
+    //   addOrder({ ...data, userId: user.id, shipping: selectedOption, carts });
+    //   refreshOrders();
+    //   router.push("/bill");
+    // }
   };
 
   useEffect(() => {
@@ -74,15 +76,15 @@ const CheckoutInfo = () => {
       setTotalPrice(totalPrice + selectedOption.price);
     }
 
-    if (user) {
+    if (profile) {
       form.reset({
-        name: user.name,
-        phone: "",
-        email: user.email,
-        address: "",
+        name: profile.data.name ? profile.data.name : "",
+        phone: profile.data.phone ? profile.data.phone : "",
+        email: profile.data.email ? profile.data.email : "",
+        address: profile.data.address ? profile.data.address : "",
       });
     }
-  }, [carts, selectedOption.price, user]);
+  }, [carts, selectedOption.price, profile]);
 
   return (
     <>

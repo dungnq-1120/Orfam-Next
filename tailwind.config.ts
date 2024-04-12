@@ -136,6 +136,7 @@ const config = {
       screens: {
         s: { max: "350px" },
         xs: { max: "428px" },
+        xss: { max: "530px" },
         sm: { max: "640px" },
         csm: { max: "700px" },
         md: { max: "768px" },

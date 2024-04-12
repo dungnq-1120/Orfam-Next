@@ -19,6 +19,17 @@ export interface TUser {
   email: string;
 }
 
+export interface TMyProfile {
+  status: number;
+  data: {
+    id: number;
+    name: string;
+    email: string;
+    phone?: string;
+    address?: string;
+  };
+}
+
 export interface TOrder extends TFormBilling {
   id: number;
   shipping: object;
