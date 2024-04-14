@@ -17,6 +17,8 @@ import { fetcherPatch, fetcherPost } from "@/services/callApiService";
 
 import Rate from "../rate";
 import eyeImg from "@/image/icon/eye.svg";
+import { useProfile } from "@/hooks/useProfile";
+import { TMyProfile } from "../checkout/type";
 
 interface Props extends Omit<React.HTMLAttributes<HTMLDivElement>, "id"> {
   id: number;
@@ -33,6 +35,7 @@ const CardProduct = React.forwardRef<HTMLDivElement, Props>(
     const router = useRouter();
     const { products } = useProducts<ApiResponseProductBrandAndCategory[]>({ _expand: ["categories", "brands"] });
     const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>();
+    const { profile } = useProfile<TMyProfile>();
 
     const { trigger: addToCart } = useSWRMutation("/carts", fetcherPost);
     const { trigger: updateCart } = useSWRMutation("/carts", fetcherPatch);
@@ -46,7 +49,7 @@ const CardProduct = React.forwardRef<HTMLDivElement, Props>(
       if (product) {
         const cart = carts.find((cart) => cart.id === id);
         if (!cart) {
-          addToCart(product);
+          addToCart({ ...product, userId: profile?.data.id });
           refreshCarts();
           showToast({
             message: `${product.title} successfully added to cart`,

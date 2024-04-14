@@ -21,6 +21,7 @@ import { fetcherPost } from "@/services/callApiService";
 import authLocal from "@/utils/localStorage";
 
 import logo from "@/image/logo/Logo.png";
+import { ROLES } from "@/services/type";
 
 const registerSchema = z
   .object({
@@ -56,11 +57,12 @@ const Register = () => {
   });
   const [emailErrorRegister, setEmailErrorRegister] = useState("");
   const router = useRouter();
-  const { trigger, isMutating } = useSWRMutation("/auth/register", fetcherPost);
+  const { trigger: addUser, isMutating } = useSWRMutation("/auth/register", fetcherPost);
   const { setInfo } = authLocal;
 
   const onSubmit = async (data: TFormRegister) => {
-    const token = (await trigger(data)) as TToken;
+    const { termsAccepted, ...registerData } = data;
+    const token = (await addUser({ ...registerData, role: ROLES.CUSTOMER })) as TToken;
 
     if (token && token.access_token) {
       setInfo(token, "KEY_TOKEN");

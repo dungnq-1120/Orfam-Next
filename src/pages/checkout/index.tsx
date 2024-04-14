@@ -1,5 +1,5 @@
 import React from "react";
-import Layout from "@/components/layouts/publicLayout";
+import PrivateLayout from "@/components/layouts/privateLayout";
 import CheckoutInfo from "@/components/features/checkout";
 
 const Checkout = () => {
@@ -11,7 +11,7 @@ const Checkout = () => {
 };
 
 Checkout.getLayout = function getLayout(page: React.ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <PrivateLayout>{page}</PrivateLayout>;
 };
 
 export default Checkout;

@@ -1,7 +1,7 @@
 import React from "react";
 import { ToastContainer } from "react-toastify";
 
-import PublicLayout from "@/components/layouts/publicLayout";
+import PrivateLayout from "@/components/layouts/privateLayout";
 import DashboardUser from "./dashboard";
 
 const User = ({ children }: { children: React.ReactNode }) => {
@@ -17,7 +17,7 @@ const User = ({ children }: { children: React.ReactNode }) => {
 };
 
 User.getLayout = function getLayout(page: React.ReactElement) {
-  return <PublicLayout>{page}</PublicLayout>;
+  return <PrivateLayout>{page}</PrivateLayout>;
 };
 
 export default User;

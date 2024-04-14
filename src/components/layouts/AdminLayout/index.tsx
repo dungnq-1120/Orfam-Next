@@ -5,16 +5,19 @@ import { Header } from "../header";
 import Footer from "../footer";
 import authLocal from "@/utils/localStorage";
 import { useRouter } from "next/router";
+import { ROLES } from "@/services/type";
 
 const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 
-const PrivateLayout = ({ children }: { children: React.ReactNode }) => {
+const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
-  const { getInfo } = authLocal;
+  const { getInfo, setInfo } = authLocal;
   const [shouldRender, setShouldRender] = useState(false);
+  const [checkRole, setCheckRole] = useState(false);
 
   useEffect(() => {
     const token = getInfo("KEY_TOKEN");
+    const { role } = getInfo("ROLE");
 
     if (!token) {
       setShouldRender(false);
@@ -22,9 +25,17 @@ const PrivateLayout = ({ children }: { children: React.ReactNode }) => {
     } else {
       setShouldRender(true);
     }
-  }, [router]);
 
-  if (!shouldRender) {
+    if (role && role === ROLES.ADMIN) {
+      setCheckRole(true);
+      router.push("/admin/createProduct");
+    } else {
+      setCheckRole(false);
+      router.push("/");
+    }
+  }, []);
+
+  if (!shouldRender || !checkRole) {
     return null;
   }
 
@@ -41,4 +52,4 @@ const PrivateLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default PrivateLayout;
+export default AdminLayout;

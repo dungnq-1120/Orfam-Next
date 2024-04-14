@@ -19,9 +19,20 @@ export interface TUser {
   email: string;
 }
 
+export interface TMyProfile {
+  status: number;
+  data: {
+    id: number;
+    name: string;
+    email: string;
+    role: number;
+    phone?: string;
+    address?: string;
+  };
+}
+
 export interface TOrder extends TFormBilling {
   id: number;
   shipping: object;
-  userId: number;
-  carts: ApiResponseProductBrandAndCategory[];
+  cartsOrder: ApiResponseProductBrandAndCategory[];
 }

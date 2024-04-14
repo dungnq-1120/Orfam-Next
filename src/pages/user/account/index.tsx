@@ -5,20 +5,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import useSWRMutation from "swr/mutation";
 import { useRouter } from "next/router";
 
-import { useUser } from "@/hooks/useUser";
 import { useProfile } from "@/hooks/useProfile";
 
 import User from "..";
-import PublicLayout from "@/components/layouts/publicLayout";
-import { TFormBilling, TUser } from "@/components/features/checkout/type";
+import PrivateLayout from "@/components/layouts/privateLayout";
+import { TFormBilling, TMyProfile } from "@/components/features/checkout/type";
 
 import { FormField, FormItem } from "@/shared/form";
 import InputForm from "@/shared/input";
 import { Button } from "@/shared/button";
 
 import { fetcherPost, fetcherPut } from "@/services/callApiService";
-
-import type { TProfile } from "@/services/type";
 
 import showToast from "@/utils/showToast";
 import isDefined from "@/utils/isDefine";
@@ -32,10 +29,10 @@ const userInfo = z.object({
 
 const Account = () => {
   const router = useRouter();
-  const { user, refreshUser } = useUser<TUser>();
-  const { profile, refreshProfile } = useProfile<TProfile[]>();
-  const { trigger: addProfile, isMutating } = useSWRMutation("/profile", fetcherPost);
-  const { trigger: updateProfile } = useSWRMutation("/profile", fetcherPut);
+  const { profile, refreshProfile } = useProfile<TMyProfile>();
+
+  const { trigger: addProfile, isMutating } = useSWRMutation("/auth/my-profile", fetcherPost);
+  const { trigger: updateProfile } = useSWRMutation("/auth/my-profile", fetcherPut);
 
   const form = useForm({
     resolver: zodResolver(userInfo),
@@ -55,40 +52,23 @@ const Account = () => {
   ];
 
   const onSubmit = async (data: TFormBilling) => {
-    if (user) {
-      const profileIndex = profile?.findIndex((item) => item.userId === user.id);
-
-      if (profileIndex === -1) {
-        addProfile({ ...data, userId: user.id });
-        showToast({
-          message: "Updated account information successfully",
-          type: "success",
-        });
-      } else {
-        updateProfile({ ...data, userId: user.id });
-        showToast({
-          message: "Updated account information successfully",
-          type: "success",
-        });
-      }
-    }
     refreshProfile();
   };
 
   useEffect(() => {
-    const { name, phone, email, address } = profile?.find((item) => item.userId === user?.id) || {};
-
-    form.reset({
-      name: name || user?.name || "",
-      phone: phone || "",
-      email: email || user?.email || "",
-      address: address || "",
-    });
-  }, [user, profile]);
+    if (profile) {
+      form.reset({
+        name: profile.data ? profile.data.name : "",
+        phone: profile.data.phone ? profile.data.phone : "",
+        email: profile.data ? profile.data.email : "",
+        address: profile.data.address ? profile.data.address : "",
+      });
+    }
+  }, [profile]);
 
   return (
     <div className="manage-account text-center text-gray-700">
-      {isDefined(user) ? (
+      {isDefined(profile) ? (
         <div className="manage-account text-center text-gray-700 p-4">
           <h4 className="text-green-ct5 font-semibold text-2xl">EDIT PROFILE</h4>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -140,9 +120,9 @@ const Account = () => {
 
 Account.getLayout = function getLayout(page: React.ReactElement) {
   return (
-    <PublicLayout>
+    <PrivateLayout>
       <User>{page}</User>
-    </PublicLayout>
+    </PrivateLayout>
   );
 };
 
