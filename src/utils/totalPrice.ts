@@ -11,3 +11,8 @@ export const calculateTotalPrice = (items: ApiResponseProductBrandAndCategory[])
 
   return totalPrice;
 };
+
+export const calculateTotalPriceDiscount = ({ totalPrice, discount }: { totalPrice: number; discount: string }) => {
+  const totalPriceDiscount = totalPrice - totalPrice * (parseFloat(discount) / 100);
+  return totalPriceDiscount;
+};

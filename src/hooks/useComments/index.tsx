@@ -1,23 +1,24 @@
 import useSWR from "swr";
 import { fetcherGet } from "@/services/callApiService";
 
-export function useProfile<T>() {
-  const url = "/auth/my-profile";
+export function useComments<T>() {
+  const url = "/comments";
+  
   const {
-    data: profile,
+    data: comments,
     isLoading,
     mutate,
   } = useSWR<T>([url], ([url]: [string]) => fetcherGet(url), {
-    revalidateIfStale: true,
+    revalidateIfStale: false,
   });
 
-  const refreshProfile = () => {
+  const refreshComments = () => {
     mutate(fetcherGet(url));
   };
 
   return {
-    profile,
+    comments,
     isLoading,
-    refreshProfile,
+    refreshComments,
   };
 }

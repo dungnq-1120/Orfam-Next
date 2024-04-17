@@ -3,27 +3,29 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import { useOrders } from "@/hooks/useOrder";
+import { useProfile } from "@/hooks/useProfile";
 
 import PrivateLayout from "@/components/layouts/privateLayout";
 import { Button } from "@/shared/button";
+import Loading from "@/shared/loading";
 
 import type { TMyProfile, TOrder } from "@/components/features/checkout/type";
 
 import checkSuccess from "@/image/icon/check.svg";
 import isDefined from "@/utils/isDefine";
-import { useProfile } from "@/hooks/useProfile";
 
 const Bill = () => {
   const router = useRouter();
-  const { orders } = useOrders<TOrder[]>();
+  const { orders, refreshOrders } = useOrders<TOrder[]>();
   const [order, setOrder] = useState<TOrder>();
   const { profile } = useProfile<TMyProfile>();
 
   useEffect(() => {
     if (orders.length > 0 && profile && profile.data) {
-      const orderInfo = orders.find((order) => order.cartsOrder.map((cart) => cart.userId === profile.data.id));
+      const orderInfo = orders.find((order) => order.userId === profile.data.id);
       setOrder(orderInfo);
     }
+    refreshOrders();
   }, [orders, profile]);
 
   return (
@@ -36,7 +38,7 @@ const Bill = () => {
             <h4 className="font-semibold  mt-2 text-2xl mb-1 text-green-ct6">Order Success</h4>
             <span className="text-lg tracking-[.25em] text-green-ct6 block">********************************</span>
             <h5 className="mt-5 font-semibold text-lg">Order Information</h5>
-
+            {orders.length === 0 && <Loading types="primary" className="mt-10 mb-10" />}
             {isDefined(order) && (
               <ul className="mt-4">
                 <li className="font-semibold text-blue-ct7">Consignee name: {order.name}</li>

@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
+import { useBrands } from "@/hooks/useBrand";
+import useDebounce from "@/hooks/useDebounce";
 
 import Admin from "..";
 import AdminLayout from "@/components/layouts/AdminLayout";
@@ -11,18 +14,23 @@ import { FormField, FormItem } from "@/shared/form";
 import InputForm from "@/shared/input";
 import { Button } from "@/shared/button";
 
-import cherry from "@/image/product/product-img-15.webp";
+import { fetcherDelete, fetcherPatch, fetcherPost } from "@/services/callApiService";
+import useSWRMutation from "swr/mutation";
+import { ApiResponseProductBrandAndCategory, Product } from "@/services/type";
+import showToast from "@/utils/showToast";
+import { useCategories } from "@/hooks/useCategories";
+import { useProducts } from "@/hooks/useProducts";
+import isDefined from "@/utils/isDefine";
 
 const ProductInfo = z.object({
   title: z.string().min(1, "Please enter your title product").trim(),
-  price: z.string().min(1, "Please enter your price").trim(),
+  price: z.coerce.number().min(1, "Please enter your title product"),
+  quantity: z.coerce.number().min(1, "Please enter your quantity"),
   image: z.string().min(1, "Please enter your image product").trim(),
-  rate: z.string().min(1, "Please enter your rate").trim(),
+  rate: z.coerce.number().min(1, "Please enter your rate"),
   status: z.string().min(1, "Please enter your status").trim(),
   brand: z.string().min(1, "Please enter your status").trim(),
-  brandsId: z.string().min(1, "Please enter your brandsId").trim(),
   category: z.string().min(1, "Please enter your status").trim(),
-  categoriesId: z.string().min(1, "Please enter your categoriesId").trim(),
 });
 
 const CreateProduct = () => {
@@ -30,31 +38,121 @@ const CreateProduct = () => {
     resolver: zodResolver(ProductInfo),
     defaultValues: {
       title: "",
-      price: "",
+      price: 0,
       image: "",
-      rate: "",
+      rate: 0,
+      quantity: 1,
       status: "",
       brand: "",
-      brandsId: "",
       category: "",
-      categoriesId: "",
     },
   });
 
   const formFields = [
     { name: "title", placeholder: "Please enter your title product" } as const,
     { name: "price", placeholder: "Please enter your price" } as const,
+    { name: "quantity", placeholder: "Please enter your quantity" } as const,
     { name: "image", placeholder: "Please enter your image product" } as const,
     { name: "rate", placeholder: "Please enter your rate" } as const,
     { name: "status", placeholder: "Please enter your status" } as const,
     { name: "brand", placeholder: "Please enter your brand" } as const,
-    { name: "brandsId", placeholder: "Please enter your brandsId" } as const,
     { name: "category", placeholder: "Please enter your category" } as const,
-    { name: "categoriesId", placeholder: "Please enter your categoriesId" } as const,
   ];
+  const tableTitleProducts = ["Title", "Price", "Image", "Rate", "Status", "Brand", "Category", "Action"];
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const [categoriesId, setCategoriesId] = useState<number>(1);
+  const [brandsId, setBrandsId] = useState<number>(1);
+  const [isEditProduct, setIsEditProduct] = useState<boolean>(false);
+  const [idProduct, setIdProduct] = useState<number>(0);
+  const [valueSearch, setValueSearch] = useState<string>("");
+
+  const { categories, refreshCategories } = useCategories();
+  const { brands, refreshBrand } = useBrands();
+  const debounceValue = useDebounce(valueSearch, 2000);
+  const { products, refreshProducts } = useProducts<ApiResponseProductBrandAndCategory[]>({
+    _expand: ["categories", "brands"],
+    title_like: debounceValue,
+  });
+
+  const { trigger: addProduct } = useSWRMutation("/products", fetcherPost);
+  const { trigger: addCategories } = useSWRMutation("/categories", fetcherPost);
+  const { trigger: addBrand } = useSWRMutation("/brands", fetcherPost);
+  const { trigger: updateProduct } = useSWRMutation("/products", fetcherPatch);
+  const { trigger: deleteProduct } = useSWRMutation("/products", fetcherDelete);
+
+  const onSubmit = (data: Product) => {
+    const findCategoriesName = categories?.find((category) => category.name === data.category);
+    const findBrandName = brands?.find((brand) => brand.name === data.brand);
+    const { category, brand, ...dataFormProduct } = data;
+
+    if (!isEditProduct) {
+      if (findCategoriesName && findBrandName) {
+        addProduct({ ...dataFormProduct, categoriesId: findCategoriesName.id, brandsId: findBrandName.id });
+      } else {
+        addProduct({ ...dataFormProduct, categoriesId: categoriesId, brandsId: brandsId });
+        addCategories({ id: categoriesId, name: category });
+        addBrand({ id: brandsId, name: brand });
+        setBrandsId(brandsId + 1);
+        setCategoriesId(categoriesId + 1);
+      }
+
+      refreshBrand();
+      refreshCategories();
+      refreshProducts();
+
+      showToast({
+        message: `Success add product ${data.title}`,
+        type: "success",
+      });
+    } else {
+      const product = products?.find((product) => product.id === idProduct);
+
+      if (data.category === product?.categories.name) {
+        updateProduct({ ...dataFormProduct, id: idProduct });
+      } else {
+        const findCategoriesProduct = categories?.find((category) => category.name === data.category);
+        const dataUpdateCategories = { ...dataFormProduct, categoriesId: findCategoriesProduct?.id };
+        updateProduct({ ...dataUpdateCategories, id: idProduct });
+      }
+
+      if (data.brand === product?.brands.name) {
+        updateProduct({ ...dataFormProduct, id: idProduct });
+      } else {
+        const findBrandProduct = brands?.find((brand) => brand.name === data.brand);
+        const dataUpdateBrand = { ...dataFormProduct, brandsId: findBrandProduct?.id };
+        updateProduct({ ...dataUpdateBrand, id: idProduct });
+      }
+    }
+
+    form.reset({
+      title: "",
+      price: 0,
+      image: "",
+      rate: 0,
+      quantity: 1,
+      status: "",
+      brand: "",
+      category: "",
+    });
+
+    refreshProducts();
+    setIsEditProduct(false);
+  };
+
+  const handleEditProduct = (product: ApiResponseProductBrandAndCategory) => {
+    form.reset({
+      title: product.title,
+      price: product.price,
+      image: product.image,
+      rate: product.rate,
+      quantity: product.quantity,
+      status: product.status,
+      brand: product.brands.name,
+      category: product.categories.name,
+    });
+
+    setIdProduct(product.id);
+    setIsEditProduct(true);
   };
 
   return (
@@ -84,49 +182,85 @@ const CreateProduct = () => {
               )}
             />
           ))}
-          <Button type="submit" className="mt-5 w-full py-3">
-            CREATE PRODUCT
-          </Button>
+          {!isEditProduct ? (
+            <Button type="submit" className="mt-5 w-full py-3">
+              CREATE PRODUCT
+            </Button>
+          ) : (
+            <Button type="submit" className="mt-5 w-full py-3">
+              APPLY EDIT
+            </Button>
+          )}
         </form>
       </div>
       <div className="shadow-shadow2 p-5 mt-10">
         <h3 className="p-3 font-semibold text-blue-ct7 text-lg">PRODUCT LIST</h3>
-        <div className="overflow-x-auto">
-          <table className="border-collapse border w-[200%] csm:w-[250%] csm:text-xs xs:!w-[350%]">
-            <thead>
+        <InputForm
+          value={valueSearch}
+          onChange={(e) => {
+            setValueSearch(e.target.value);
+          }}
+          types="success"
+          className="py-2 mb-5 rounded text-sm border-1 w-1/4 nm:w-2/4 sm:!w-3/4"
+          placeholder="Search product"
+        />
+        <div className="overflow-auto h-96">
+          <table className="border-collapse border w-[130%] csm:w-[250%] csm:text-xs xs:!w-[340%]">
+            <thead className="sticky -top-1 bg-white">
               <tr>
-                <th className="border border-slate-600 py-3  px-3">Title</th>
-                <th className="border border-slate-600 py-3  px-3">Price</th>
-                <th className="border border-slate-600 py-3  px-3">Image</th>
-                <th className="border border-slate-600 py-3  px-3">Rate</th>
-                <th className="border border-slate-600 py-3  px-3">Status</th>
-                <th className="border border-slate-600 py-3  px-3">Brand</th>
-                <th className="border border-slate-600 py-3  px-3">BrandsId</th>
-                <th className="border border-slate-600 py-3  px-3">Category</th>
-                <th className="border border-slate-600 py-3  px-3">CategoriesId</th>
-                <th className="border border-slate-600 py-3  px-3">Action</th>
+                {tableTitleProducts.map((item) => (
+                  <th key={item} className="border border-slate-600 py-3 px-3">
+                    {item}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              <tr className="text-center">
-                <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">Orange Very Vip Pro</td>
-                <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">7.00</td>
-                <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">
-                  <Image className="w-20 h-20 m-auto" src={cherry} alt="" />
-                </td>
-                <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">5</td>
-                <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">Sale</td>
-                <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">Supper Market</td>
-                <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">1</td>
-                <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">Fresh meat</td>
-                <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">2</td>
-                <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">
-                  <div className="flex flex-col items-center">
-                    <Button className="w-28 font-semibold py-3 mb-2 bg-red-500">DELETE</Button>
-                    <Button className="w-28 font-semibold py-3 bg-green-500">EDIT</Button>
-                  </div>
-                </td>
-              </tr>
+              {isDefined(products) &&
+                products.map((product) => (
+                  <tr key={product.id} className="text-center text-sm">
+                    <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">{product.title}</td>
+                    <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">{product.price}</td>
+                    <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">
+                      <Image width={550} height={550} className="w-20 h-20 m-auto" src={product.image} alt="" />
+                    </td>
+                    <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">{product.rate}</td>
+                    <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">{product.status}</td>
+                    <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">{product.brands.name}</td>
+                    <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">{product.categories.name}</td>
+                    <td className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct7">
+                      <div className="flex flex-col items-center">
+                        <Button
+                          onClick={() => {
+                            deleteProduct(product);
+                            refreshProducts();
+                            showToast({
+                              message: `You just deleted the ${product.title} product`,
+                              type: "warning",
+                            });
+                          }}
+                          className="w-28 font-semibold py-3 mb-2 bg-red-500"
+                        >
+                          DELETE
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            handleEditProduct(product);
+                          }}
+                          className="w-28 font-semibold py-3 bg-green-500"
+                        >
+                          EDIT
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              {products?.length === 0 &&
+                tableTitleProducts.map((item) => (
+                  <td className="border border-slate-600 py-3 text-xs px-3 font-semibold text-center text-blue-ct7" key={item}>
+                    NO PRODUCT
+                  </td>
+                ))}
             </tbody>
           </table>
         </div>

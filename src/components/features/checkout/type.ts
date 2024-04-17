@@ -33,6 +33,14 @@ export interface TMyProfile {
 
 export interface TOrder extends TFormBilling {
   id: number;
-  shipping: object;
+  userId: number;
+  shipping: {
+    type: string;
+    price: number;
+    label: string;
+  };
+  orderer: string;
+  totalPrice: number;
+  status: string;
   cartsOrder: ApiResponseProductBrandAndCategory[];
 }

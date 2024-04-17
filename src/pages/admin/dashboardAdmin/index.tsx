@@ -6,7 +6,7 @@ import userAvatar from "@/image/logo/favico.png";
 
 const DashboardAdmin = () => {
   const router = useRouter();
-  const [selectedItem, setSelectedItem] = useState(router.pathname);
+
   const menuItems = [
     {
       text: "CREATE PRODUCT",
@@ -21,14 +21,24 @@ const DashboardAdmin = () => {
       route: "/admin/orders",
     },
     {
-      text: "REVENUE MANAGEMENT",
-      route: "/admin/revenue",
+      text: "MANAGE MESSAGES",
+      route: "/admin/message",
+    },
+    {
+      text: "MANAGE DISCOUNT",
+      route: "/admin/discount",
     },
   ];
 
+  useEffect(() => {
+    if (router.pathname === "/admin") {
+      router.push(menuItems[0].route);
+    }
+  }, []);
+
   return (
     <>
-      <div className="h-[460px] top-20 py-10 bg-blue-ct6  w-1/4 rounded-lg text-white px-2 self-start sticky xss:relative xss:top-0 xss:w-full xss:h-full xss:mb-10 xss:shadow-shadow2">
+      <div className="h-[520px] top-20 py-10 bg-blue-ct6  w-1/4 rounded-lg text-white px-2 self-start sticky xss:relative xss:top-0 xss:w-full xss:h-full xss:mb-10 xss:shadow-shadow2">
         <Image className="w-14 h-14 border-2 border-yellow-100 rounded-full m-auto object-cover lg:w-12 lg:h-12" src={userAvatar} alt="userAvatar" />
         <h3 className="text-center mt-2 font-semibold lg:text-xs">HIEN</h3>
         <h5 className="text-center font-medium mt-2 text-sm lg:text-xs">ADMIN</h5>

@@ -5,30 +5,36 @@ import { useRouter } from "next/router";
 import { useCarts } from "@/hooks/useCart";
 import useSWRMutation from "swr/mutation";
 
-import { useProfile } from "@/hooks/useProfile";
-
-import type { TMyProfile } from "../../checkout/type";
+import useGetCartsUser from "@/hooks/useGetCartsUser";
 
 import { Button } from "@/shared/button";
 import InputForm from "@/shared/input";
 
-import { ApiResponseProductBrandAndCategory } from "@/services/type";
+import { ApiResponseProductBrandAndCategory, TCodeDiscount, TDiscount } from "@/services/type";
 import { fetcherDelete, fetcherPatch } from "@/services/callApiService";
+
 import { calculateTotalPrice } from "@/utils/totalPrice";
 import isDefined from "@/utils/isDefine";
 import { isEmptyArray } from "@/utils/isEmptyArray";
 import showToast from "@/utils/showToast";
 
 import bin from "@/image/icon/bin.svg";
-import useGetCartsUser from "@/hooks/useGetCartsUser";
+import { useDiscounts } from "@/hooks/useDiscount";
+import { TMyProfile, TOrder } from "../../checkout/type";
+import { useProfile } from "@/hooks/useProfile";
 
 const ProductCartList = () => {
   const router = useRouter();
+  const cartsUser = useGetCartsUser();
+  const [discountValue, setDiscountValue] = useState<string>("");
+  const [discount, setDiscount] = useState<TCodeDiscount>();
+  const [totalPrice, setTotalPrice] = useState<number>(0);
   const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>();
+  const { discounts } = useDiscounts<TCodeDiscount[]>();
+  const { profile } = useProfile<TMyProfile>();
+
   const { trigger: updateCart } = useSWRMutation("/carts", fetcherPatch);
   const { trigger: deleteCart } = useSWRMutation("/carts", fetcherDelete);
-  const [totalPrice, setTotalPrice] = useState<number>(0);
-  const cartsUser = useGetCartsUser();
 
   const updateCartQuantity = (id: number, delta: number) => {
     const cartIndex = carts.findIndex((cart) => cart.id === id);
@@ -46,6 +52,7 @@ const ProductCartList = () => {
     const cartIndex = carts.findIndex((cart) => cart.id === id);
     if (cartIndex !== -1) {
       const newCart = { ...carts[cartIndex] };
+
       deleteCart(newCart);
       refreshCarts();
       showToast({
@@ -55,10 +62,29 @@ const ProductCartList = () => {
     }
   };
 
+  const handleApplyCoupon = () => {
+    const discount = discounts?.find((discount) => discount.name === discountValue);
+    if (discount) {
+      setDiscount(discount);
+      const total = totalPrice - totalPrice * (parseFloat(discount.discount) / 100);
+      setTotalPrice(total);
+    }
+  };
+
+  const handleCheckout = () => {
+    const cartUser = carts.find((cart) => cart.userId === profile?.data.id);
+
+    if (discount && cartUser) {
+      const newCart = { ...cartUser, discount: discount };
+      updateCart(newCart);
+    }
+    router.push("/checkout");
+  };
+
   useEffect(() => {
     const totalPrice = calculateTotalPrice(carts);
     setTotalPrice(totalPrice);
-  }, []);
+  }, [carts]);
 
   return (
     <div className="product-cart-list mt-20 py-16 px-4">
@@ -124,14 +150,29 @@ const ProductCartList = () => {
         </table>
       </div>
       <div className="discount mt-10 flex justify-end sm:block">
-        <InputForm className="border-1 rounded-3xl text-xs py-4 pl-5 w-1/4 sm:w-full sm:mb-3" placeholder="Coupon code" />
-        <Button className="py-3 px-4 ml-3 rounded-3xl text-base sm:w-full sm:ml-0">Apply Coupon</Button>
+        <InputForm
+          value={discountValue}
+          onChange={(e) => {
+            setDiscountValue(e.target.value);
+          }}
+          className="border-1 rounded-3xl text-xs py-4 pl-5 w-1/4 sm:w-full sm:mb-3"
+          placeholder="Coupon code"
+        />
+        <Button onClick={handleApplyCoupon} className="py-3 px-4 ml-3 rounded-3xl text-base sm:w-full sm:ml-0">
+          Apply Coupon
+        </Button>
       </div>
       <div className="flex justify-end mt-20">
         <ul className="w-3/6 nm:w-full">
           <li>
             <h3 className="text-2xl mb-2 text-blue-ct7 font-medium">Cart Totals</h3>
           </li>
+          {isDefined(discount) && (
+            <li className="border-1 border-b-0 flex justify-between text-blue-ct7 font-semibold p-3 ">
+              <h4>Discount</h4>
+              <span className="text-green-500 font-semibold">{discount.discount}</span>
+            </li>
+          )}
           <li className="border-1 flex justify-between text-blue-ct7 font-semibold p-3 ">
             <h4>Total</h4>
             <span className="text-green-500 font-semibold">${totalPrice.toFixed(2)}</span>
@@ -139,9 +180,7 @@ const ProductCartList = () => {
           <li>
             <Button
               disabled={isEmptyArray(carts)}
-              onClick={() => {
-                router.push("/checkout");
-              }}
+              onClick={handleCheckout}
               types="success"
               className="px-8 py-3 rounded-3xl opacity-100 mt-3 text-sm font-semibold hover:bg-blue-ct7 hover:opacity-100"
             >

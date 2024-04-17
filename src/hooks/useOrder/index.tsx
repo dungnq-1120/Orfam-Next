@@ -2,7 +2,7 @@ import useSWR from "swr";
 import { fetcherGet } from "@/services/callApiService";
 
 export function useOrders<T>(query?: object) {
-  const url = `/orders`;
+  const url = "/orders";
   const {
     data: orders,
     isLoading,

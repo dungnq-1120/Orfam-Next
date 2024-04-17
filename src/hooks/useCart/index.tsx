@@ -8,7 +8,7 @@ export function useCarts<T>(query?: object) {
     isLoading,
     mutate,
   } = useSWR<T>([url, query], ([url, query]: [string, object?]) => fetcherGet(url, query), {
-    revalidateIfStale: false,
+    revalidateIfStale: true,
   });
 
   const refreshCarts = () => {

@@ -11,6 +11,17 @@ export interface ApiResponseProduct {
   rate: number;
 }
 
+export interface Product {
+  title: string;
+  quantity: number;
+  status: string;
+  price: number;
+  image: string;
+  rate: number;
+  category: string;
+  brand: string;
+}
+
 export interface ApiResponseProductCategory extends ApiResponseProduct {
   categories: {
     id: number;
@@ -20,6 +31,11 @@ export interface ApiResponseProductCategory extends ApiResponseProduct {
 
 export interface ApiResponseProductBrandAndCategory extends ApiResponseProductCategory {
   userId: number;
+  discount: {
+    name: string;
+    discount: string;
+    id: 1;
+  };
   brands: {
     id: number;
     name: string;
@@ -52,4 +68,27 @@ export interface TProfile {
 export enum ROLES {
   CUSTOMER = 0,
   ADMIN = 1,
+}
+
+export interface TMessage {
+  userId: number;
+  message: string;
+  name: string;
+  email: string;
+  id: number;
+}
+
+export interface TComments {
+  userId: number;
+  id: number;
+  comment: string;
+  name: string;
+}
+
+export interface TDiscount {
+  name: string;
+  discount: string;
+}
+export interface TCodeDiscount extends TDiscount {
+  id: number;
 }

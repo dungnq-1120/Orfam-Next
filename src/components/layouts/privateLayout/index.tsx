@@ -22,7 +22,7 @@ const PrivateLayout = ({ children }: { children: React.ReactNode }) => {
     } else {
       setShouldRender(true);
     }
-  }, [router]);
+  }, []);
 
   if (!shouldRender) {
     return null;

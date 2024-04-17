@@ -46,8 +46,11 @@ const CardProduct = React.forwardRef<HTMLDivElement, Props>(
 
     const handleAddCart = (id: number) => {
       const product = products?.find((product) => product.id === id);
+
       if (product) {
-        const cart = carts.find((cart) => cart.id === id);
+        const cartsUser = carts.filter((cart) => cart.userId === profile?.data.id);
+        const cart = cartsUser.find((cart) => cart.id === id);
+
         if (!cart) {
           addToCart({ ...product, userId: profile?.data.id });
           refreshCarts();

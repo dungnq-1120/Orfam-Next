@@ -12,13 +12,13 @@ export function useBrands(query?: object) {
     revalidateIfStale: false,
   });
 
-  const refreshRate = () => {
+  const refreshBrand = () => {
     mutate(url);
   };
 
   return {
     brands,
     isLoading,
-    refreshRate,
+    refreshBrand,
   };
 }

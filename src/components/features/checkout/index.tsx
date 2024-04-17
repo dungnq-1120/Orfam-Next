@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import useSWRMutation from "swr/mutation";
-
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useOrders } from "@/hooks/useOrder";
+import { useProfile } from "@/hooks/useProfile";
+import useGetCartsUser from "@/hooks/useGetCartsUser";
+import { useCarts } from "@/hooks/useCart";
 
 import { Button } from "@/shared/button";
 import { Form, FormField, FormItem, FormMessage } from "@/shared/form";
@@ -18,11 +19,7 @@ import type { ApiResponseProductBrandAndCategory } from "@/services/type";
 import type { TFormBilling, TMyProfile, TOptionShip, TOrder, TUser } from "./type";
 
 import isDefined from "@/utils/isDefine";
-import { calculateTotalPrice } from "@/utils/totalPrice";
-import { useCarts } from "@/hooks/useCart";
-import { profile } from "console";
-import { useProfile } from "@/hooks/useProfile";
-import useGetCartsUser from "@/hooks/useGetCartsUser";
+import { calculateTotalPrice, calculateTotalPriceDiscount } from "@/utils/totalPrice";
 
 const checkoutSchema = z.object({
   name: z.string().min(1, "Please enter your name").trim(),
@@ -40,9 +37,9 @@ const CheckoutInfo = () => {
   const router = useRouter();
   const [selectedOption, setSelectedOption] = useState<TOptionShip>(deliveryOptions[0]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [totalPriceDiscount, setTotalPriceDiscount] = useState<number>(0);
   const { carts } = useCarts<ApiResponseProductBrandAndCategory[]>();
   const { profile } = useProfile<TMyProfile>();
-  const { orders, refreshOrders } = useOrders<TOrder[]>();
   const { trigger: addOrder } = useSWRMutation("/orders", fetcherPost);
   const cartsUser = useGetCartsUser();
 
@@ -64,7 +61,15 @@ const CheckoutInfo = () => {
   ];
 
   const onSubmit = (data: TFormBilling) => {
-    addOrder({ ...data, shipping: selectedOption, totalPrice: totalPrice, cartsOrder: cartsUser });
+    addOrder({
+      ...data,
+      shipping: selectedOption,
+      totalPrice: cartsUser[0]?.discount ? totalPriceDiscount : totalPrice,
+      cartsOrder: cartsUser,
+      userId: profile?.data.id,
+      orderer: profile?.data.name,
+      status: "Placed",
+    });
     router.push("/bill");
   };
 
@@ -72,6 +77,14 @@ const CheckoutInfo = () => {
     const totalPrice = calculateTotalPrice(carts);
 
     if (selectedOption.price) {
+      if (cartsUser[0]?.discount) {
+        const totalPriceDiscount = calculateTotalPriceDiscount({
+          totalPrice: totalPrice + selectedOption.price,
+          discount: cartsUser[0]?.discount?.discount,
+        });
+        setTotalPriceDiscount(totalPriceDiscount);
+      }
+
       setTotalPrice(totalPrice + selectedOption.price);
     }
 
@@ -83,7 +96,7 @@ const CheckoutInfo = () => {
         address: profile.data.address,
       });
     }
-  }, [carts, selectedOption.price, profile]);
+  }, [carts, selectedOption.price, profile, cartsUser]);
 
   return (
     <>
@@ -139,21 +152,29 @@ const CheckoutInfo = () => {
                     {cart.title} x{cart.quantity}
                   </li>
                 ))}
-              <li className="border-1 border-x-0 border-t-1 py-3 font-medium text-blue-ct7 sm:text-sm">Shipping</li>
+              <li className="border-x-0 border-t-1 py-3 font-medium text-blue-ct7 sm:text-sm">Discount</li>
+              <li className="border-1 border-x-0  border-t-1 py-3 font-medium text-blue-ct7 sm:text-sm">Shipping</li>
               <li className="border-1 border-x-0 border-t-0 py-3 font-medium text-blue-ct7">Order Total</li>
             </ul>
             <ul className="w-1/4 xs:w-1/5">
               <li className="pb-3 text-blue-ct7 font-semibold xs:text-end">Price</li>
               {isDefined(cartsUser) &&
                 cartsUser.map((cart) => (
-                  <li key={cart.id} className="border-1 border-x-0 py-3 font-medium border-b-0 text-green-500 sm:text-xs xs:text-end">
-                    ${(cart.price * cart.quantity).toFixed(2)}
-                  </li>
+                  <ul key={cart.id}>
+                    <li className="border-1 border-x-0 py-3 font-medium border-b-0 text-green-500 sm:text-xs xs:text-end">
+                      ${(cart.price * cart.quantity).toFixed(2)}
+                    </li>
+                    <li className="border-1 border-x-0 py-3 font-medium border-b-0 text-green-500 sm:text-xs xs:text-end">
+                      {cart && cart.discount ? cart.discount.discount : 0}
+                    </li>
+                    <li className="border-1 border-x-0 border-t-1 py-3 font-medium text-green-500 sm:text-sm xs:text-end">
+                      {selectedOption ? `$${selectedOption.price.toFixed(2)}` : ""}
+                    </li>
+                    <li className="border-1 border-x-0 border-t-0 py-3 font-semibold text-red-500 text-base xs:text-end">
+                      ${cart?.discount ? totalPriceDiscount.toFixed(2) : totalPrice.toFixed(2)}
+                    </li>
+                  </ul>
                 ))}
-              <li className="border-1 border-x-0 border-t-1 py-3 font-medium text-green-500 sm:text-sm xs:text-end">
-                {selectedOption ? `$${selectedOption.price.toFixed(2)}` : ""}
-              </li>
-              <li className="border-1 border-x-0 border-t-0 py-3 font-semibold text-red-500 text-base xs:text-end">${totalPrice.toFixed(2)}</li>
             </ul>
           </div>
 

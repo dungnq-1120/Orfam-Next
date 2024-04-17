@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-import { useCarts } from "@/hooks/useCart";
 import { useRouter } from "next/router";
+
+import useGetCartsUser from "@/hooks/useGetCartsUser";
 
 import ModalSearch from "@/components/features/modalSearch";
 
@@ -12,20 +13,19 @@ import { Search } from "@/icons/info/Search";
 import { User } from "@/icons/info/User";
 import { CartIcon } from "@/icons/info/Cart";
 
-import { ApiResponseProductBrandAndCategory } from "@/services/type";
-
-import authLocal from "@/utils/localStorage";
-import isDefined from "@/utils/isDefine";
-
 import logo from "@/image/logo/Logo.png";
 import homeIcon from "@/image/icon/home.png";
 import barsIcon from "@/image/icon/bars-3.png";
 import cartIcon from "@/image/icon/cart.png";
 import userIcon from "@/image/icon/user.png";
 import Top from "@/icons/feature/Top";
+
+import { ROLES } from "@/services/type";
 import { useProfile } from "@/hooks/useProfile";
 import { TMyProfile } from "@/components/features/checkout/type";
-import useGetCartsUser from "@/hooks/useGetCartsUser";
+
+import isDefined from "@/utils/isDefine";
+import authLocal from "@/utils/localStorage";
 
 export const Header = () => {
   const router = useRouter();
@@ -35,8 +35,8 @@ export const Header = () => {
   const { removeInfo, getInfo } = authLocal;
   const [isOpenUser, setIsOpenUser] = useState<boolean>(false);
   const [token, setToken] = useState(null);
-  const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>();
-  const cartsUser = useGetCartsUser();
+  const { profile } = useProfile<TMyProfile>();
+  const cartsUserProducts = useGetCartsUser();
 
   const menu: { [key: string]: string } = {
     HOME: "/",
@@ -125,28 +125,40 @@ export const Header = () => {
                 onClick={() => {
                   router.push("/user/account");
                 }}
-                className="p-3 border-1 cursor-pointer hover:text-green-600 text-center"
+                className="p-3 text-sm font-medium border-1 text-blue-ct7 cursor-pointer hover:text-green-600 text-center"
               >
-                Account information
+                ACCOUNT
               </li>
               <li
                 onClick={() => {
                   router.push("/user/order");
                 }}
-                className="p-3 border-1 cursor-pointer hover:text-green-600 text-center"
+                className="p-3 border-1 font-medium text-blue-ct7 cursor-pointer text-sm hover:text-green-600 text-center"
               >
-                My order
+                MY ORDER
               </li>
-              <li className=" border-1 flex justify-center">
+              {isDefined(profile) && profile?.data.role === ROLES.ADMIN && (
+                <li className=" border-1 flex justify-center">
+                  <Button
+                    onClick={() => {
+                      router.push("/admin");
+                    }}
+                    className="w-full text-sm h-full font-medium text-blue-ct7 bg-transparent cursor-pointer p-3 hover:text-green-600"
+                  >
+                    ADMIN
+                  </Button>
+                </li>
+              )}
+              <li className=" border-1 flex justify-center text-sm">
                 <Button
                   onClick={() => {
                     removeInfo("KEY_TOKEN");
                     removeInfo("ROLE");
                     router.push("/login");
                   }}
-                  className="w-full h-full text-blue-ct7  bg-transparent text-base cursor-pointer p-3 hover:text-red-600"
+                  className="w-full h-full text-blue-ct7 font-medium bg-transparent cursor-pointer p-3 hover:text-red-600"
                 >
-                  Log out
+                  LOG OUT
                 </Button>
               </li>
             </ul>
@@ -166,7 +178,7 @@ export const Header = () => {
           <Button onClick={() => router.push("/carts")} className="rounded-full px-3 py-3 bg-orange-ct2 md:hidden relative">
             <CartIcon className="w-5 h-5 text-blue-ct7" />
             <span className="absolute -right-1 -top-1 text-white bg-[#ff0000] w-5 h-5 flex justify-center items-center rounded-full text-md bg-">
-              {isDefined(cartsUser) && cartsUser.length}
+              {cartsUserProducts.length}
             </span>
           </Button>
         </div>
@@ -198,7 +210,7 @@ export const Header = () => {
             >
               <Image className="w-12 h-12" src={cartIcon} alt="" />
               <span className="absolute -right-1 top-1 text-white bg-[#ff0000] w-4 h-4 flex justify-center items-center rounded-full text-xs font-semibold bg-">
-                {isDefined(carts) && carts.length}
+                {cartsUserProducts.length}
               </span>
             </li>
             <li

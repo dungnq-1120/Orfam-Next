@@ -1,23 +1,24 @@
 import useSWR from "swr";
 import { fetcherGet } from "@/services/callApiService";
 
-export function useProfile<T>() {
-  const url = "/auth/my-profile";
+export function useDiscounts<T>() {
+  const url = "/discountCodes";
+  
   const {
-    data: profile,
+    data: discounts,
     isLoading,
     mutate,
   } = useSWR<T>([url], ([url]: [string]) => fetcherGet(url), {
-    revalidateIfStale: true,
+    revalidateIfStale: false,
   });
 
-  const refreshProfile = () => {
+  const refreshDiscounts = () => {
     mutate(fetcherGet(url));
   };
 
   return {
-    profile,
+    discounts,
     isLoading,
-    refreshProfile,
+    refreshDiscounts,
   };
 }

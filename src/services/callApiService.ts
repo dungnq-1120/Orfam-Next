@@ -1,5 +1,4 @@
 import RestClient from "./apiService";
-import { ApiResponseProductBrandAndCategory, TProfile } from "./type";
 
 const restClient = new RestClient();
 const fetcherPost = async (url: string, { arg }: { arg: {} }) => {
@@ -11,7 +10,7 @@ const fetcherPost = async (url: string, { arg }: { arg: {} }) => {
   }
 };
 
-const fetcherPatch = async (url: string, { arg }: { arg: ApiResponseProductBrandAndCategory }) => {
+const fetcherPatch = async <T extends { id: number }>(url: string, { arg }: { arg: T }) => {
   const patchUrl = `${url}/${arg.id}`;
   try {
     const response = await restClient.patch(patchUrl, arg);
@@ -32,8 +31,9 @@ const fetcherPut = async <T extends { userId: number }>(url: string, { arg }: { 
   }
 };
 
-const fetcherDelete = async (url: string, { arg }: { arg: ApiResponseProductBrandAndCategory }) => {
+const fetcherDelete = async <T extends { id: number }>(url: string, { arg }: { arg: T }) => {
   const deleteUrl = `${url}/${arg.id}`;
+  
   try {
     const response = await restClient.delete(deleteUrl);
     return response;
