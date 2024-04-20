@@ -19,7 +19,7 @@ import avatar from "@/image/logo/favico.png";
 const BlogComment = () => {
   const [commentValue, setCommentValue] = useState<string>("");
   const { comments, refreshComments } = useComments<TComments[]>();
-  const { profile } = useProfile<TMyProfile>();
+  const { profile } = useProfile<TMyProfile>(false);
   const { trigger: addComment } = useSWRMutation("/comments", fetcherPost);
 
   const handleAddComment = () => {

@@ -44,7 +44,6 @@ const Login = () => {
   const [errors, setErrors] = useState("");
 
   const { trigger, isMutating } = useSWRMutation("/auth/login", fetcherPost);
-  const { trigger: addUserCarts } = useSWRMutation("/userCarts", fetcherPost);
   const { setInfo } = authLocal;
 
   const onSubmit = async (data: LoginData) => {
@@ -53,7 +52,6 @@ const Login = () => {
     if (token && token.access_token) {
       setInfo(token, "KEY_TOKEN");
       setInfo({ role: token.role }, "ROLE");
-      addUserCarts({ name: token.name, id: token.id });
       router.push("/");
     } else {
       setErrors("Incorrect email or password");

@@ -104,6 +104,7 @@ export interface TBrandAndCategories {
   id: number;
   name: string;
 }
+export interface TCartsUser extends TBrandAndCategories {}
 export enum TRACKING {
   PLACED = "Placed",
   PACKED = "Packed",

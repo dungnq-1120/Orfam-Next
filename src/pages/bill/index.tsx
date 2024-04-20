@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import { useOrders } from "@/hooks/useOrder";
-import { useProfile } from "@/hooks/useProfile";
 
 import PrivateLayout from "@/components/layouts/privateLayout";
 import { Button } from "@/shared/button";

@@ -22,8 +22,7 @@ import authLocal from "@/utils/localStorage";
 
 import logo from "@/image/logo/Logo.png";
 import { ROLES } from "@/services/type";
-import { useProfile } from "@/hooks/useProfile";
-import { TMyProfile } from "@/components/features/checkout/type";
+
 
 const registerSchema = z
   .object({
@@ -66,7 +65,6 @@ const Register = () => {
   const onSubmit = async (data: TFormRegister) => {
     const { termsAccepted, ...registerData } = data;
     const token = (await addUser({ ...registerData, role: ROLES.CUSTOMER })) as TToken;
-
     if (token && token.access_token) {
       setInfo(token, "KEY_TOKEN");
       addUserCarts({ name: registerData.name });

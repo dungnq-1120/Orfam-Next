@@ -16,7 +16,7 @@ const DashboardUser = () => {
   const router = useRouter();
   const [avatar, setAvatar] = useState<File | null>(null);
   const inputAvatarRef = useRef<HTMLInputElement>(null);
-  const { profile } = useProfile<TMyProfile>();
+  const { profile } = useProfile<TMyProfile>(false);
 
   const dashboardUser = [
     {

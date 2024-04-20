@@ -19,6 +19,8 @@ import Rate from "../rate";
 import eyeImg from "@/image/icon/eye.svg";
 import useToken from "@/hooks/useToken";
 import useGetCartsUser from "@/hooks/useGetCartsUser";
+import { useProfile } from "@/hooks/useProfile";
+import { TMyProfile } from "../checkout/type";
 
 interface Props extends Omit<React.HTMLAttributes<HTMLDivElement>, "id"> {
   id: number;
@@ -33,10 +35,12 @@ interface TCartsUser {
   id: number;
   name: string;
 }
+
 const CardProduct = React.forwardRef<HTMLDivElement, Props>(
   ({ thumbnail, category, name, salePercentage, price, rating, className, id, ...props }, ref) => {
     const router = useRouter();
     const tokenInfo = useToken();
+    const { profile } = useProfile<TMyProfile>(tokenInfo ? false : true);
     const { products } = useProducts<ApiResponseProductBrandAndCategory[]>({ _expand: ["categories", "brands"] });
     const { carts, refreshCarts } = useGetCartsUser();
 
@@ -53,12 +57,14 @@ const CardProduct = React.forwardRef<HTMLDivElement, Props>(
         const cart = carts.find((cart) => cart.id === product.id);
 
         if (!cart) {
-          addToCart({ ...product, userCartsId: tokenInfo?.id });
-          refreshCarts();
-          showToast({
-            message: `${product.title} successfully added to cart`,
-            type: "success",
-          });
+          if (tokenInfo) {
+            addToCart({ ...product, userCartsId: profile?.data.id });
+            refreshCarts();
+            showToast({
+              message: `${product.title} successfully added to cart`,
+              type: "success",
+            });
+          }
         } else {
           if (carts.length > 0) {
             const newCart = { ...cart, quantity: (cart.quantity += 1) };

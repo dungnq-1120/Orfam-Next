@@ -1,16 +1,19 @@
 import { ApiResponseProductBrandAndCategory } from "@/services/type";
 import { useCarts } from "../useCart";
 import useToken from "../useToken";
+import { useProfile } from "../useProfile";
+import { TMyProfile } from "@/components/features/checkout/type";
 
 const useGetCartsUser = () => {
   const tokenInfo = useToken();
+  const { profile } = useProfile<TMyProfile>(tokenInfo ? false : true);
 
   const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>(
     {
       _expand: "userCarts",
-      userCartsId: tokenInfo && tokenInfo.id,
+      userCartsId: profile && profile.data.id,
     },
-    tokenInfo ? false : true
+    profile ? false : true
   );
   return { carts, refreshCarts };
 };

@@ -66,21 +66,20 @@ const ProductCartList = () => {
   };
 
   useEffect(() => {
-    console.log(discountValue, discount);
-    if (discount) {
-      if (discountValue === discount[0].code) {
-        showToast({
-          message: "mã đúng",
-          type: "success",
-        });
-      } else {
-        showToast({
-          message: "mã sai",
-          type: "error",
-        });
-      }
+    if (discount && discount.length > 0 && discountValue === discount[0].code) {
+      showToast({
+        message: "Apply discount code successfully",
+        type: "success",
+      });
     }
-  }, [discount]);
+
+    if (discount && discount.length === 0) {
+      showToast({
+        message: "Discount code does not exist",
+        type: "error",
+      });
+    }
+  }, [discount, discountValue]);
 
   const handleCheckout = () => {
     if (discount && discount.length > 0) {

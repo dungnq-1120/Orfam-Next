@@ -17,10 +17,12 @@ import { Edit } from "@/icons/feature/Edit";
 import bin from "@/image/icon/bin.svg";
 import isDefined from "@/utils/isDefine";
 import useSWRMutation from "swr/mutation";
-import { fetcherPatch, fetcherPut } from "@/services/callApiService";
-import { useProfile } from "@/hooks/useProfile";
-import { TMyProfile } from "../../../components/features/checkout/type";
+import { fetcherDelete, fetcherPatch, fetcherPost } from "@/services/callApiService";
+
 import showToast from "@/utils/showToast";
+import { useCartsUser } from "@/hooks/useCartUsers";
+import { useCarts } from "@/hooks/useCart";
+import { TCartsUser } from "@/services/type";
 
 const userInfo = z.object({
   name: z.string().min(1, "Please enter your user").trim(),
@@ -38,7 +40,7 @@ interface TUserInfoUpdate {
 
 const Users = () => {
   const [isOpenModalEdit, setIsOpenModalEdit] = useState<boolean>(false);
-  const [idUser, setIdUser] = useState<number | null>(null);
+  const [user, setUser] = useState<TUserInfo | null>(null);
   const form = useForm({
     resolver: zodResolver(userInfo),
     defaultValues: {
@@ -58,15 +60,27 @@ const Users = () => {
 
   const tableNameHeading = ["User", "Email", "Phone", "Address", "Status", "Action"];
   const { users, refreshUsers } = useUsers<TUserInfo[]>();
+  const { userCarts } = useCartsUser<TCartsUser[]>();
+  const { trigger: updateUserCarts } = useSWRMutation("/userCarts", fetcherPatch);
   const { trigger: updateInfoUser } = useSWRMutation("/auth/users", fetcherPatch);
+  const { trigger: deleteUser } = useSWRMutation("/auth/users", fetcherDelete);
 
   const onSubmit = (data: TUserInfoUpdate) => {
-    if (idUser) {
-      const newData = { ...data, id: idUser };
+    const userCart = userCarts?.find((userCart) => userCart.name === user?.name);
+    if (userCart) {
+      const newUserCart = { ...userCart, name: data.name };
+      updateUserCarts(newUserCart);
+    }
+    if (user) {
+      const newData = { ...data, id: user.id };
       updateInfoUser(newData);
     }
     refreshUsers();
     setIsOpenModalEdit(false);
+    showToast({
+      message: "Update user success",
+      type: "success",
+    });
   };
 
   const handleEditUser = (user: TUserInfo) => {
@@ -76,8 +90,17 @@ const Users = () => {
       phone: user.phone ? user.phone : "",
       address: user.address ? user.address : "",
     });
-    setIdUser(user.id);
+    setUser(user);
     setIsOpenModalEdit(true);
+  };
+
+  const handelDeleteUser = (user: TUserInfo) => {
+    deleteUser(user);
+    refreshUsers();
+    showToast({
+      message: `Successfully deleted ${user.name} user`,
+      type: "success",
+    });
   };
 
   return (
@@ -112,7 +135,12 @@ const Users = () => {
                     </td>
                     <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-blue-ct7 flex-col items-center">
                       <div className="flex flex-col items-center">
-                        <Button className="w-28 font-semibold py-3 mb-2 bg-red-300 shadow-lg ">
+                        <Button
+                          onClick={() => {
+                            handelDeleteUser(user);
+                          }}
+                          className="w-28 font-semibold py-3 mb-2 bg-red-300 shadow-lg "
+                        >
                           <Image src={bin} alt="" className="w-6 h-6" />
                         </Button>
                         <Button

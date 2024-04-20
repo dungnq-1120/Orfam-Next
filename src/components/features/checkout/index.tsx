@@ -34,10 +34,10 @@ const CheckoutInfo = () => {
   ];
 
   const router = useRouter();
-  const { getInfo } = authLocal;
+  const { getInfo, removeInfo } = authLocal;
   const { discount, total } = getInfo("CODE.TOTAL");
   const [selectedOption, setSelectedOption] = useState<TOptionShip>(deliveryOptions[0]);
-  const { profile } = useProfile<TMyProfile>();
+  const { profile } = useProfile<TMyProfile>(false);
   const { trigger: addOrder } = useSWRMutation("/orders", fetcherPost);
   const { carts, refreshCarts } = useGetCartsUser();
 
@@ -58,10 +58,10 @@ const CheckoutInfo = () => {
     { name: "address", placeholder: "Consignee address" } as const,
   ];
 
-  const onSubmit = (data: TFormBilling) => {
+  const onSubmit = async (data: TFormBilling) => {
     const totalPrice = total + selectedOption.price;
 
-    addOrder({
+    await addOrder({
       ...data,
       carts: carts,
       discount: discount,
@@ -71,6 +71,7 @@ const CheckoutInfo = () => {
       userCartsId: carts[0].userCartsId,
     });
     router.push("/bill");
+
   };
 
   useEffect(() => {

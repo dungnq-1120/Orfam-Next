@@ -29,7 +29,7 @@ const userInfo = z.object({
 
 const Account = () => {
   const router = useRouter();
-  const { profile, refreshProfile } = useProfile<TMyProfile>();
+  const { profile, refreshProfile } = useProfile<TMyProfile>(false);
 
   const { trigger: updateUser } = useSWRMutation("/auth/users", fetcherPut);
 
