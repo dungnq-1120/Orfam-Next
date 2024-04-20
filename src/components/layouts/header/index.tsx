@@ -21,8 +21,6 @@ import userIcon from "@/image/icon/user.png";
 import Top from "@/icons/feature/Top";
 
 import { ROLES } from "@/services/type";
-import { useProfile } from "@/hooks/useProfile";
-import { TMyProfile } from "@/components/features/checkout/type";
 
 import isDefined from "@/utils/isDefine";
 import authLocal from "@/utils/localStorage";
@@ -34,9 +32,8 @@ export const Header = () => {
   const [isOpenModalBars, setIsOpenModalBars] = useState<boolean>(false);
   const { removeInfo, getInfo } = authLocal;
   const [isOpenUser, setIsOpenUser] = useState<boolean>(false);
-  const [token, setToken] = useState(null);
-  const { profile } = useProfile<TMyProfile>();
-  const cartsUserProducts = useGetCartsUser();
+  const [token, setToken] = useState<TToken | null>(null);
+  const { carts } = useGetCartsUser();
 
   const menu: { [key: string]: string } = {
     HOME: "/",
@@ -47,7 +44,7 @@ export const Header = () => {
   };
 
   useEffect(() => {
-    const token = getInfo("KEY_TOKEN");
+    const token = getInfo("KEY_TOKEN") as TToken;
     setToken(token);
   }, []);
 
@@ -137,7 +134,7 @@ export const Header = () => {
               >
                 MY ORDER
               </li>
-              {isDefined(profile) && profile?.data.role === ROLES.ADMIN && (
+              {isDefined(token) && token.role === ROLES.ADMIN && (
                 <li className=" border-1 flex justify-center">
                   <Button
                     onClick={() => {
@@ -178,7 +175,7 @@ export const Header = () => {
           <Button onClick={() => router.push("/carts")} className="rounded-full px-3 py-3 bg-orange-ct2 md:hidden relative">
             <CartIcon className="w-5 h-5 text-blue-ct7" />
             <span className="absolute -right-1 -top-1 text-white bg-[#ff0000] w-5 h-5 flex justify-center items-center rounded-full text-md bg-">
-              {cartsUserProducts.length}
+              {carts.length}
             </span>
           </Button>
         </div>
@@ -210,7 +207,7 @@ export const Header = () => {
             >
               <Image className="w-12 h-12" src={cartIcon} alt="" />
               <span className="absolute -right-1 top-1 text-white bg-[#ff0000] w-4 h-4 flex justify-center items-center rounded-full text-xs font-semibold bg-">
-                {cartsUserProducts.length}
+                {carts.length}
               </span>
             </li>
             <li

@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useProfile } from "@/hooks/useProfile";
 import useGetCartsUser from "@/hooks/useGetCartsUser";
-import { useCarts } from "@/hooks/useCart";
 
 import { Button } from "@/shared/button";
 import { Form, FormField, FormItem, FormMessage } from "@/shared/form";
@@ -15,11 +14,11 @@ import InputForm from "@/shared/input";
 
 import { fetcherPost } from "@/services/callApiService";
 
-import type { ApiResponseProductBrandAndCategory } from "@/services/type";
-import type { TFormBilling, TMyProfile, TOptionShip, TOrder, TUser } from "./type";
+import type { TFormBilling, TMyProfile, TOptionShip } from "./type";
 
 import isDefined from "@/utils/isDefine";
-import { calculateTotalPrice, calculateTotalPriceDiscount } from "@/utils/totalPrice";
+import authLocal from "@/utils/localStorage";
+import { TRACKING } from "@/services/type";
 
 const checkoutSchema = z.object({
   name: z.string().min(1, "Please enter your name").trim(),
@@ -35,13 +34,12 @@ const CheckoutInfo = () => {
   ];
 
   const router = useRouter();
+  const { getInfo } = authLocal;
+  const { discount, total } = getInfo("CODE.TOTAL");
   const [selectedOption, setSelectedOption] = useState<TOptionShip>(deliveryOptions[0]);
-  const [totalPrice, setTotalPrice] = useState<number>(0);
-  const [totalPriceDiscount, setTotalPriceDiscount] = useState<number>(0);
-  const { carts } = useCarts<ApiResponseProductBrandAndCategory[]>();
   const { profile } = useProfile<TMyProfile>();
   const { trigger: addOrder } = useSWRMutation("/orders", fetcherPost);
-  const cartsUser = useGetCartsUser();
+  const { carts, refreshCarts } = useGetCartsUser();
 
   const form = useForm({
     resolver: zodResolver(checkoutSchema),
@@ -61,33 +59,21 @@ const CheckoutInfo = () => {
   ];
 
   const onSubmit = (data: TFormBilling) => {
+    const totalPrice = total + selectedOption.price;
+
     addOrder({
       ...data,
+      carts: carts,
+      discount: discount,
       shipping: selectedOption,
-      totalPrice: cartsUser[0]?.discount ? totalPriceDiscount : totalPrice,
-      cartsOrder: cartsUser,
-      userId: profile?.data.id,
-      orderer: profile?.data.name,
-      status: "Placed",
+      totalPrice: totalPrice,
+      status: TRACKING.PLACED,
+      userCartsId: carts[0].userCartsId,
     });
     router.push("/bill");
   };
 
   useEffect(() => {
-    const totalPrice = calculateTotalPrice(carts);
-
-    if (selectedOption.price) {
-      if (cartsUser[0]?.discount) {
-        const totalPriceDiscount = calculateTotalPriceDiscount({
-          totalPrice: totalPrice + selectedOption.price,
-          discount: cartsUser[0]?.discount?.discount,
-        });
-        setTotalPriceDiscount(totalPriceDiscount);
-      }
-
-      setTotalPrice(totalPrice + selectedOption.price);
-    }
-
     if (profile && !form.getValues().name && !form.getValues().phone && !form.getValues().email && !form.getValues().address) {
       form.reset({
         name: profile.data.name,
@@ -96,7 +82,7 @@ const CheckoutInfo = () => {
         address: profile.data.address,
       });
     }
-  }, [carts, selectedOption.price, profile, cartsUser]);
+  }, [carts, selectedOption.price, profile]);
 
   return (
     <>
@@ -115,7 +101,7 @@ const CheckoutInfo = () => {
                       <InputForm
                         types="success"
                         fullWidth
-                        className="rounded-none border-1 mt-6 text-sm xs:text-xs"
+                        className="rounded-none text-blue-ct7 font-medium border-1 mt-6 text-sm xs:text-xs"
                         placeholder={placeholder}
                         {...field}
                       />
@@ -143,39 +129,45 @@ const CheckoutInfo = () => {
         </div>
         <div className="checkout-product-detail w-full border-2 border-green-ct5 p-4 lg:border-0">
           <h3 className="text-blue-ct7 font-semibold text-xl border-b-1 p-3 mb-6">Your order</h3>
-          <div className="flex items-center">
-            <ul className="w-3/4 xs:w-4/5">
-              <li className="pb-3 text-blue-ct7 font-semibold">Product</li>
-              {isDefined(cartsUser) &&
-                cartsUser.map((cart) => (
-                  <li key={cart.id} className="border-1 truncate border-x-0 border-b-0 py-3 pl-2 font-medium text-blue-ct7 sm:text-xs xs:pl-0 ">
-                    {cart.title} x{cart.quantity}
-                  </li>
-                ))}
-              <li className="border-x-0 border-t-1 py-3 font-medium text-blue-ct7 sm:text-sm">Discount</li>
-              <li className="border-1 border-x-0  border-t-1 py-3 font-medium text-blue-ct7 sm:text-sm">Shipping</li>
-              <li className="border-1 border-x-0 border-t-0 py-3 font-medium text-blue-ct7">Order Total</li>
-            </ul>
-            <ul className="w-1/4 xs:w-1/5">
-              <li className="pb-3 text-blue-ct7 font-semibold xs:text-end">Price</li>
-              {isDefined(cartsUser) &&
-                cartsUser.map((cart) => (
-                  <ul key={cart.id}>
-                    <li className="border-1 border-x-0 py-3 font-medium border-b-0 text-green-500 sm:text-xs xs:text-end">
-                      ${(cart.price * cart.quantity).toFixed(2)}
-                    </li>
-                    <li className="border-1 border-x-0 py-3 font-medium border-b-0 text-green-500 sm:text-xs xs:text-end">
-                      {cart && cart.discount ? cart.discount.discount : 0}
-                    </li>
-                    <li className="border-1 border-x-0 border-t-1 py-3 font-medium text-green-500 sm:text-sm xs:text-end">
-                      {selectedOption ? `$${selectedOption.price.toFixed(2)}` : ""}
-                    </li>
-                    <li className="border-1 border-x-0 border-t-0 py-3 font-semibold text-red-500 text-base xs:text-end">
-                      ${cart?.discount ? totalPriceDiscount.toFixed(2) : totalPrice.toFixed(2)}
-                    </li>
-                  </ul>
-                ))}
-            </ul>
+          <div className="">
+            <table className="w-full">
+              <thead>
+                <tr>
+                  <th className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-orange-500 text-start">Product</th>
+                </tr>
+              </thead>
+              <tbody>
+                {isDefined(carts) &&
+                  carts.map((cart) => (
+                    <tr key={cart.id}>
+                      <td className="border-b-1 flex justify-between border-slate-200 py-3 px-5 font-semibold text-blue-500">
+                        <span>
+                          {cart.title} x{cart.quantity}
+                        </span>
+                        <span className="text-green-500">{cart.price.toFixed(2)}</span>
+                      </td>
+                    </tr>
+                  ))}
+                <tr>
+                  <td className="border-b-1 flex justify-between border-slate-200 py-3 px-3 font-semibold text-orange-500">
+                    <span>Discount</span>
+                    <span className="text-green-500">{discount.name}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border-b-1 flex justify-between border-slate-200 py-3 px-3 font-semibold text-orange-500">
+                    <span>Shipping</span>
+                    <span className="text-green-500">{selectedOption ? `${selectedOption.price.toFixed(2)}` : ""}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border-b-1 flex justify-between border-slate-200 py-3 px-3 font-semibold text-orange-500">
+                    <span>Total</span>
+                    <span className="text-green-500">{selectedOption && (total + selectedOption.price).toFixed(2)}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <Button className="px-16 w-full py-3 duration-500 hover:bg-green-ct5 sm:w-full xs:text-xs  mt-6" onClick={form.handleSubmit(onSubmit)}>

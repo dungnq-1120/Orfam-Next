@@ -22,6 +22,8 @@ import authLocal from "@/utils/localStorage";
 
 import logo from "@/image/logo/Logo.png";
 import { ROLES } from "@/services/type";
+import { useProfile } from "@/hooks/useProfile";
+import { TMyProfile } from "@/components/features/checkout/type";
 
 const registerSchema = z
   .object({
@@ -58,6 +60,7 @@ const Register = () => {
   const [emailErrorRegister, setEmailErrorRegister] = useState("");
   const router = useRouter();
   const { trigger: addUser, isMutating } = useSWRMutation("/auth/register", fetcherPost);
+  const { trigger: addUserCarts } = useSWRMutation("/userCarts", fetcherPost);
   const { setInfo } = authLocal;
 
   const onSubmit = async (data: TFormRegister) => {
@@ -66,6 +69,7 @@ const Register = () => {
 
     if (token && token.access_token) {
       setInfo(token, "KEY_TOKEN");
+      addUserCarts({ name: registerData.name });
       router.push("/");
     } else {
       setEmailErrorRegister("Email already exists");

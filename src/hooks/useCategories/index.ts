@@ -8,12 +8,16 @@ interface PropsTab {
 
 export function useCategories(query?: object) {
   const url = "/categories";
-  const { data: categories, isLoading } = useSWR<PropsTab[]>([url, query], ([url, query]: [string, object?]) => fetcherGet(url, query), {
+  const {
+    data: categories,
+    isLoading,
+    mutate,
+  } = useSWR<PropsTab[]>([url, query], ([url, query]: [string, object?]) => fetcherGet(url, query), {
     revalidateIfStale: false,
   });
 
   const refreshCategories = () => {
-    mutate(url);
+    mutate(fetcherGet(url));
   };
 
   return {

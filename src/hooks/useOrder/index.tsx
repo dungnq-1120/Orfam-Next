@@ -1,13 +1,13 @@
 import useSWR from "swr";
 import { fetcherGet } from "@/services/callApiService";
 
-export function useOrders<T>(query?: object) {
+export function useOrders<T>(query?: object, disabled?: boolean) {
   const url = "/orders";
   const {
     data: orders,
     isLoading,
     mutate,
-  } = useSWR<T>([url, query], ([url, query]: [string, object?]) => fetcherGet(url, query), {
+  } = useSWR<T>(disabled ? null : [url, query], ([url, query]: [string, object?]) => fetcherGet(url, query), {
     revalidateIfStale: false,
   });
 

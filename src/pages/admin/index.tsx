@@ -6,10 +6,10 @@ import DashboardAdmin from "./dashboardAdmin";
 
 const Admin = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex gap-2 pt-11 px-2 pb-10 mt-12 xss:block  ">
+    <div className="flex px-2 xss:block  ">
       <ToastContainer />
       <DashboardAdmin />
-      <div className="w-3/4 xss:!w-full">{children}</div>
+      <div className="w-full ml-3 xss:!w-full">{children}</div>
     </div>
   );
 };

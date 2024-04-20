@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 
 import { useRouter } from "next/router";
 import useSWRMutation from "swr/mutation";
 import { useProducts } from "@/hooks/useProducts";
-import { useCarts } from "@/hooks/useCart";
 
 import { Card, CardContent } from "@/shared/card";
 import { Button } from "@/shared/button";
@@ -16,9 +15,10 @@ import showToast from "@/utils/showToast";
 import { fetcherPatch, fetcherPost } from "@/services/callApiService";
 
 import Rate from "../rate";
+
 import eyeImg from "@/image/icon/eye.svg";
-import { useProfile } from "@/hooks/useProfile";
-import { TMyProfile } from "../checkout/type";
+import useToken from "@/hooks/useToken";
+import useGetCartsUser from "@/hooks/useGetCartsUser";
 
 interface Props extends Omit<React.HTMLAttributes<HTMLDivElement>, "id"> {
   id: number;
@@ -29,13 +29,16 @@ interface Props extends Omit<React.HTMLAttributes<HTMLDivElement>, "id"> {
   price: number;
   rating: number;
 }
-
+interface TCartsUser {
+  id: number;
+  name: string;
+}
 const CardProduct = React.forwardRef<HTMLDivElement, Props>(
   ({ thumbnail, category, name, salePercentage, price, rating, className, id, ...props }, ref) => {
     const router = useRouter();
+    const tokenInfo = useToken();
     const { products } = useProducts<ApiResponseProductBrandAndCategory[]>({ _expand: ["categories", "brands"] });
-    const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>();
-    const { profile } = useProfile<TMyProfile>();
+    const { carts, refreshCarts } = useGetCartsUser();
 
     const { trigger: addToCart } = useSWRMutation("/carts", fetcherPost);
     const { trigger: updateCart } = useSWRMutation("/carts", fetcherPatch);
@@ -46,27 +49,30 @@ const CardProduct = React.forwardRef<HTMLDivElement, Props>(
 
     const handleAddCart = (id: number) => {
       const product = products?.find((product) => product.id === id);
-
       if (product) {
-        const cartsUser = carts.filter((cart) => cart.userId === profile?.data.id);
-        const cart = cartsUser.find((cart) => cart.id === id);
+        const cart = carts.find((cart) => cart.id === product.id);
 
         if (!cart) {
-          addToCart({ ...product, userId: profile?.data.id });
+          addToCart({ ...product, userCartsId: tokenInfo?.id });
           refreshCarts();
           showToast({
             message: `${product.title} successfully added to cart`,
             type: "success",
           });
         } else {
-          const newCart = { ...cart, quantity: (cart.quantity += 1) };
-          updateCart(newCart);
-          showToast({
-            message: `1 ${product.title} updated to cart`,
-            type: "success",
-          });
+          if (carts.length > 0) {
+            const newCart = { ...cart, quantity: (cart.quantity += 1) };
+            updateCart(newCart);
+            refreshCarts();
+            showToast({
+              message: `1 ${product.title} updated to cart`,
+              type: "success",
+            });
+          }
         }
       }
+
+      refreshCarts();
     };
 
     return (

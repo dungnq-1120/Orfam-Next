@@ -21,6 +21,7 @@ const BlogComment = () => {
   const { comments, refreshComments } = useComments<TComments[]>();
   const { profile } = useProfile<TMyProfile>();
   const { trigger: addComment } = useSWRMutation("/comments", fetcherPost);
+
   const handleAddComment = () => {
     if (comments) {
       const newComment = { comment: commentValue, userId: profile?.data.id, name: profile?.data.name };
@@ -29,6 +30,7 @@ const BlogComment = () => {
       setCommentValue("");
     }
   };
+
   return (
     <div className="comment border-t-2 mt-10 ">
       <div className="author bg-gray-300 mt-10 p-5 flex items-center gap-2">

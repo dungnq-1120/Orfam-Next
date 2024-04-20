@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 import { useOrders } from "@/hooks/useOrder";
-import { useProfile } from "@/hooks/useProfile";
 
 import PublicLayout from "@/components/layouts/publicLayout";
 import User from "..";
@@ -12,15 +11,14 @@ import type { TMyProfile, TOrder } from "@/components/features/checkout/type";
 import isDefined from "@/utils/isDefine";
 
 import checkSuccess from "@/image/icon/check.svg";
+import useToken from "@/hooks/useToken";
 
 const Order = () => {
-  const { orders } = useOrders<TOrder[]>();
-  const { profile } = useProfile<TMyProfile>();
-
-  const ordersInfo = orders.find((order) => order.userId === profile?.data.id);
+  const tokenInfo = useToken();
+  const { orders, refreshOrders } = useOrders<TOrder[]>({ _expand: "userCarts", userCartsId: tokenInfo && tokenInfo.id }, tokenInfo ? false : true);
 
   const statusOrders = ["Placed", "Packed", "Shipping", "Delivered"];
-  const itemStatusShip = statusOrders.findIndex((item) => item === ordersInfo?.status);
+  const itemStatusShip = statusOrders.findIndex((item) => item === orders[0]?.status);
   const trackedStatuses = statusOrders.slice(0, itemStatusShip + 1);
 
   return (
@@ -52,15 +50,15 @@ const Order = () => {
       <div className="p-3 shadow-shadow2 mt-8">
         <h3 className="font-semibold text-blue-ct7 text-lg">My Order</h3>
         <div className="list-order flex flex-wrap gap-3 mt-4 w-full">
-          {isDefined(ordersInfo?.cartsOrder) ? (
-            ordersInfo.cartsOrder.map((order) => (
+          {isDefined(orders[0]?.carts) ? (
+            orders[0].carts.map((order) => (
               <div className="flex flex-1 p-4 shadow-shadow2 bg-white rounded-md sm:flex-none sm:w-full" key={order.id}>
                 <Image className="w-20 h-20" width={550} height={550} src={order.image} alt="" />
                 <div className="truncate">
                   <h5 className="text-sm text-blue-ct7 font-semibold truncate">{order.title}</h5>
                   <h6 className="text-xs font-semibold text-gray-400 truncate">{order.categories?.name}</h6>
                   <h6 className="text-xs font-semibold text-red-400 truncate">{order.price?.toFixed(2)}</h6>
-                  <h6 className="text-xs font-semibold text-green-400 truncate">{ordersInfo.status}</h6>
+                  <h6 className="text-xs font-semibold text-green-400 truncate">{orders[0].status}</h6>
                 </div>
               </div>
             ))

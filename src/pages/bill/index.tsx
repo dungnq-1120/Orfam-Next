@@ -13,20 +13,13 @@ import type { TMyProfile, TOrder } from "@/components/features/checkout/type";
 
 import checkSuccess from "@/image/icon/check.svg";
 import isDefined from "@/utils/isDefine";
+import useToken from "@/hooks/useToken";
 
 const Bill = () => {
   const router = useRouter();
-  const { orders, refreshOrders } = useOrders<TOrder[]>();
-  const [order, setOrder] = useState<TOrder>();
-  const { profile } = useProfile<TMyProfile>();
-
-  useEffect(() => {
-    if (orders.length > 0 && profile && profile.data) {
-      const orderInfo = orders.find((order) => order.userId === profile.data.id);
-      setOrder(orderInfo);
-    }
-    refreshOrders();
-  }, [orders, profile]);
+  const tokenInfo = useToken();
+  const { orders, refreshOrders } = useOrders<TOrder[]>({ _expand: "userCarts", userCartsId: tokenInfo && tokenInfo.id }, tokenInfo ? false : true);
+  const order = orders && orders.slice().reverse()[0];
 
   return (
     <>
@@ -40,7 +33,7 @@ const Bill = () => {
             <h5 className="mt-5 font-semibold text-lg">Order Information</h5>
             {orders.length === 0 && <Loading types="primary" className="mt-10 mb-10" />}
             {isDefined(order) && (
-              <ul className="mt-4">
+              <ul key={order.id}>
                 <li className="font-semibold text-blue-ct7">Consignee name: {order.name}</li>
                 <li className="my-2 font-semibold text-blue-ct7">Consignee phone: {order.phone}</li>
                 <li className="font-semibold text-blue-ct7">Consignee address: {order.address}</li>

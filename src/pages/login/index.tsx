@@ -21,6 +21,7 @@ import { LoginData } from "./type";
 import authLocal from "@/utils/localStorage";
 
 import logo from "@/image/logo/Logo.png";
+import { useCartsUser } from "@/hooks/useCartUsers";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email format").trim(),
@@ -41,7 +42,9 @@ const Login = () => {
 
   const router = useRouter();
   const [errors, setErrors] = useState("");
+
   const { trigger, isMutating } = useSWRMutation("/auth/login", fetcherPost);
+  const { trigger: addUserCarts } = useSWRMutation("/userCarts", fetcherPost);
   const { setInfo } = authLocal;
 
   const onSubmit = async (data: LoginData) => {
@@ -49,6 +52,8 @@ const Login = () => {
 
     if (token && token.access_token) {
       setInfo(token, "KEY_TOKEN");
+      setInfo({ role: token.role }, "ROLE");
+      addUserCarts({ name: token.name, id: token.id });
       router.push("/");
     } else {
       setErrors("Incorrect email or password");

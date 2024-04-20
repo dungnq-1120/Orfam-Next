@@ -2,13 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Quicksand } from "next/font/google";
 import { useRouter } from "next/router";
 
-import { Header } from "../header";
-import Footer from "../footer";
-
 import { ROLES } from "@/services/type";
 
 import authLocal from "@/utils/localStorage";
-
+import Header from "./header";
 
 const quicksand = Quicksand({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 
@@ -19,9 +16,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const [checkRole, setCheckRole] = useState(false);
 
   useEffect(() => {
-    const token = getInfo("KEY_TOKEN");
-    const roleInfo = getInfo("ROLE");
-    const role = roleInfo ? roleInfo.role : null;
+    const token = getInfo("KEY_TOKEN") as TToken;
 
     if (!token) {
       setShouldRender(false);
@@ -30,7 +25,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       setShouldRender(true);
     }
 
-    if (role && role === ROLES.ADMIN) {
+    if (token.role === ROLES.ADMIN) {
       setCheckRole(true);
     } else {
       setCheckRole(false);
@@ -43,14 +38,11 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <div className={`${quicksand.className}`}>
+    <div className={`${quicksand.className} bg-gray-100`}>
       <header>
         <Header />
       </header>
       <main>{children}</main>
-      <footer>
-        <Footer />
-      </footer>
     </div>
   );
 };

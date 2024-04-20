@@ -16,6 +16,7 @@ import type { TOrder } from "@/components/features/checkout/type";
 
 import isDefined from "@/utils/isDefine";
 import showToast from "@/utils/showToast";
+import bin from "@/image/icon/bin.svg";
 
 const Orders = () => {
   const [isOpenModalDetail, setOpenModalDetail] = useState<boolean>(false);
@@ -23,6 +24,7 @@ const Orders = () => {
   const [orderDetail, setOrderDetail] = useState<TOrder>();
   const [updateChangeShip, setUpdateChangeShip] = useState<TOrder>();
   const { orders, refreshOrders } = useOrders<TOrder[]>();
+  console.log(orders);
 
   const { trigger: updateShipStatus } = useSWRMutation("/orders", fetcherPatch);
   const { trigger: deleteOrder } = useSWRMutation("/orders", fetcherDelete);
@@ -32,6 +34,8 @@ const Orders = () => {
   const productTableHeaders = ["Image", "Title", "Category", "Quantity", "Discount", "Price", "Shipping", "Total", "Status"];
 
   const handleDetailProducts = (order: TOrder) => {
+    console.log(order);
+
     setOrderDetail(order);
   };
 
@@ -49,14 +53,14 @@ const Orders = () => {
   };
 
   return (
-    <div className="shadow-shadow2 p-5 ">
+    <div className="shadow-shadow2 p-5 bg-white">
       <h3 className="text-blue-ct7 font-semibold text-lg p-5">ORDER MANAGEMENT</h3>
       <div className="overflow-x-auto">
-        <table className="border-collapse border w-[120%] border-slate-500 lg:w-[200%] md:!w-[350%] ">
+        <table className="w-[120%] border-slate-500 lg:w-[200%] md:!w-[350%] text-sm">
           <thead>
             <tr>
               {orderTableHeaders.map((item) => (
-                <th key={item} className="border border-slate-600 py-3">
+                <th key={item} className="border-b-1 border-slate-200 py-4 px-3 text-blue-ct5">
                   {item}
                 </th>
               ))}
@@ -66,14 +70,15 @@ const Orders = () => {
             {isDefined(orders) &&
               orders.map((order, index) => (
                 <tr key={`${order.id}-${index}`} className="text-center font-medium text-blue-ct6">
-                  <td className="border border-slate-600">{order.orderer}</td>
-                  <td className="border border-slate-600">{order.name}</td>
-                  <td className="border border-slate-600">{order.phone}</td>
-                  <td className="border border-slate-600">{order.email}</td>
-                  <td className="border border-slate-600">{order.address}</td>
-                  <td className="border border-slate-600">{order.shipping.type}</td>
-                  <td className="border border-slate-600 px-3 py-2 flex-col items-center">
+                  <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-orange-500">{order.carts[0].userCarts.name}</td>
+                  <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-green-500">{order.name}</td>
+                  <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-blue-600">{order.phone}</td>
+                  <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-orange-600">{order.email}</td>
+                  <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-yellow-500">{order.address}</td>
+                  <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-green-500">{order.shipping.type}</td>
+                  <td className="border-b-1 border-slate-200 py-3 px-3 flex-col items-center">
                     <Button
+                      className="w-28 font-semibold py-3 mb-2 bg-blue-ct6 shadow-lg hover:bg-blue-600"
                       onClick={() => {
                         setOpenModalDetail(true);
                         handleDetailProducts(order);
@@ -82,8 +87,9 @@ const Orders = () => {
                       Detail
                     </Button>
                   </td>
-                  <td className="border border-slate-600 px-3 py-2 flex-col items-center">
+                  <td className="border-b-1 border-slate-200 py-3 px-3 flex-col items-center">
                     <Button
+                      className=" font-semibold py-3 mb-2 bg-orange-500 shadow-lg hover:bg-orange-400"
                       onClick={() => {
                         setOpenModalStatusOrder(true);
                         handleDetailChangeStatusShip(order);
@@ -92,14 +98,14 @@ const Orders = () => {
                       Change status ship
                     </Button>
                   </td>
-                  <td className="border border-slate-600 p-2">
+                  <td className="border-b-1 border-slate-200 py-3 px-3 ">
                     <Button
                       onClick={() => {
                         handleDeleteOrder(order);
                       }}
-                      className="bg-red-500 text-xs font-semibold"
+                      className="w-28 font-semibold py-3 mb-2 bg-red-200 shadow-lg hover:bg-red-300"
                     >
-                      DELETE
+                      <Image src={bin} alt="" className="w-6 h-6" />
                     </Button>
                   </td>
                 </tr>
@@ -111,11 +117,11 @@ const Orders = () => {
         <div className="bg-white p-5 rounded-lg w-[800px] mdd:w-full sm:!w-9/12 m-auto xss:w-[400px] xs:!w-[310px]">
           <h3 className="text-center font-bold text-blue-ct7 mb-3">DETAIL PRODUCT LIST</h3>
           <div className="overflow-auto h-72">
-            <table className="border-collapse border border-slate-500 w-[150%] sm:w-[200%] xss:w-[300%]">
+            <table className=" w-[150%] sm:w-[200%] xss:w-[300%]">
               <thead className="sticky -top-1 bg-white">
                 <tr className="text-sm">
                   {productTableHeaders.map((item) => (
-                    <th key={item} className="border border-slate-600 py-3 px-3">
+                    <th key={item} className="border-b-1 border-slate-200 py-4 px-3 text-blue-ct5">
                       {item}
                     </th>
                   ))}
@@ -123,21 +129,27 @@ const Orders = () => {
               </thead>
               <tbody>
                 {isDefined(orderDetail) &&
-                  orderDetail.cartsOrder.map((cart) => (
+                  orderDetail.carts.map((cart) => (
                     <tr key={cart.id} className="text-center text-sm font-medium text-blue-ct6">
-                      <td className="border border-slate-600 px-2">
+                      <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-green-500">
                         <Image width={550} height={550} className="w-20 h-20 m-auto  object-cover" src={cart.image} alt="" />
                       </td>
-                      <td className="border border-slate-600 px-2 text-blue-ct7 font-semibold">{cart.title}</td>
-                      <td className="border border-slate-600 px-2 text-blue-ct7 font-semibold">{cart.categories.name}</td>
-                      <td className="border border-slate-600 px-2 text-blue-ct7">{cart.quantity}</td>
-                      <td className="border border-slate-600 px-2 text-blue-ct7">{cart?.discount ? cart.discount.discount : 0}</td>
-                      <td className="border border-slate-600 px-2 text-blue-ct7">{cart.price.toFixed(2)}</td>
-                      <td className="border border-slate-600 px-2 text-blue-ct7">{orderDetail.shipping.price.toFixed(2)}</td>
-                      <td className="border border-slate-600 px-2 text-red-500 font-semibold">
+                      <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-blue-ct7">{cart.title}</td>
+                      <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-blue-500">
+                        <span className="py-1 px-2 bg-blue-200 rounded">{cart.categories.name}</span>
+                      </td>
+                      <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-yellow-500">{cart.quantity}</td>
+                      <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-green-500">
+                        <span className="bg-orange-200 text-orange-500 px-2 py-1 rounded">{orderDetail.discount.code}</span>
+                      </td>
+                      <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-orange-500">{cart.price.toFixed(2)}</td>
+                      <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-green-500">{orderDetail.shipping.price.toFixed(2)}</td>
+                      <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-red-500">
                         {(cart.quantity * cart.price + orderDetail.shipping.price).toFixed(2)}
                       </td>
-                      <td className="border border-slate-600 px-2 text-green-500 font-semibold">{orderDetail.status}</td>
+                      <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-green-500">
+                        <span className="px-2 py-1 rounded bg-green-200">{orderDetail.status}</span>
+                      </td>
                     </tr>
                   ))}
               </tbody>

@@ -1,23 +1,23 @@
 import useSWR from "swr";
 import { fetcherGet } from "@/services/callApiService";
 
-export function useDiscounts<T>() {
+export function useDiscounts<T>(query?: object, disabled?: boolean) {
   const url = "/discountCodes";
-  
+
   const {
-    data: discounts,
+    data: discount,
     isLoading,
     mutate,
-  } = useSWR<T>([url], ([url]: [string]) => fetcherGet(url), {
+  } = useSWR<T>(disabled ? null : [url, query], ([url, query]: [string, object?]) => fetcherGet(url, query), {
     revalidateIfStale: false,
   });
 
   const refreshDiscounts = () => {
-    mutate(fetcherGet(url));
+    mutate();
   };
 
   return {
-    discounts,
+    discount,
     isLoading,
     refreshDiscounts,
   };

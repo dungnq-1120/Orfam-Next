@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 import { useRouter } from "next/router";
-import { useCarts } from "@/hooks/useCart";
 import useSWRMutation from "swr/mutation";
 
 import useGetCartsUser from "@/hooks/useGetCartsUser";
@@ -10,50 +9,48 @@ import useGetCartsUser from "@/hooks/useGetCartsUser";
 import { Button } from "@/shared/button";
 import InputForm from "@/shared/input";
 
-import { ApiResponseProductBrandAndCategory, TCodeDiscount, TDiscount } from "@/services/type";
+import { TCodeDiscount } from "@/services/type";
 import { fetcherDelete, fetcherPatch } from "@/services/callApiService";
 
-import { calculateTotalPrice } from "@/utils/totalPrice";
+import { calculateTotalPrice, calculateTotalPriceDiscount } from "@/utils/totalPrice";
 import isDefined from "@/utils/isDefine";
 import { isEmptyArray } from "@/utils/isEmptyArray";
 import showToast from "@/utils/showToast";
 
 import bin from "@/image/icon/bin.svg";
 import { useDiscounts } from "@/hooks/useDiscount";
-import { TMyProfile, TOrder } from "../../checkout/type";
-import { useProfile } from "@/hooks/useProfile";
+import authLocal from "@/utils/localStorage";
 
 const ProductCartList = () => {
+  const { setInfo } = authLocal;
   const router = useRouter();
-  const cartsUser = useGetCartsUser();
-  const [discountValue, setDiscountValue] = useState<string>("");
-  const [discount, setDiscount] = useState<TCodeDiscount>();
+  const { carts, refreshCarts } = useGetCartsUser();
   const [totalPrice, setTotalPrice] = useState<number>(0);
-  const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>();
-  const { discounts } = useDiscounts<TCodeDiscount[]>();
-  const { profile } = useProfile<TMyProfile>();
+  const [discountValue, setDiscountValue] = useState<string | null>(null);
+  const [valueDiscount, setValueDiscount] = useState<string>("");
+  const { discount, refreshDiscounts } = useDiscounts<TCodeDiscount[]>({ code: discountValue }, discountValue ? false : true);
 
   const { trigger: updateCart } = useSWRMutation("/carts", fetcherPatch);
   const { trigger: deleteCart } = useSWRMutation("/carts", fetcherDelete);
 
-  const updateCartQuantity = (id: number, delta: number) => {
+  const updateCartQuantity = async (id: number, delta: number) => {
     const cartIndex = carts.findIndex((cart) => cart.id === id);
     if (cartIndex !== -1) {
       const newQuantity = carts[cartIndex].quantity + delta;
       if (newQuantity > 0) {
         const newCart = { ...carts[cartIndex], quantity: newQuantity };
-        updateCart(newCart);
-        refreshCarts();
+        await updateCart(newCart);
       }
     }
+    refreshCarts();
   };
 
-  const handleDeleteProduct = (id: number) => {
+  const handleDeleteProduct = async (id: number) => {
     const cartIndex = carts.findIndex((cart) => cart.id === id);
     if (cartIndex !== -1) {
       const newCart = { ...carts[cartIndex] };
 
-      deleteCart(newCart);
+      await deleteCart(newCart);
       refreshCarts();
       showToast({
         message: `${newCart.title} -1 Remove from cart`,
@@ -63,28 +60,46 @@ const ProductCartList = () => {
   };
 
   const handleApplyCoupon = () => {
-    const discount = discounts?.find((discount) => discount.name === discountValue);
-    if (discount) {
-      setDiscount(discount);
-      const total = totalPrice - totalPrice * (parseFloat(discount.discount) / 100);
-      setTotalPrice(total);
-    }
+    setDiscountValue(valueDiscount);
+    setValueDiscount("");
+    refreshDiscounts();
   };
 
-  const handleCheckout = () => {
-    const cartUser = carts.find((cart) => cart.userId === profile?.data.id);
+  useEffect(() => {
+    console.log(discountValue, discount);
+    if (discount) {
+      if (discountValue === discount[0].code) {
+        showToast({
+          message: "mã đúng",
+          type: "success",
+        });
+      } else {
+        showToast({
+          message: "mã sai",
+          type: "error",
+        });
+      }
+    }
+  }, [discount]);
 
-    if (discount && cartUser) {
-      const newCart = { ...cartUser, discount: discount };
-      updateCart(newCart);
+  const handleCheckout = () => {
+    if (discount && discount.length > 0) {
+      setInfo({ discount: discount[0], total: totalPrice }, "CODE.TOTAL");
     }
     router.push("/checkout");
   };
 
   useEffect(() => {
-    const totalPrice = calculateTotalPrice(carts);
-    setTotalPrice(totalPrice);
-  }, [carts]);
+    const total = calculateTotalPrice(carts);
+    setTotalPrice(total);
+    if (discount && discount.length > 0) {
+      const totalPriceDiscount = calculateTotalPriceDiscount({
+        totalPrice: total,
+        discount: discount[0].sale,
+      });
+      setTotalPrice(totalPriceDiscount);
+    }
+  }, [carts, discount]);
 
   return (
     <div className="product-cart-list mt-20 py-16 px-4">
@@ -101,8 +116,8 @@ const ProductCartList = () => {
             </tr>
           </thead>
           <tbody>
-            {isDefined(cartsUser) &&
-              cartsUser.map((cart) => {
+            {isDefined(carts) &&
+              carts.map((cart) => {
                 return (
                   <tr key={cart.id}>
                     <td className="border-1">
@@ -149,30 +164,32 @@ const ProductCartList = () => {
           </tbody>
         </table>
       </div>
-      <div className="discount mt-10 flex justify-end sm:block">
-        <InputForm
-          value={discountValue}
-          onChange={(e) => {
-            setDiscountValue(e.target.value);
-          }}
-          className="border-1 rounded-3xl text-xs py-4 pl-5 w-1/4 sm:w-full sm:mb-3"
-          placeholder="Coupon code"
-        />
-        <Button onClick={handleApplyCoupon} className="py-3 px-4 ml-3 rounded-3xl text-base sm:w-full sm:ml-0">
-          Apply Coupon
-        </Button>
+      <div className="discount mt-10  sm:block">
+        <div className="flex justify-end">
+          <InputForm
+            value={valueDiscount}
+            onChange={(e) => {
+              setValueDiscount(e.target.value);
+            }}
+            className="border-1 rounded-3xl text-xs py-4 pl-5 w-1/4 sm:w-full sm:mb-3"
+            placeholder="Coupon code"
+          />
+          <Button onClick={handleApplyCoupon} className="py-3 px-4 ml-3 rounded-3xl text-base sm:w-full sm:ml-0">
+            Apply Coupon
+          </Button>
+        </div>
       </div>
       <div className="flex justify-end mt-20">
         <ul className="w-3/6 nm:w-full">
           <li>
             <h3 className="text-2xl mb-2 text-blue-ct7 font-medium">Cart Totals</h3>
           </li>
-          {isDefined(discount) && (
-            <li className="border-1 border-b-0 flex justify-between text-blue-ct7 font-semibold p-3 ">
-              <h4>Discount</h4>
-              <span className="text-green-500 font-semibold">{discount.discount}</span>
-            </li>
-          )}
+
+          <li className="border-1 border-b-0 flex justify-between text-blue-ct7 font-semibold p-3 ">
+            <h4>Discount</h4>
+            <span className="text-green-500 font-semibold">{discount && discount.length > 0 ? discount[0].name : "No discount code"}</span>
+          </li>
+
           <li className="border-1 flex justify-between text-blue-ct7 font-semibold p-3 ">
             <h4>Total</h4>
             <span className="text-green-500 font-semibold">${totalPrice.toFixed(2)}</span>

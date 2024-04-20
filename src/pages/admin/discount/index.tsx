@@ -13,10 +13,15 @@ import { fetcherDelete, fetcherPatch, fetcherPost } from "@/services/callApiServ
 import { useDiscounts } from "@/hooks/useDiscount";
 import isDefined from "@/utils/isDefine";
 import showToast from "@/utils/showToast";
+import Modal from "@/shared/modal";
+import { Edit } from "@/icons/feature/Edit";
+import Image from "next/image";
+import bin from "@/image/icon/bin.svg";
 
 const DiscountInfo = z.object({
-  name: z.string().min(1, "Please enter your name discount").trim(),
-  discount: z.string().min(1, "Please enter your discount").trim(),
+  name: z.string().min(1, "Please enter your name name").trim(),
+  sale: z.coerce.number().min(1, "Please enter your sale"),
+  code: z.string().min(1, "Please enter your code").trim(),
 });
 
 const Discount = () => {
@@ -24,132 +29,125 @@ const Discount = () => {
     resolver: zodResolver(DiscountInfo),
     defaultValues: {
       name: "",
-      discount: "",
+      sale: 0,
+      code: "",
     },
   });
 
   const formFields = [
-    { name: "name", placeholder: "Please enter name discount code", label: "Name code" } as const,
-    { name: "discount", placeholder: "Please enter discount", label: "Discount" } as const,
+    { name: "name", placeholder: "Please enter name", label: "Name" } as const,
+    { name: "sale", placeholder: "Please enter sale", label: "Sale" } as const,
+    { name: "code", placeholder: "Please enter code", label: "Code" } as const,
   ];
+  const [isOpenModalDiscount, setIsOpenModalDiscount] = useState<boolean>(false);
 
-  const [isEditDiscount, setIsEditDiscount] = useState<boolean>(false);
-  const [idDiscountEdit, setIdDiscountEdit] = useState<number>(0);
+  const [idDiscountEdit, setIdDiscountEdit] = useState<number | null>(null);
 
-  const { discounts, refreshDiscounts } = useDiscounts<TCodeDiscount[]>();
+  const { discount, refreshDiscounts } = useDiscounts<TCodeDiscount[]>({}, false);
   const { trigger: addDiscountCode, isMutating } = useSWRMutation("/discountCodes", fetcherPost);
   const { trigger: updateDiscountCode } = useSWRMutation("/discountCodes", fetcherPatch);
   const { trigger: deleteDiscountCode } = useSWRMutation("/discountCodes", fetcherDelete);
 
   const onSubmit = (data: TDiscount) => {
-    const codeDiscount = discounts?.find((item) => item.name === data.name);
-
-    if (!isEditDiscount && !codeDiscount) {
-      addDiscountCode(data);
+    const newData = { ...data, sale: data.sale / 100 };
+    if (!idDiscountEdit) {
+      addDiscountCode(newData);
       refreshDiscounts();
-      setIsEditDiscount(false);
+      setIsOpenModalDiscount(false);
+      setIdDiscountEdit(null);
       showToast({
         message: "Discount code added successfully",
         type: "success",
       });
     }
-    if (isEditDiscount && codeDiscount && codeDiscount.id === idDiscountEdit) {
-      updateDiscountCode({ ...data, id: idDiscountEdit });
+    if (idDiscountEdit) {
+      updateDiscountCode({ ...newData, id: idDiscountEdit });
       refreshDiscounts();
-      setIsEditDiscount(false);
+      setIsOpenModalDiscount(false);
+      setIdDiscountEdit(null);
       showToast({
         message: "Discount code updated successfully",
         type: "success",
-      });
-    } else {
-      setIsEditDiscount(false);
-      showToast({
-        message: "Discount code updated successfully",
-        type: "error",
       });
     }
 
     form.reset({
       name: "",
-      discount: "",
+      sale: 0,
+      code: "",
     });
   };
 
   const handleEditDiscount = (discount: TCodeDiscount) => {
-    setIsEditDiscount(true);
+    setIsOpenModalDiscount(true);
     setIdDiscountEdit(discount.id);
     form.reset({
       name: discount.name,
-      discount: discount.discount,
+      sale: discount.sale * 100,
+      code: discount.code,
     });
   };
 
-  const handleDeleteDiscount = (discount: TCodeDiscount) => {
-    deleteDiscountCode(discount);
+  const handleDeleteDiscount = async (discount: TCodeDiscount) => {
+    await deleteDiscountCode(discount);
     refreshDiscounts();
+    showToast({
+      message: `Delete discount code ${discount.name} success`,
+      type: "warning",
+    });
   };
   return (
     <>
-      <div className="shadow-shadow2 p-3">
-        <h3 className="font-semibold text-blue-ct7">CREATE DISCOUNT CODE</h3>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          {formFields.map(({ name, placeholder, label }) => (
-            <FormField
-              key={name}
-              control={form.control}
-              name={name}
-              render={({ field }) => (
-                <FormItem>
-                  <label className="text-start text-xs text-blue-ct7 font-semibold block mt-4">{label}</label>
-                  <InputForm
-                    types="success"
-                    fullWidth
-                    className="border-1 mt-6 text-xs py-3 rounded-md font-medium"
-                    placeholder={placeholder}
-                    {...field}
-                  />
-                  {form.formState.errors[name] && (
-                    <span className="text-red-500 text-start block text-xs">{form.formState.errors[name].message}</span>
-                  )}
-                </FormItem>
-              )}
-            />
-          ))}
-          {!isEditDiscount ? (
-            <Button disabled={isMutating} className="w-full mt-5 py-3 font-semibold">
-              CREATE
-            </Button>
-          ) : (
-            <Button disabled={isMutating} className="w-full mt-5 py-3 font-semibold">
-              APPLY EDIT
-            </Button>
-          )}
-        </form>
-      </div>
-      <div className="shadow-shadow2 p-3 mt-8">
-        <h3 className="font-semibold text-blue-ct7 mb-5">LIST OF DISCOUNT CODES</h3>
-        <div className="overflow-auto h-72">
+      <div className="shadow-shadow2 p-5 rounded-sm mt-8 bg-white">
+        <div className="flex justify-between items-center mb-10">
+          <h3 className="font-semibold text-blue-ct7 mb-5">MANAGER DISCOUNT CODES</h3>
+          <Button
+            onClick={() => {
+              setIsOpenModalDiscount(true);
+            }}
+            className="bg-blue-ct5 py-3"
+          >
+            CREATE DISCOUNT CODE
+          </Button>
+        </div>
+        <div className="overflow-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-blue-ct5">
-                <th className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct5">Name</th>
-                <th className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct5">Generated Code</th>
-                <th className="border border-slate-600 py-3 px-3 font-semibold text-blue-ct5">Action</th>
+                <th className="border-b-1 border-slate-200 py-4 px-3 text-blue-ct5">Name</th>
+                <th className="border-b-1 border-slate-200 py-4 px-3 text-blue-ct5">Code</th>
+                <th className="border-b-1 border-slate-200 py-4 px-3 text-blue-ct5">Sale</th>
+                <th className="border-b-1 border-slate-200 py-4 px-3 text-blue-ct5">Action</th>
               </tr>
             </thead>
             <tbody className="text-center">
-              {isDefined(discounts) &&
-                discounts.map((discount) => (
+              {isDefined(discount) &&
+                discount.map((discount) => (
                   <tr key={discount.id}>
-                    <td className="border w-2/6 border-slate-600 py-3 px-3 font-semibold text-green-500">{discount.name}</td>
-                    <td className="border w-2/6 border-slate-600 py-3 px-3 font-semibold text-blue-ct7">{discount.discount}</td>
-                    <td className="border w-2/6 border-slate-600 py-3 px-3 font-semibold text-blue-ct7">
-                      <div className="flex justify-center items-center gap-2 xs:block">
-                        <Button onClick={() => handleEditDiscount(discount)} className="bg-green-500 w-28 py-3 font-semibold mdd:w-20 mdd:py-2 mdd:text-xs xs:mb-2">
-                          EDIT
+                    <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-green-500">{discount.name}</td>
+                    <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-blue-500">
+                      <span className="px-2 py-1 bg-blue-200 rounded">{discount.code}</span>
+                    </td>
+                    <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-red-500">
+                      <span className="px-2 py-1 bg-red-200 rounded">{discount.sale * 100}%</span>
+                    </td>
+                    <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold ">
+                      <div className="flex gap-2 justify-center items-center">
+                        <Button
+                          onClick={() => {
+                            handleDeleteDiscount(discount);
+                          }}
+                          className=" font-semibold p-3 mb-2 bg-red-300 shadow-lg "
+                        >
+                          <Image src={bin} alt="" className="w-6 h-6" />
                         </Button>
-                        <Button onClick={() => handleDeleteDiscount(discount)} className="bg-red-500 w-28 py-3 font-semibold mdd:w-20 mdd:py-2 mdd:text-xs">
-                          DELETE
+                        <Button
+                          onClick={() => {
+                            handleEditDiscount(discount);
+                          }}
+                          className=" font-semibold p-3 mb-2  bg-green-200 shadow-lg "
+                        >
+                          <Edit className="w-6 h-6" />
                         </Button>
                       </div>
                     </td>
@@ -159,6 +157,61 @@ const Discount = () => {
           </table>
         </div>
       </div>
+      <Modal className="opacity-50" isOpenModal={isOpenModalDiscount} onCancel={setIsOpenModalDiscount}>
+        <div className="bg-white w-[500px] p-3 rounded">
+          <h3 className="font-semibold text-blue-ct7">CREATE DISCOUNT CODE</h3>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            {formFields.map(({ name, placeholder, label }) => (
+              <FormField
+                key={name}
+                control={form.control}
+                name={name}
+                render={({ field }) => (
+                  <FormItem>
+                    <label className="text-start text-xs text-blue-ct7 font-semibold block mt-4">{label}</label>
+                    <InputForm
+                      types="success"
+                      fullWidth
+                      className="border-1 mt-6 text-xs py-3 rounded-md font-medium"
+                      placeholder={placeholder}
+                      {...field}
+                    />
+                    {form.formState.errors[name] && (
+                      <span className="text-red-500 text-start block text-xs">{form.formState.errors[name].message}</span>
+                    )}
+                  </FormItem>
+                )}
+              />
+            ))}
+            {!idDiscountEdit ? (
+              <Button disabled={isMutating} className="w-full mt-5 py-3 font-semibold">
+                CREATE
+              </Button>
+            ) : (
+              <>
+                <Button disabled={isMutating} className="w-full mt-5 py-3 font-semibold">
+                  APPLY
+                </Button>
+                <Button
+                  onClick={() => {
+                    setIsOpenModalDiscount(false);
+                    setIdDiscountEdit(null);
+                    form.reset({
+                      name: "",
+                      code: "",
+                      sale: 0,
+                    });
+                  }}
+                  disabled={isMutating}
+                  className="w-full bg-red-500 mt-5 py-3 font-semibold"
+                >
+                  CANCEL
+                </Button>
+              </>
+            )}
+          </form>
+        </div>
+      </Modal>
     </>
   );
 };

@@ -30,10 +30,15 @@ export interface ApiResponseProductCategory extends ApiResponseProduct {
 }
 
 export interface ApiResponseProductBrandAndCategory extends ApiResponseProductCategory {
-  userId: number;
+  userCartsId: number;
+  userCarts: {
+    name: string;
+    id: number;
+  };
   discount: {
     name: string;
-    discount: string;
+    sale: number;
+    code: string;
     id: 1;
   };
   brands: {
@@ -87,8 +92,21 @@ export interface TComments {
 
 export interface TDiscount {
   name: string;
-  discount: string;
+  sale: number;
+  code: string;
 }
+
 export interface TCodeDiscount extends TDiscount {
   id: number;
+}
+
+export interface TBrandAndCategories {
+  id: number;
+  name: string;
+}
+export enum TRACKING {
+  PLACED = "Placed",
+  PACKED = "Packed",
+  SHIPPING = "Shipping",
+  DELIVERED = "Delivered",
 }

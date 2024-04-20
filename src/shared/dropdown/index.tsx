@@ -1,21 +1,22 @@
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import { Listbox } from "@headlessui/react";
+import { cn } from "@/lib/utils";
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
   options: {
     id: number;
     name: string;
   }[];
 }
 
-export default function Dropdown({ options }: Props) {
+const Dropdown = forwardRef<HTMLDivElement, Props>(({ children, className, options }, ref) => {
   const [selectedOption, setSelectedOption] = useState(options[0]);
 
   return (
-    <div className="relative">
+    <div>
       <Listbox value={selectedOption} onChange={setSelectedOption}>
-        <Listbox.Button className="text-sm font-semibold text-blue-ct7 hover:text-green-ct5">{selectedOption.name}</Listbox.Button>
-        <Listbox.Options className="absolute bg-white top-10 w-48 -left-14 shadow-lg z-50 sm:left-0">
+        <Listbox.Button className="text-sm font-semibold text-blue-ct7 hover:text-green-ct5">{children}</Listbox.Button>
+        <Listbox.Options className={cn("bg-white w-48 shadow-lg z-50 sm:left-0", className)}>
           {options.map((option) => (
             <Listbox.Option
               className={`hover:bg-green-ct5 hover:text-white cursor-pointer text-blue-ct7 text-sm p-3 ${
@@ -31,4 +32,8 @@ export default function Dropdown({ options }: Props) {
       </Listbox>
     </div>
   );
-}
+});
+
+Dropdown.displayName = "Dropdown";
+
+export default Dropdown;

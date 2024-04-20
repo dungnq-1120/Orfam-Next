@@ -6,14 +6,18 @@ interface Props {
   name: string;
 }
 
-export function useBrands(query?: object) {
+export function useBrands() {
   const url = "/brands";
-  const { data: brands, isLoading } = useSWR<Props[]>([url, query], ([url, query]: [string, object?]) => fetcherGet(url, query), {
+  const {
+    data: brands,
+    isLoading,
+    mutate,
+  } = useSWR<Props[]>([url], ([url]: [string]) => fetcherGet(url), {
     revalidateIfStale: false,
   });
 
   const refreshBrand = () => {
-    mutate(url);
+    mutate(fetcherGet(url));
   };
 
   return {
