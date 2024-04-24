@@ -23,6 +23,8 @@ import type { TFormBilling, TMyProfile, TOptionShip, TOrder } from "./type";
 import { TRACKING } from "@/services/type";
 
 import isDefined from "@/utils/isDefine";
+import { useLeavePageConfirm } from "@/hooks/useCheckReload";
+import { calculateTotalPrice, calculateTotalPriceDiscount } from "@/utils/totalPrice";
 
 const checkoutSchema = z.object({
   name: z.string().min(1, "Please enter your name").trim(),
@@ -45,6 +47,7 @@ const CheckoutInfo = () => {
 
   const [selectedOption, setSelectedOption] = useState<TOptionShip>(deliveryOptions[0]);
   const [isOpenModalAttention, setOpenModalAttention] = useState<boolean>(false);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
   const { profile } = useProfile<TMyProfile>({ disable: false });
   const { trigger: addOrder } = useSWRMutation("/orders", fetcherPost);
   const { carts, refreshCarts } = useGetCartsUser();
@@ -69,17 +72,17 @@ const CheckoutInfo = () => {
   ];
 
   const onSubmit = async (data: TFormBilling) => {
-    const totalPrice = total + selectedOption.price;
-
+    const totalPriceAll = totalPrice + selectedOption.price;
     await addOrder({
       ...data,
       carts: carts,
       discount: discount,
       shipping: selectedOption,
-      totalPrice: totalPrice,
+      totalPrice: totalPriceAll,
       status: TRACKING.PACKED,
       userCartsId: carts[0].userCartsId,
     });
+
     refreshOrders();
     router.push("/bill");
   };
@@ -94,6 +97,19 @@ const CheckoutInfo = () => {
       });
     }
   }, [carts, selectedOption.price, profile]);
+
+  useEffect(() => {
+    if (carts && carts.length > 0) {
+      const total = calculateTotalPrice(carts);
+      if (discount && discount.length > 0) {
+        setTotalPrice(total * discount[0].sale);
+      } else {
+        setTotalPrice(total);
+      }
+    }
+  }, [carts]);
+
+  useLeavePageConfirm({ isConfirm: discount || form, message: "If you leave or reload your data will be lost" });
 
   return (
     <>
@@ -167,7 +183,7 @@ const CheckoutInfo = () => {
                 <tr>
                   <td className="border-b-1 flex justify-between border-slate-200 py-3 px-3 font-semibold text-orange-500">
                     <span>Discount</span>
-                    <span className="text-green-500"> {discount && discount.length > 0 && discount[0].name}</span>
+                    <span className="text-green-500"> {discount && discount.length > 0 ? discount[0].name : "No code"}</span>
                   </td>
                 </tr>
                 <tr>
@@ -179,7 +195,7 @@ const CheckoutInfo = () => {
                 <tr>
                   <td className="border-b-1 flex justify-between border-slate-200 py-3 px-3 font-semibold text-orange-500">
                     <span>Total</span>
-                    <span className="text-green-500">{selectedOption && (total + selectedOption.price).toFixed(2)}</span>
+                    <span className="text-green-500">{(totalPrice + selectedOption.price).toFixed(2)}</span>
                   </td>
                 </tr>
               </tbody>

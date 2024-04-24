@@ -33,8 +33,6 @@ const Orders = () => {
   const productTableHeaders = ["Image", "Title", "Category", "Quantity", "Discount", "Price", "Shipping", "Total", "Status"];
 
   const handleDetailProducts = (order: TOrder) => {
-    console.log(order);
-
     setOrderDetail(order);
   };
 

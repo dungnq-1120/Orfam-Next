@@ -75,6 +75,7 @@ const ProductCartList = () => {
         type: "success",
       });
     }
+    
 
     if (discount && discount.length === 0) {
       showToast({
