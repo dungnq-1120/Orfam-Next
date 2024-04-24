@@ -1,9 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import useSWRMutation from "swr/mutation";
+
+import { useReviews } from "@/hooks/useReview";
+import useToken from "@/hooks/useToken";
+import { useProducts } from "@/hooks/useProducts";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/tabs";
+import { Button } from "@/shared/button";
+import Rate from "@/components/features/rate";
+
+import type { ApiResponseProductBrandAndCategory, TReview } from "@/services/type";
+
+import { fetcherPatch, fetcherPost } from "@/services/callApiService";
+
+import showToast from "@/utils/showToast";
+import isDefined from "@/utils/isDefine";
+import { customRound } from "@/utils/mathStar";
 
 import productDes from "@/image/banner/product-video1.webp";
+import avatar from "@/image/logo/favico.png";
+import star from "@/image/icon/star-svgrepo-com.svg";
 
 interface Props {
   label: string;
@@ -14,7 +32,76 @@ const Description = () => {
   const tabData: Props[] = [
     { label: "PRODUCT DESCRIPTION", value: "PRODUCT-DESCRIPTION" },
     { label: "ADDITIONAL INFORMATION", value: "ADDITIONAL-INFORMATION" },
+    { label: "REVIEW", value: "REVIEW" },
   ];
+
+  const router = useRouter();
+  const tokenInfo = useToken();
+  const [isStar, setIsStar] = useState<number | null>(null);
+  const [starForReview, setStarForReview] = useState<number | null>(null);
+  const [review, setReview] = useState<string>("");
+  const { products, refreshProducts } = useProducts<ApiResponseProductBrandAndCategory[]>({
+    _expand: ["categories", "brands"],
+    id: router.query.id,
+  });
+  const { reviews, refreshReviews } = useReviews<TReview[]>(
+    {
+      _expand: "userCarts",
+      productsId: router.query.id,
+    },
+    { disable: !router.query.id }
+  );
+
+  const { trigger: addReview, isMutating } = useSWRMutation("reviews", fetcherPost);
+  const { trigger: updateRate } = useSWRMutation("products", fetcherPatch);
+
+  const handleRatingStar = (id: number) => {
+    const newStarState = isStar === id ? null : id;
+    setIsStar(newStarState);
+  };
+
+  const handleAddReview = async () => {
+    if (tokenInfo) {
+      if (review && starForReview && reviews) {
+        if (products && reviews && starForReview) {
+          const averageRate = (products[0].rate + (starForReview + 1)) / 2;
+          const numberRound = customRound(averageRate);
+
+          const newProductRate = { rate: numberRound, id: products[0].id };
+          await updateRate(newProductRate);
+          refreshProducts();
+        }
+        const dataReview = {
+          userCartsId: tokenInfo?.id,
+          rate: starForReview && starForReview + 1,
+          review: review,
+          productsId: router.query.id,
+        };
+        addReview(dataReview);
+        refreshReviews();
+        showToast({
+          message: "Add review success",
+          type: "success",
+        });
+        setIsStar(null);
+        setReview("");
+      } else {
+        showToast({
+          message: "Please rate and write a product review",
+          type: "error",
+        });
+      }
+    } else {
+      showToast({
+        message: "Please log in before reviewing",
+        type: "error",
+      });
+    }
+  };
+
+  useEffect(() => {
+    setStarForReview(isStar);
+  }, [isStar]);
 
   return (
     <div className="bg-white my-8 shadow-2xl py-8 px-5 rounded-lg">
@@ -53,6 +140,7 @@ const Description = () => {
               <Image className="w-full rounded-xl mt-4" src={productDes} alt="" />
             </div>
           </TabsContent>
+
           <TabsContent key="ADDITIONAL-INFORMATION" value="ADDITIONAL-INFORMATION">
             <div className="content-des">
               <p className="my-4 text-blue-ct7 text-sm font-medium xs:text-xs">
@@ -72,6 +160,90 @@ const Description = () => {
                 <li>Color: White</li>
               </ul>
             </div>
+          </TabsContent>
+          <TabsContent key="REVIEW" value="REVIEW">
+            {
+              <div className="review">
+                <h4 className="text-blue-ct7 font-semibold">
+                  <span>{reviews ? reviews.length : "0"}</span> review for {products && products[0].title}
+                </h4>
+                <div className="comment-review">
+                  {isDefined(reviews) && reviews.length > 0 ? (
+                    reviews.map((review) => (
+                      <div key={review.id} className="comment-client border-t-1 py-4 flex gap-2 mt-3">
+                        <Image src={avatar} alt="" className="rounded-full w-12 h-12" />
+                        <div className="content">
+                          <h4 className="text-sm font-semibold text-blue-ct7 flex gap-2 items-center">
+                            <span>{review.userCarts.name}</span>
+                            {/* <ul className="flex gap-0.5">
+                              {Array(review.rate)
+                                .fill(null)
+                                .map((_, index) => (
+                                  <li key={index}>
+                                    <Image src={star} alt="star" className="w-3.5 h-3.5 grayscale-0" />
+                                  </li>
+                                ))}
+                              {[...Array(Math.max(5 - review.rate, 0))].map((_, index) => (
+                                <li key={index + review.rate}>
+                                  <Image src={star} alt="star" className="w-3.5 h-3.5 grayscale" />
+                                </li>
+                              ))}
+                            </ul> */}
+                            <Rate rating={review.rate} />
+                          </h4>
+                          <p className="text-sm text-blue-ct7 font-medium mt-1">{review.review}</p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <h3 className="text-center text-blue-ct7 py-5">{"There are no reviews yet"}</h3>
+                  )}
+                </div>
+                <div className="post-review border-t-1">
+                  <h3 className="text-blue-ct7 font-semibold my-3">Add a review</h3>
+                  <div className="pt-4 gap-2 flex items-center mb-3">
+                    <h3 className="text-blue-ct7 font-semibold text-sm">Your rating</h3>
+                    <ul className="flex gap-1">
+                      {[...Array(5)].map((_, index) => (
+                        <li key={index}>
+                          <Image
+                            onClick={() => handleRatingStar(index)}
+                            key={index}
+                            src={star}
+                            alt="star"
+                            className={`w-4 h-4 cursor-pointer ${isStar !== null && index <= isStar ? "grayscale-0" : "grayscale"}`}
+                          />
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="content w-full">
+                    <div className="flex items-center gap-2 pt-3">
+                      <Image src={avatar} alt="" className="rounded-full w-12 h-12" />
+                      <div className="w-full">
+                        <textarea
+                          value={review}
+                          onChange={(e) => {
+                            setReview(e.target.value);
+                          }}
+                          className="w-full h-12 border-0 bg-gray-100 outline-0 text-sm pl-3 pt-3 rounded-lg"
+                          placeholder="Message"
+                        ></textarea>
+                      </div>
+                    </div>
+                    <div className="flex justify-end w-full mt-3">
+                      <Button
+                        disabled={isMutating}
+                        onClick={handleAddReview}
+                        className="hover:opacity-100 hover:bg-green-ct5 py-3 duration-500 sm:py-4 xs:text-xs xs:py-3"
+                      >
+                        POST REVIEW
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
           </TabsContent>
         </Tabs>
       </div>

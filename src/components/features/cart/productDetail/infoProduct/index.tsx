@@ -18,9 +18,12 @@ import isDefined from "@/utils/isDefine";
 
 import payments from "@/image/icon/payment-2.webp";
 import showToast from "@/utils/showToast";
+import useToken from "@/hooks/useToken";
+import Rate from "@/components/features/rate";
 
 const InfoProduct = () => {
   const router = useRouter();
+  const tokenInfo = useToken();
   const [productQuantity, setProductQuantity] = useState<number>(1);
   const { products, isLoading } = useProducts<ApiResponseProductBrandAndCategory[]>({ _expand: ["categories", "brands"], id: router.query.id });
   const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>();
@@ -28,25 +31,32 @@ const InfoProduct = () => {
   const { trigger: addToCart } = useSWRMutation("/carts", fetcherPost);
 
   const handleAddCart = (id: number, product: ApiResponseProductBrandAndCategory) => {
-    const cartIndex = carts.findIndex((cart) => cart.id === id);
+    if (tokenInfo) {
+      const cartIndex = carts.findIndex((cart) => cart.id === id);
 
-    if (cartIndex === -1) {
-      const newCart = { ...product, quantity: productQuantity };
-      addToCart(newCart);
-      showToast({
-        message: `${product.title} successfully added to cart`,
-        type: "success",
-      });
+      if (cartIndex === -1) {
+        const newCart = { ...product, quantity: productQuantity };
+        addToCart(newCart);
+        showToast({
+          message: `${product.title} successfully added to cart`,
+          type: "success",
+        });
+      } else {
+        const newCart = { ...product, quantity: productQuantity + carts[cartIndex].quantity };
+        updateCart(newCart);
+        updateCart(newCart);
+        showToast({
+          message: `1 ${product.title} updated to cart`,
+          type: "success",
+        });
+      }
+      refreshCarts();
     } else {
-      const newCart = { ...product, quantity: productQuantity + carts[cartIndex].quantity };
-      updateCart(newCart);
-      updateCart(newCart);
       showToast({
-        message: `1 ${product.title} updated to cart`,
-        type: "success",
+        message: "Please login",
+        type: "error",
       });
     }
-    refreshCarts();
   };
 
   return (
@@ -119,6 +129,9 @@ const InfoProduct = () => {
                 <ul className="pt-6 text-sm font-medium text-blue-ct7 xs:text-xs">
                   <li>
                     Availability: <span className="text-green-400 font-semibold">50 In stock</span>
+                  </li>
+                  <li className="flex my-2 items-center gap-1">
+                    <span>Rate:</span> <Rate rating={product.rate} />
                   </li>
                   <li className="my-2">
                     Categories: <span>{product.categories.name}</span>

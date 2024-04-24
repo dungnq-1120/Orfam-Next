@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import useSWRMutation from "swr/mutation";
+import Image from "next/image";
 
-import Admin from "..";
+import { useUsers } from "@/hooks/useUsers";
+
+import Admin from "@/pages/admin/index";
 import AdminLayout from "@/components/layouts/AdminLayout";
 
 import { Button } from "@/shared/button";
@@ -11,17 +15,36 @@ import Modal from "@/shared/modal";
 import { FormField, FormItem } from "@/shared/form";
 import InputForm from "@/shared/input";
 
+import { TUserInfo } from "@/components/features/checkout/type";
+import { TCartsUser } from "@/services/type";
+
+import { Edit } from "@/icons/feature/Edit";
+
+import { fetcherDelete, fetcherPatch } from "@/services/callApiService";
+
+import showToast from "@/utils/showToast";
+import { useCartsUser } from "@/hooks/useCartUsers";
+import isDefined from "@/utils/isDefine";
+
+import bin from "@/image/icon/bin.svg";
 
 const userInfo = z.object({
-  name: z.string().min(1, "Please enter your name").trim(),
+  name: z.string().min(1, "Please enter your user").trim(),
   phone: z.string().min(1, "Please enter your phone").trim(),
   email: z.string().email(" Please enter invalid email format").trim(),
   address: z.string().min(1, "Please enter your address").trim(),
 });
 
+interface TUserInfoUpdate {
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+}
+
 const Users = () => {
   const [isOpenModalEdit, setIsOpenModalEdit] = useState<boolean>(false);
-
+  const [user, setUser] = useState<TUserInfo | null>(null);
   const form = useForm({
     resolver: zodResolver(userInfo),
     defaultValues: {
@@ -33,53 +56,109 @@ const Users = () => {
   });
 
   const formFields = [
-    { name: "name", placeholder: "Please enter your name" } as const,
-    { name: "phone", placeholder: "Please enter your phone" } as const,
+    { name: "name", placeholder: "Please enter your user" } as const,
     { name: "email", placeholder: "Please enter invalid email format" } as const,
+    { name: "phone", placeholder: "Please enter your phone" } as const,
     { name: "address", placeholder: "Please enter your address" } as const,
   ];
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const tableNameHeading = ["User", "Email", "Phone", "Address", "Status", "Action"];
+  const { users, refreshUsers } = useUsers<TUserInfo[]>();
+  const { userCarts } = useCartsUser<TCartsUser[]>();
+  const { trigger: updateUserCarts } = useSWRMutation("/userCarts", fetcherPatch);
+  const { trigger: updateInfoUser } = useSWRMutation("/auth/users", fetcherPatch);
+  const { trigger: deleteUser } = useSWRMutation("/auth/users", fetcherDelete);
+
+  const onSubmit = (data: TUserInfoUpdate) => {
+    const userCart = userCarts?.find((userCart) => userCart.name === user?.name);
+    if (userCart) {
+      const newUserCart = { ...userCart, name: data.name };
+      updateUserCarts(newUserCart);
+    }
+    if (user) {
+      const newData = { ...data, id: user.id };
+      updateInfoUser(newData);
+    }
+    refreshUsers();
+    setIsOpenModalEdit(false);
+    showToast({
+      message: "Update user success",
+      type: "success",
+    });
+  };
+
+  const handleEditUser = (user: TUserInfo) => {
+    form.reset({
+      name: user.name,
+      email: user.email ? user.email : "",
+      phone: user.phone ? user.phone : "",
+      address: user.address ? user.address : "",
+    });
+    setUser(user);
+    setIsOpenModalEdit(true);
+  };
+
+  const handelDeleteUser = (user: TUserInfo) => {
+    deleteUser(user);
+    refreshUsers();
+    showToast({
+      message: `Successfully deleted ${user.name} user`,
+      type: "success",
+    });
   };
 
   return (
     <>
-      <div className="shadow-shadow2">
-        <h3 className="p-5 font-semibold text-blue-ct7 text-lg">USER ACCOUNTS</h3>
+      <div className="shadow-shadow2 bg-white rounded-lg sm:text-xs">
+        <h3 className="p-5 font-semibold text-blue-ct7 text-lg xs:text-sm xs:border-b-1 xs:pb-2">USER ACCOUNTS</h3>
         <div className="overflow-x-auto">
-          <table className="border-collapse border w-[110%] border-slate-500 lg:w-[200%] nm:w-[300%] xs:!w-[400%]">
+          <table className="bg-white w-[110%] border-slate-500 lg:w-[200%] nm:w-[300%] xs:!w-[400%] ">
             <thead>
               <tr>
-                <th className="border border-slate-600 py-3">Name</th>
-                <th className="border border-slate-600 py-3">Email</th>
-                <th className="border border-slate-600 py-3">Phone</th>
-                <th className="border border-slate-600 py-3">Address</th>
-                <th className="border border-slate-600 py-3">Status</th>
-                <th className="border border-slate-600 py-3">Action</th>
+                {tableNameHeading.map((item) => (
+                  <th key={item} className="border-b-1 border-slate-200 py-4 px-3 text-blue-ct5">
+                    {item}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              <tr className="text-center font-medium text-blue-ct6">
-                <td className="border border-slate-600">Jack</td>
-                <td className="border border-slate-600">Jack88@gmail.com</td>
-                <td className="border border-slate-600">0998883473</td>
-                <td className="border border-slate-600">HCM</td>
-                <td className="border border-slate-600">Online</td>
-                <td className="border border-slate-600 px-3 py-2 flex-col items-center">
-                  <div className="flex flex-col items-center">
-                    <Button className="block w-3/5 mb-2 py-3 bg-red-500">Delete</Button>
-                    <Button
-                      onClick={() => {
-                        setIsOpenModalEdit(true);
-                      }}
-                      className="block w-3/5 py-3 bg-green-600"
-                    >
-                      Edit
-                    </Button>
-                  </div>
-                </td>
-              </tr>
+              {isDefined(users) &&
+                users.map((user) => (
+                  <tr key={user.id} className="text-center font-medium text-blue-ct6 text-sm sm:text-xs">
+                    <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-green-500">{user.name}</td>
+                    <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-orange-500">{user.email}</td>
+                    <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-yellow-500">
+                      {user.phone ? user.phone : "No information"}
+                    </td>
+                    <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-blue-ct7">
+                      {user.address ? user.address : "No information"}
+                    </td>
+                    <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-blue-ct7">
+                      <span className="p-2 bg-[#00ff2a] opacity-80 rounded text-xs text-white">Online</span>
+                    </td>
+                    <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-blue-ct7 flex-col items-center">
+                      <div className="flex flex-col items-center">
+                        <Button
+                          onClick={() => {
+                            handelDeleteUser(user);
+                          }}
+                          className="w-28 font-semibold py-3 mb-2 bg-red-300 shadow-lg "
+                        >
+                          <Image src={bin} alt="" className="w-6 h-6" />
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            handleEditUser(user);
+                          }}
+                          className="w-28 font-semibold py-3 mb-2  bg-green-200 shadow-lg "
+                        >
+                          <Edit className="w-6 h-6" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -99,7 +178,7 @@ const Users = () => {
                     <InputForm
                       types="success"
                       fullWidth
-                      className="border-1 mt-6 text-xs py-3 rounded-md font-medium"
+                      className="border-1 mt-6 text-xs py-3 text-blue-ct7 rounded-md font-medium"
                       placeholder={placeholder}
                       {...field}
                     />

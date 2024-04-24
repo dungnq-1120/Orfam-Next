@@ -2,51 +2,58 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 import { useRouter } from "next/router";
-import { useCarts } from "@/hooks/useCart";
 import useSWRMutation from "swr/mutation";
 
-import { useProfile } from "@/hooks/useProfile";
-
-import type { TMyProfile } from "../../checkout/type";
+import useGetCartsUser from "@/hooks/useGetCartsUser";
+import { useDiscounts } from "@/hooks/useDiscount";
+import useInfoCheckout from "@/store/useInfoCheckout";
 
 import { Button } from "@/shared/button";
 import InputForm from "@/shared/input";
 
-import { ApiResponseProductBrandAndCategory } from "@/services/type";
+import { TCodeDiscount } from "@/services/type";
 import { fetcherDelete, fetcherPatch } from "@/services/callApiService";
-import { calculateTotalPrice } from "@/utils/totalPrice";
+
+import { calculateTotalPrice, calculateTotalPriceDiscount } from "@/utils/totalPrice";
 import isDefined from "@/utils/isDefine";
 import { isEmptyArray } from "@/utils/isEmptyArray";
 import showToast from "@/utils/showToast";
 
 import bin from "@/image/icon/bin.svg";
-import useGetCartsUser from "@/hooks/useGetCartsUser";
 
 const ProductCartList = () => {
   const router = useRouter();
-  const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>();
+  const { setDiscount, setTotal } = useInfoCheckout((state) => ({
+    setDiscount: state.setDiscount,
+    setTotal: state.setTotal,
+  }));
+  const { carts, refreshCarts } = useGetCartsUser();
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [discountValue, setDiscountValue] = useState<string | null>(null);
+  const [valueDiscount, setValueDiscount] = useState<string>("");
+  const { discount, refreshDiscounts } = useDiscounts<TCodeDiscount[]>({ code: discountValue }, discountValue ? false : true);
+
   const { trigger: updateCart } = useSWRMutation("/carts", fetcherPatch);
   const { trigger: deleteCart } = useSWRMutation("/carts", fetcherDelete);
-  const [totalPrice, setTotalPrice] = useState<number>(0);
-  const cartsUser = useGetCartsUser();
 
-  const updateCartQuantity = (id: number, delta: number) => {
+  const updateCartQuantity = async (id: number, delta: number) => {
     const cartIndex = carts.findIndex((cart) => cart.id === id);
     if (cartIndex !== -1) {
       const newQuantity = carts[cartIndex].quantity + delta;
       if (newQuantity > 0) {
         const newCart = { ...carts[cartIndex], quantity: newQuantity };
-        updateCart(newCart);
-        refreshCarts();
+        await updateCart(newCart);
       }
     }
+    refreshCarts();
   };
 
-  const handleDeleteProduct = (id: number) => {
+  const handleDeleteProduct = async (id: number) => {
     const cartIndex = carts.findIndex((cart) => cart.id === id);
     if (cartIndex !== -1) {
       const newCart = { ...carts[cartIndex] };
-      deleteCart(newCart);
+
+      await deleteCart(newCart);
       refreshCarts();
       showToast({
         message: `${newCart.title} -1 Remove from cart`,
@@ -55,10 +62,47 @@ const ProductCartList = () => {
     }
   };
 
+  const handleApplyCoupon = () => {
+    setDiscountValue(valueDiscount);
+    setValueDiscount("");
+    refreshDiscounts();
+  };
+
   useEffect(() => {
-    const totalPrice = calculateTotalPrice(carts);
-    setTotalPrice(totalPrice);
-  }, []);
+    if (discount && discount.length > 0 && discountValue === discount[0].code) {
+      showToast({
+        message: "Apply discount code successfully",
+        type: "success",
+      });
+    }
+
+    if (discount && discount.length === 0) {
+      showToast({
+        message: "Discount code does not exist",
+        type: "error",
+      });
+    }
+  }, [discount, discountValue]);
+
+  const handleCheckout = () => {
+    if (discount && discount.length > 0) {
+      setDiscount([discount[0]]);
+    }
+    router.push("/checkout");
+  };
+
+  useEffect(() => {
+    const total = calculateTotalPrice(carts);
+    setTotalPrice(total);
+    if (discount && discount.length > 0) {
+      const totalPriceDiscount = calculateTotalPriceDiscount({
+        totalPrice: total,
+        discount: discount[0].sale,
+      });
+      setTotalPrice(totalPriceDiscount);
+      setTotal(totalPrice);
+    }
+  }, [carts, discount]);
 
   return (
     <div className="product-cart-list mt-20 py-16 px-4">
@@ -75,8 +119,8 @@ const ProductCartList = () => {
             </tr>
           </thead>
           <tbody>
-            {isDefined(cartsUser) &&
-              cartsUser.map((cart) => {
+            {isDefined(carts) &&
+              carts.map((cart) => {
                 return (
                   <tr key={cart.id}>
                     <td className="border-1">
@@ -123,15 +167,36 @@ const ProductCartList = () => {
           </tbody>
         </table>
       </div>
-      <div className="discount mt-10 flex justify-end sm:block">
-        <InputForm className="border-1 rounded-3xl text-xs py-4 pl-5 w-1/4 sm:w-full sm:mb-3" placeholder="Coupon code" />
-        <Button className="py-3 px-4 ml-3 rounded-3xl text-base sm:w-full sm:ml-0">Apply Coupon</Button>
+      <div className="discount mt-10 sm:block">
+        <div className="flex justify-end xss:block">
+          <InputForm
+            value={valueDiscount}
+            onChange={(e) => {
+              setValueDiscount(e.target.value);
+            }}
+            className="border-1 rounded-3xl text-xs py-4 pl-5 mdd:w-2/4 w-1/4 xss:!w-full "
+            placeholder="Coupon code"
+          />
+          <Button
+            disabled={discount && discount.length > 0 && discountValue === discount[0].code}
+            onClick={handleApplyCoupon}
+            className="py-3 px-4 ml-3 rounded-3xl text-base xss:text-sm xss:block xss:w-full xss:ml-0 xss:mt-2"
+          >
+            Apply Coupon
+          </Button>
+        </div>
       </div>
       <div className="flex justify-end mt-20">
         <ul className="w-3/6 nm:w-full">
           <li>
             <h3 className="text-2xl mb-2 text-blue-ct7 font-medium">Cart Totals</h3>
           </li>
+
+          <li className="border-1 border-b-0 flex justify-between text-blue-ct7 font-semibold p-3 ">
+            <h4>Discount</h4>
+            <span className="text-green-500 font-semibold">{discount && discount.length > 0 ? discount[0].name : "No discount code"}</span>
+          </li>
+
           <li className="border-1 flex justify-between text-blue-ct7 font-semibold p-3 ">
             <h4>Total</h4>
             <span className="text-green-500 font-semibold">${totalPrice.toFixed(2)}</span>
@@ -139,11 +204,9 @@ const ProductCartList = () => {
           <li>
             <Button
               disabled={isEmptyArray(carts)}
-              onClick={() => {
-                router.push("/checkout");
-              }}
+              onClick={handleCheckout}
               types="success"
-              className="px-8 py-3 rounded-3xl opacity-100 mt-3 text-sm font-semibold hover:bg-blue-ct7 hover:opacity-100"
+              className="px-8 py-3 rounded-3xl opacity-100 mt-3 text-sm font-semibold hover:bg-blue-ct7 hover:opacity-100 xss:text-xs xss:w-full"
             >
               PROCEED TO CHECKOUT
             </Button>

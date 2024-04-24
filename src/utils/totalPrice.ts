@@ -5,9 +5,15 @@ export const calculateTotalPrice = (items: ApiResponseProductBrandAndCategory[])
     return 0;
   }
 
-  const totalPrice: number = items.reduce((total: number, item: ApiResponseProductBrandAndCategory) => {
+  const total: number = items.reduce((total: number, item: ApiResponseProductBrandAndCategory) => {
     return total + item.quantity * item.price;
   }, 0);
 
-  return totalPrice;
+  return total;
+};
+
+export const calculateTotalPriceDiscount = ({ totalPrice, discount }: { totalPrice: number; discount: number }) => {
+  const totalPriceDiscount = totalPrice - totalPrice * discount;
+
+  return totalPriceDiscount;
 };

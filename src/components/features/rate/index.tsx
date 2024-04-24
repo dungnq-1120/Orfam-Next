@@ -8,15 +8,22 @@ interface RateProps {
 }
 
 const Rate: React.FC<RateProps> = ({ rating }) => {
-  const stars = Array.from({ length: rating }, (_, index) => {
-    if (index < rating) {
-      return <Image key={index} src={star} alt="star" className="w-4 h-4" />;
-    } else {
-      return <Image key={index} src={star} alt="star" className="w-4 h-4 opacity-50" />;
-    }
-  });
-
-  return <div className="flex justify-center gap-1">{stars}</div>;
+  return (
+    <ul className="flex justify-center gap-0.5">
+      {Array(rating)
+        .fill(null)
+        .map((_, index) => (
+          <li key={index}>
+            <Image src={star} alt="star" className="w-3.5 h-3.5 grayscale-0" />
+          </li>
+        ))}
+      {[...Array(Math.max(5 - rating, 0))].map((_, index) => (
+        <li key={index + rating}>
+          <Image src={star} alt="star" className="w-3.5 h-3.5 grayscale" />
+        </li>
+      ))}
+    </ul>
+  );
 };
 
 export default Rate;

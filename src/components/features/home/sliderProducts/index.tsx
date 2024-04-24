@@ -110,11 +110,19 @@ const SpecialProducts = () => {
                 })}
             </Slider>
           </div>
-          <Button types="success" className="prev-btn absolute rounded-full px-2 py-2 -left-4 top-2/4 -translate-y-2/4" onClick={goToPrevSlide}>
-            <Image className="w-8 h-8" src={previous} alt="" />
+          <Button
+            types="success"
+            className="prev-btn absolute rounded-full px-2 py-2 -left-1 top-2/4 -translate-y-2/4 s:px-1 s:py-1"
+            onClick={goToPrevSlide}
+          >
+            <Image className="w-6 h-6" src={previous} alt="" />
           </Button>
-          <Button types="success" className="next-btn absolute -right-4 px-2 py-2 rounded-full top-2/4 -translate-y-2/4" onClick={goToNextSlide}>
-            <Image className="w-8 h-8 rotate-180" src={previous} alt="" />
+          <Button
+            types="success"
+            className="next-btn absolute -right-1 px-2 py-2 rounded-full top-2/4 -translate-y-2/4 s:px-1 s:py-1"
+            onClick={goToNextSlide}
+          >
+            <Image className="w-6 h-6 rotate-180" src={previous} alt="" />
           </Button>
         </div>
       </div>

@@ -70,9 +70,6 @@ const config = {
           ct2: "#ffc6a1",
           ct1: "#ff00002b",
         },
-        black: {
-          ct50: "#00000080",
-        },
       },
       boxShadow: {
         shadowCheck: "0 0 0 0.25rem rgba(13, 110, 253, 0.25)",
@@ -143,6 +140,7 @@ const config = {
         mdd: { max: "822px" },
         nm: { max: "937px" },
         lg: { max: "1080px" },
+        l: { max: "1158px" },
         xl: { max: "1280px" },
         xxl: { max: "1536px" },
       },

@@ -15,7 +15,7 @@ export const Discount: React.FC<PropsIcon> = ({ className }) => {
         strokeOpacity="100%"
         paintOrder="stroke"
       ></rect>
-      <svg width="283px" height="283px" viewBox="0 0 15 15" fill="currentColor" x="114.5" y="114.5" role="img" xmlns="http://www.w3.org/2000/svg">
+      <svg width="400px" height="400px" viewBox="0 0 15 15" fill="currentColor" x="114.5" y="114.5" role="img" xmlns="http://www.w3.org/2000/svg">
         <g fill="currentColor">
           <path
             fill="none"

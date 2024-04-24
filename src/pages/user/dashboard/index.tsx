@@ -16,7 +16,7 @@ const DashboardUser = () => {
   const router = useRouter();
   const [avatar, setAvatar] = useState<File | null>(null);
   const inputAvatarRef = useRef<HTMLInputElement>(null);
-  const { profile } = useProfile<TMyProfile>();
+  const { profile } = useProfile<TMyProfile>({ disable: false });
 
   const dashboardUser = [
     {
@@ -31,13 +31,11 @@ const DashboardUser = () => {
     },
   ];
 
-  const [selectedItem, setSelectedItem] = useState(router.pathname);
-
   useEffect(() => {
     if (router.pathname === "/user") {
       router.push(dashboardUser[0].link);
     }
-  }, [profile, selectedItem]);
+  }, []);
 
   return (
     <div className="text-white">
@@ -77,7 +75,6 @@ const DashboardUser = () => {
           {dashboardUser.map((item) => (
             <Button
               onClick={() => {
-                setSelectedItem(item.link);
                 router.push(item.link);
               }}
               key={item.content}

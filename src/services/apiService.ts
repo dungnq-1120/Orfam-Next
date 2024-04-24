@@ -1,7 +1,8 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import authLocal from "@/utils/localStorage";
+import showToast from "@/utils/showToast";
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const axiosBase = axios.create({
   baseURL: BASE_URL,
@@ -104,14 +105,18 @@ export default class RestClient {
       if (axios.isAxiosError(error)) {
         const errorCode: number = error.response!.status;
         if (errorCode === statusCode.UNAUTHORIZED) {
-          removeInfo("KEY_TOKEN");
-          removeInfo("ROLE");
+          if (token) {
+            removeInfo("KEY_TOKEN");
+            removeInfo("ROLE");
+            window.location.replace("/login");
+          }
         } else if (errorCode === statusCode.FORBIDDEN) {
-          window.location.replace("/home");
+          window.location.replace("/");
         } else if (errorCode === statusCode.NOT_FOUND) {
-          // window.location.replace("/404");
+          window.location.replace("/404");
         } else if (errorCode === statusCode.BAD_REQUEST) {
           removeInfo("KEY_TOKEN");
+          removeInfo("ROLE");
         }
       }
       throw error;

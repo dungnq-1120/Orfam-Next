@@ -1,21 +1,21 @@
 import { ApiResponseProductBrandAndCategory } from "@/services/type";
-import React, { useEffect } from "react";
+import { useCarts } from "../useCart";
+import useToken from "../useToken";
 import { useProfile } from "../useProfile";
 import { TMyProfile } from "@/components/features/checkout/type";
-import { useCarts } from "../useCart";
 
 const useGetCartsUser = () => {
-  const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>();
-  const { profile, isLoading, refreshProfile } = useProfile<TMyProfile>();
-  const cartsUser = carts.filter((cart) => cart.userId === profile?.data.id);
-  useEffect(() => {
-    if (profile && carts.length > 0) {
-      refreshCarts();
-      refreshProfile();
-    }
-  }, [profile, carts.length]);
+  const tokenInfo = useToken();
+  const { profile } = useProfile<TMyProfile>({ disable: !tokenInfo });
 
-  return cartsUser;
+  const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>(
+    {
+      _expand: "userCarts",
+      userCartsId: tokenInfo && tokenInfo.id,
+    },
+    { disable: !profile }
+  );
+  return { carts, refreshCarts };
 };
 
 export default useGetCartsUser;

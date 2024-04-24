@@ -1,30 +1,28 @@
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useRouter } from "next/router";
 
 import { useOrders } from "@/hooks/useOrder";
+import useToken from "@/hooks/useToken";
 
 import PrivateLayout from "@/components/layouts/privateLayout";
 import { Button } from "@/shared/button";
+import Loading from "@/shared/loading";
 
-import type { TMyProfile, TOrder } from "@/components/features/checkout/type";
+import type { TOrder } from "@/components/features/checkout/type";
 
 import checkSuccess from "@/image/icon/check.svg";
 import isDefined from "@/utils/isDefine";
-import { useProfile } from "@/hooks/useProfile";
 
 const Bill = () => {
   const router = useRouter();
-  const { orders } = useOrders<TOrder[]>();
-  const [order, setOrder] = useState<TOrder>();
-  const { profile } = useProfile<TMyProfile>();
+  const tokenInfo = useToken();
+  const { orders, refreshOrders, isLoading } = useOrders<TOrder[]>(
+    { _expand: "userCarts", userCartsId: tokenInfo && tokenInfo.id },
+    { disable: !tokenInfo }
+  );
 
-  useEffect(() => {
-    if (orders.length > 0 && profile && profile.data) {
-      const orderInfo = orders.find((order) => order.cartsOrder.map((cart) => cart.userId === profile.data.id));
-      setOrder(orderInfo);
-    }
-  }, [orders, profile]);
+  const order = orders && orders.slice().reverse()[0];
 
   return (
     <>
@@ -33,19 +31,25 @@ const Bill = () => {
           <div className="line-green bg-green-400 h-2 rounded-lg"></div>
           <div className="content-bill pt-12 text-center shadow-lg pb-10 px-3 rounded-md">
             <Image className="w-14 h-14 m-auto " src={checkSuccess} alt="checkSuccess" />
-            <h4 className="font-semibold  mt-2 text-2xl mb-1 text-green-ct6">Order Success</h4>
-            <span className="text-lg tracking-[.25em] text-green-ct6 block">********************************</span>
-            <h5 className="mt-5 font-semibold text-lg">Order Information</h5>
-
+            <h4 className="font-semibold  mt-2 text-2xl mb-1 text-green-ct5">Order Success</h4>
+            <span className="text-lg tracking-[.25em] text-green-ct5 block">********************************</span>
+            <h5 className="mt-5 font-semibold text-lg text-blue-ct5 mb-4">Order Information</h5>
+            {isLoading && <Loading types="primary" className="mt-10 mb-10" />}
             {isDefined(order) && (
-              <ul className="mt-4">
-                <li className="font-semibold text-blue-ct7">Consignee name: {order.name}</li>
-                <li className="my-2 font-semibold text-blue-ct7">Consignee phone: {order.phone}</li>
-                <li className="font-semibold text-blue-ct7">Consignee address: {order.address}</li>
+              <ul key={order.id}>
+                <li className="font-semibold text-green-600">
+                  Consignee name: <span className="text-green-ct5">{order.name}</span>
+                </li>
+                <li className="my-2 font-semibold text-green-600">
+                  Consignee phone: <span className="text-green-ct5">{order.phone}</span>
+                </li>
+                <li className="font-semibold text-green-600">
+                  Consignee address: <span className="text-green-ct5">{order.address}</span>
+                </li>
               </ul>
             )}
-            <h5 className="mt-5 font-semibold text-lg">Payment Methods</h5>
-            <p className="mt-2 font-medium">Payment upon delivery (COD)</p>
+            <h5 className="mt-5 font-semibold text-lg text-blue-ct5">Payment Methods</h5>
+            <p className="mt-2 font-semibold text-green-600">Payment upon delivery (COD)</p>
             <Button
               onClick={() => {
                 router.push("/");

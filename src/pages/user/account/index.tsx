@@ -15,7 +15,7 @@ import { FormField, FormItem } from "@/shared/form";
 import InputForm from "@/shared/input";
 import { Button } from "@/shared/button";
 
-import { fetcherPost, fetcherPut } from "@/services/callApiService";
+import { fetcherPatch, fetcherPut } from "@/services/callApiService";
 
 import showToast from "@/utils/showToast";
 import isDefined from "@/utils/isDefine";
@@ -29,10 +29,9 @@ const userInfo = z.object({
 
 const Account = () => {
   const router = useRouter();
-  const { profile, refreshProfile } = useProfile<TMyProfile>();
+  const { profile, refreshProfile } = useProfile<TMyProfile>({ disable: false });
 
-  const { trigger: addProfile, isMutating } = useSWRMutation("/auth/my-profile", fetcherPost);
-  const { trigger: updateProfile } = useSWRMutation("/auth/my-profile", fetcherPut);
+  const { trigger: updateUser } = useSWRMutation("/auth/users", fetcherPatch);
 
   const form = useForm({
     resolver: zodResolver(userInfo),
@@ -52,6 +51,16 @@ const Account = () => {
   ];
 
   const onSubmit = async (data: TFormBilling) => {
+    if (profile) {
+      const newData = { ...data, id: profile.data.id };
+      if (newData) {
+        updateUser(newData);
+        showToast({
+          message: "Update profile success",
+          type: "success",
+        });
+      }
+    }
     refreshProfile();
   };
 
@@ -94,7 +103,7 @@ const Account = () => {
                 )}
               />
             ))}
-            <Button disabled={isMutating} type="submit" className="mt-5 w-full py-3">
+            <Button type="submit" className="mt-5 w-full py-3">
               Save Change
             </Button>
           </form>

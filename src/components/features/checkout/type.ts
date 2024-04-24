@@ -18,7 +18,10 @@ export interface TUser {
   name: string;
   email: string;
 }
-
+export interface TUserInfo extends TToken {
+  address: string;
+  phone: string;
+}
 export interface TMyProfile {
   status: number;
   data: {
@@ -33,6 +36,19 @@ export interface TMyProfile {
 
 export interface TOrder extends TFormBilling {
   id: number;
-  shipping: object;
-  cartsOrder: ApiResponseProductBrandAndCategory[];
+  shipping: {
+    type: string;
+    price: number;
+    label: string;
+  };
+  orderer: string;
+  discount: {
+    name: string;
+    sale: number;
+    code: string;
+    id: 1;
+  };
+  totalPrice: number;
+  status: string;
+  carts: ApiResponseProductBrandAndCategory[];
 }
