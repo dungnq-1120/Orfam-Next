@@ -99,18 +99,6 @@ export const Header = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const handleClickOutside = () => {
-      setIsOpenUser(false);
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   return (
     <>
       <nav
