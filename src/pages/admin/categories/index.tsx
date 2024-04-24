@@ -24,7 +24,6 @@ import showToast from "@/utils/showToast";
 import { Edit } from "@/icons/feature/Edit";
 import bin from "@/image/icon/bin.svg";
 
-
 interface TCategories {
   id: number;
   name: string;
@@ -163,7 +162,7 @@ const Categories = () => {
                       placeholder={placeholder}
                       {...field}
                     />
-                    {form.formState.errors[name] && (
+                    {form.formState.errors[name] && form.formState.errors[name].message && (
                       <span className="text-red-500 text-start block text-xs">{form.formState.errors[name].message}</span>
                     )}
                   </FormItem>
