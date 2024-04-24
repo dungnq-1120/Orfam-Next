@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 import { useRouter } from "next/router";
@@ -42,6 +42,34 @@ export const Header = () => {
   const [token, setToken] = useState<TToken | null>(null);
   const { carts } = useGetCartsUser();
 
+  const menuItems = [
+    {
+      text: "Home",
+      route: "/",
+      icon: <Home className="w-6 h-6" />,
+    },
+    {
+      text: "Shop",
+      route: "/shop",
+      icon: <Shop className="w-5 h-5 " />,
+    },
+    {
+      text: "Blog",
+      route: "/blog",
+      icon: <Order className="w-6 h-6" />,
+    },
+    {
+      text: "About us",
+      route: "/about",
+      icon: <About className="w-5 h-5 ml-1" />,
+    },
+    {
+      text: "Contact",
+      route: "/contact",
+      icon: <Contact className="w-6 h-6 -mt-2" />,
+    },
+  ];
+
   const menu: { [key: string]: string } = {
     HOME: "/",
     SHOP: "/shop",
@@ -71,36 +99,17 @@ export const Header = () => {
     };
   }, []);
 
-  const menuItems = [
-    {
-      text: "Home",
-      route: "/",
-      icon: <Home className="w-6 h-6" />,
-    },
-    {
-      text: "Shop",
-      route: "/shop",
-      icon: <Shop className="w-5 h-5 " />,
-    },
-    {
-      text: "Blog",
-      route: "/blog",
-      icon: <Order className="w-6 h-6" />,
-    },
-    {
-      text: "About us",
-      route: "/about",
-      icon: <About className="w-5 h-5 ml-1" />,
-    },
-    {
-      text: "Contact",
-      route: "/contact",
-      icon: <Contact className="w-6 h-6 -mt-2" />,
-    },
-  ];
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setIsOpenUser(false);
+    };
 
-  const backUrl = router.pathname;
-  console.log(backUrl);
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
@@ -203,10 +212,7 @@ export const Header = () => {
                 className=" border-1 flex justify-center w-full h-full text-blue-ct7  bg-transparent text-base cursor-pointer p-3 duration-500 rounded-md hover:bg-green-ct5 hover:text-white hover:border-0"
                 onClick={() => {
                   removeInfo("KEY_TOKEN");
-                  router.push({
-                    pathname: "/login",
-                    query: { name: "/" },
-                  });
+                  router.push("/login");
                 }}
               >
                 Login

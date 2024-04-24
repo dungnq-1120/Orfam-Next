@@ -52,6 +52,8 @@ const Login = () => {
       setInfo(token, "KEY_TOKEN");
       setInfo({ role: token.role }, "ROLE");
       router.push("/");
+    } else {
+      setErrors("Your email or password is not correct");
     }
   };
 
