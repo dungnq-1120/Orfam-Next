@@ -183,8 +183,8 @@ const Discount = () => {
                       placeholder={placeholder}
                       {...field}
                     />
-                    {form.formState.errors[name] && form.formState.errors[name].message && (
-                      <span className="text-red-500 text-start block text-xs">{form.formState.errors[name].message}</span>
+                    {form?.formState?.errors[name] && form?.formState?.errors[name]?.message && (
+                      <span className="text-red-500 text-start block text-xs">{form?.formState?.errors[name]?.message}</span>
                     )}
                   </FormItem>
                 )}
