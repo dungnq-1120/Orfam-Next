@@ -1,26 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import useSWRMutation from "swr/mutation";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import Image from "next/image";
+
+import { useBrands } from "@/hooks/useBrand";
 
 import AdminLayout from "@/components/layouts/AdminLayout";
-
-import Admin from "..";
-
-import { Button } from "@/shared/button";
+import Admin from "@/pages/admin/index";
 
 import { fetcherDelete, fetcherPatch, fetcherPost } from "@/services/callApiService";
 
-import isDefined from "@/utils/isDefine";
-import showToast from "@/utils/showToast";
-import Image from "next/image";
 import { Edit } from "@/icons/feature/Edit";
-import bin from "@/image/icon/bin.svg";
+
+import { Button } from "@/shared/button";
 import Modal from "@/shared/modal";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { FormField, FormItem } from "@/shared/form";
 import InputForm from "@/shared/input";
-import { useBrands } from "@/hooks/useBrand";
+
+import isDefined from "@/utils/isDefine";
+import showToast from "@/utils/showToast";
+
+import bin from "@/image/icon/bin.svg";
 
 interface TBrand {
   id: number;
@@ -89,14 +91,14 @@ const Brands = () => {
   };
   return (
     <>
-      <div className="shadow-shadow2 p-3 bg-white">
-        <div className="flex justify-between items-center mb-10">
-          <h3 className="font-semibold text-blue-ct7 text-lg ">MANAGER BRAND</h3>
+      <div className="shadow-shadow2 p-3 bg-white sm:text-xs">
+        <div className="flex justify-between items-center mb-10 xs:block">
+          <h3 className="font-semibold text-blue-ct7 text-lg xs:text-sm ">MANAGER BRAND</h3>
           <Button
             onClick={() => {
               setIsOpenBrand(true);
             }}
-            className="bg-blue-ct5 py-3"
+            className="bg-blue-ct5 py-3 xs:mt-3 xs:w-full xs:text-xs"
           >
             ADD BRAND
           </Button>
@@ -117,12 +119,12 @@ const Brands = () => {
                     <td className="border-slate-200 py-3 px-3 font-semibold text-green-500">{brand.id}</td>
                     <td className="border-slate-200 py-3 px-3 font-semibold text-orange-500">{brand.name}</td>
                     <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-blue-ct7 flex-col items-center">
-                      <div className="flex justify-center gap-2 items-center">
+                      <div className="flex justify-center gap-2 items-center xs:block">
                         <Button
                           onClick={() => {
                             handleDeleteBrand(brand);
                           }}
-                          className=" font-semibold p-3 mb-2 bg-red-300 shadow-lg "
+                          className=" font-semibold p-3 mb-2 bg-red-300 shadow-lg sm:p-2"
                         >
                           <Image src={bin} alt="" className="w-6 h-6" />
                         </Button>
@@ -130,7 +132,7 @@ const Brands = () => {
                           onClick={() => {
                             handleEditBrand(brand);
                           }}
-                          className=" font-semibold p-3 mb-2  bg-green-200 shadow-lg "
+                          className=" font-semibold p-3 mb-2 bg-green-200 shadow-lg sm:p-2"
                         >
                           <Edit className="w-6 h-6" />
                         </Button>
@@ -143,7 +145,7 @@ const Brands = () => {
         </div>
       </div>
       <Modal className="opacity-50" isOpenModal={isOpenModalBrand} onCancel={setIsOpenBrand}>
-        <div className="bg-white w-[400px] p-3 rounded-md">
+        <div className="bg-white w-[400px] p-3 rounded-md xs:w-[318px]">
           <form onSubmit={form.handleSubmit(onSubmit)}>
             {formFields.map(({ name, placeholder, label }) => (
               <FormField

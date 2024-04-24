@@ -4,7 +4,7 @@ import useSWRMutation from "swr/mutation";
 
 import { useOrders } from "@/hooks/useOrder";
 
-import Admin from "..";
+import Admin from "@/pages/admin/index";
 import AdminLayout from "@/components/layouts/AdminLayout";
 
 import { Button } from "@/shared/button";
@@ -24,7 +24,6 @@ const Orders = () => {
   const [orderDetail, setOrderDetail] = useState<TOrder>();
   const [updateChangeShip, setUpdateChangeShip] = useState<TOrder>();
   const { orders, refreshOrders } = useOrders<TOrder[]>();
-  console.log(orders);
 
   const { trigger: updateShipStatus } = useSWRMutation("/orders", fetcherPatch);
   const { trigger: deleteOrder } = useSWRMutation("/orders", fetcherDelete);
@@ -54,7 +53,7 @@ const Orders = () => {
 
   return (
     <div className="shadow-shadow2 p-5 bg-white">
-      <h3 className="text-blue-ct7 font-semibold text-lg p-5">ORDER MANAGEMENT</h3>
+      <h3 className="text-blue-ct7 font-semibold text-lg p-5 sm:text-sm">ORDER MANAGEMENT</h3>
       <div className="overflow-x-auto">
         <table className="w-[120%] border-slate-500 lg:w-[200%] md:!w-[350%] text-sm">
           <thead>
@@ -114,12 +113,12 @@ const Orders = () => {
         </table>
       </div>
       <Modal className="opacity-40" isOpenModal={isOpenModalDetail} onCancel={setOpenModalDetail}>
-        <div className="bg-white p-5 rounded-lg w-[800px] mdd:w-full sm:!w-9/12 m-auto xss:w-[400px] xs:!w-[310px]">
+        <div className="bg-white p-5 rounded-lg w-[800px] mdd:w-[735px] md:!w-[500px] m-auto xss:!w-[310px] ">
           <h3 className="text-center font-bold text-blue-ct7 mb-3">DETAIL PRODUCT LIST</h3>
           <div className="overflow-auto h-72">
             <table className=" w-[150%] sm:w-[200%] xss:w-[300%]">
               <thead className="sticky -top-1 bg-white">
-                <tr className="text-sm">
+                <tr className="text-sm sm:text-xs">
                   {productTableHeaders.map((item) => (
                     <th key={item} className="border-b-1 border-slate-200 py-4 px-3 text-blue-ct5">
                       {item}
@@ -130,7 +129,7 @@ const Orders = () => {
               <tbody>
                 {isDefined(orderDetail) &&
                   orderDetail.carts.map((cart) => (
-                    <tr key={cart.id} className="text-center text-sm font-medium text-blue-ct6">
+                    <tr key={cart.id} className="text-center text-sm font-medium text-blue-ct6 sm:text-xs">
                       <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-green-500">
                         <Image width={550} height={550} className="w-20 h-20 m-auto  object-cover" src={cart.image} alt="" />
                       </td>

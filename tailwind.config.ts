@@ -140,6 +140,7 @@ const config = {
         mdd: { max: "822px" },
         nm: { max: "937px" },
         lg: { max: "1080px" },
+        l: { max: "1158px" },
         xl: { max: "1280px" },
         xxl: { max: "1536px" },
       },

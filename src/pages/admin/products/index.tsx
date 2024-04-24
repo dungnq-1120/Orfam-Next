@@ -34,7 +34,6 @@ const ProductInfo = z.object({
   price: z.coerce.number().min(1, "Please enter your price"),
   quantity: z.coerce.number().min(1, "Please enter your quantity"),
   image: z.string().min(1, "Please enter your image product").trim(),
-  rate: z.coerce.number().min(1, "Please enter your rate"),
   status: z.string().min(1, "Please enter your status").trim(),
 });
 
@@ -45,7 +44,6 @@ const CreateProduct = () => {
       title: "",
       price: 0,
       image: "",
-      rate: 0,
       quantity: 1,
       status: "",
     },
@@ -56,7 +54,6 @@ const CreateProduct = () => {
     { name: "price", placeholder: "Please enter your price" } as const,
     { name: "quantity", placeholder: "Please enter your quantity" } as const,
     { name: "image", placeholder: "Please enter your image product" } as const,
-    { name: "rate", placeholder: "Please enter your rate" } as const,
     { name: "status", placeholder: "Please enter your status" } as const,
   ];
   const tableTitleProducts = ["Image", "Title", "Price", "Quantity", "Rate", "Status", "Brand", "Category", "Action"];
@@ -81,10 +78,10 @@ const CreateProduct = () => {
   const { trigger: updateProduct, isMutating: isMutingUpdateProduct } = useSWRMutation("/products", fetcherPatch);
   const { trigger: deleteProduct, isMutating: isMutingDeleteProduct } = useSWRMutation("/products", fetcherDelete);
 
-  const onSubmit = (data: Omit<Product, "category" | "brand">) => {
+  const onSubmit = (data: Omit<Product, "category" | "brand" | "rate">) => {
     if (!idProduct) {
       if (selectedBrand && selectedCategory) {
-        const newData = { ...data, brandsId: selectedBrand.id, categoriesId: selectedCategory.id };
+        const newData = { ...data, brandsId: selectedBrand.id, categoriesId: selectedCategory.id, rate: 5 };
         addProduct(newData);
         showToast({
           message: `Add product ${data.title} success`,
@@ -100,7 +97,6 @@ const CreateProduct = () => {
       title: "",
       price: 0,
       image: "",
-      rate: 0,
       quantity: 0,
       status: "",
     });
@@ -131,7 +127,6 @@ const CreateProduct = () => {
       title: product.title,
       price: product.price,
       image: product.image,
-      rate: product.rate,
       quantity: product.quantity,
       status: product.status,
     });
@@ -149,7 +144,6 @@ const CreateProduct = () => {
       title: "",
       price: 0,
       image: "",
-      rate: 0,
       quantity: 0,
       status: "",
     });
@@ -172,49 +166,44 @@ const CreateProduct = () => {
     <>
       <div>
         <div className="shadow-shadow2 p-5 bg-white rounded-md">
-          <div className="flex justify-between mb-10">
+          <div className="flex justify-between mb-10 mdd:block">
             <h3 className="p-3 font-semibold text-blue-ct7 text-lg">PRODUCTS</h3>
-            <div className="flex item-center gap-4">
-              <InputForm
-                value={valueSearch}
-                onChange={(e) => {
-                  setValueSearch(e.target.value);
-                }}
-                placeholder="Search"
-                className={`w-0 p-0 border-0 text-sm ${
-                  isModalSearch ? "w-[300px] duration-500 bg-gray-100 py-3 px-3" : "w-0 duration-500 bg-gray-100 py-0"
-                }`}
-              />
-              <Button
-                onClick={() => {
-                  setOpenSearch(!isModalSearch);
-                }}
-                className="rounded-full h-12 w-12 bg-blue-200"
-              >
-                <Search className="w-6 h-6 text-blue-ct7" />
-              </Button>
+            <div className="flex item-center gap-4 mdd:block">
+              <div className="flex gap-2 mdd:justify-end">
+                <InputForm
+                  value={valueSearch}
+                  onChange={(e) => {
+                    setValueSearch(e.target.value);
+                  }}
+                  placeholder="Search"
+                  className={`w-0 p-0 border-0 text-sm  ${
+                    isModalSearch
+                      ? "w-[300px] duration-500 bg-gray-100 py-3 px-3 mdd:block"
+                      : "w-0 duration-500 mdd:w-full mdd:py-3 mdd:px-3 mdd:mb-2 bg-gray-100 py-0"
+                  }`}
+                />
+                <Button
+                  onClick={() => {
+                    setOpenSearch(!isModalSearch);
+                  }}
+                  className="rounded-full h-12 w-12 bg-blue-200 mdd:hidden"
+                >
+                  <Search className="w-6 h-6 text-blue-ct7" />
+                </Button>
+              </div>
               <Button
                 onClick={() => {
                   setIsOpenModalProduct(true);
                 }}
-                className="bg-blue-ct5"
+                className="bg-blue-ct5 mdd:self-end mdd:py-3 mdd:w-full"
               >
                 ADD PRODUCT
               </Button>
             </div>
           </div>
 
-          {/* <InputForm
-          value={valueSearch}
-          onChange={(e) => {
-            setValueSearch(e.target.value);
-          }}
-          types="success"
-          className="py-2 mb-5 rounded text-sm border-1 w-1/4 nm:w-2/4 sm:!w-3/4"
-          placeholder="Search product"
-        /> */}
           <div className="overflow-auto h-[450px] ">
-            <table className=" w-[130%] csm:w-[250%] csm:text-xs xs:!w-[340%]">
+            <table className=" w-[130%] lg:w-[180%] csm:w-[250%] csm:text-xs xs:!w-[340%]">
               <thead className="sticky -top-1 bg-white ">
                 <tr>
                   {tableTitleProducts.map((item) => (
@@ -231,18 +220,18 @@ const CreateProduct = () => {
                       <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-blue-ct7">
                         <Image width={550} height={550} className="w-20 h-20 m-auto" src={product.image} alt="" />
                       </td>
-                      <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-orange-500">{product.title}</td>
+                      <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-orange-500 csm:text-xs">{product.title}</td>
                       <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-green-500">{product.price.toFixed(2)}</td>
                       <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-blue-600">{product.quantity}</td>
                       <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-orange-600">{product.rate}</td>
                       <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-red-500">
-                        <span className="p-1 bg-red-200  rounded">{product.status}</span>
+                        <span className="p-1 bg-red-200 csm:text-xs rounded">{product.status}</span>
                       </td>
                       <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-blue-ct7">
-                        <span className="bg-green-200 text-green-700 px-2 py-1 rounded">{product.brands?.name}</span>
+                        <span className="bg-green-200 text-green-700 px-2 py-1 rounded xl:p-1 csm:text-xs">{product.brands?.name}</span>
                       </td>
                       <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-blue-ct7">
-                        <span className="p-1 bg-orange-200 text-orange-500 rounded px-2 py-1">{product.categories?.name}</span>
+                        <span className="p-1 bg-orange-200 text-orange-500 rounded px-2 py-1 csm:text-xs">{product.categories?.name}</span>
                       </td>
                       <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold ">
                         <div className="flex flex-col items-center">
@@ -273,7 +262,7 @@ const CreateProduct = () => {
         </div>
       </div>
       <Modal className="opacity-50" onCancel={setIsOpenModalProduct} isOpenModal={isOpenModalProduct}>
-        <div className="w-[700px] bg-white p-5 rounded-lg">
+        <div className="w-[700px] bg-white p-5 rounded-lg csm:w-[400px] xs:!w-[300px]">
           <h3 className="text-blue-ct7 text-lg font-semibold">ADD PRODUCT</h3>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             {formFields.map(({ name, placeholder }) => (

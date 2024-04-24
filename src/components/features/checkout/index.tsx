@@ -7,18 +7,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useProfile } from "@/hooks/useProfile";
 import useGetCartsUser from "@/hooks/useGetCartsUser";
+import { useOrders } from "@/hooks/useOrder";
+import useToken from "@/hooks/useToken";
+import useInfoCheckout from "@/store/useInfoCheckout";
 
 import { Button } from "@/shared/button";
 import { Form, FormField, FormItem, FormMessage } from "@/shared/form";
 import InputForm from "@/shared/input";
+import Modal from "@/shared/modal";
 
 import { fetcherPost } from "@/services/callApiService";
 
-import type { TFormBilling, TMyProfile, TOptionShip } from "./type";
+import type { TFormBilling, TMyProfile, TOptionShip, TOrder } from "./type";
+
+import { TRACKING } from "@/services/type";
 
 import isDefined from "@/utils/isDefine";
-import authLocal from "@/utils/localStorage";
-import { TRACKING } from "@/services/type";
 
 const checkoutSchema = z.object({
   name: z.string().min(1, "Please enter your name").trim(),
@@ -34,12 +38,18 @@ const CheckoutInfo = () => {
   ];
 
   const router = useRouter();
-  const { getInfo, removeInfo } = authLocal;
-  const { discount, total } = getInfo("CODE.TOTAL");
+  const { discount, total } = useInfoCheckout((state) => ({
+    discount: state.discount,
+    total: state.total,
+  }));
+
   const [selectedOption, setSelectedOption] = useState<TOptionShip>(deliveryOptions[0]);
-  const { profile } = useProfile<TMyProfile>(false);
+  const [isOpenModalAttention, setOpenModalAttention] = useState<boolean>(false);
+  const { profile } = useProfile<TMyProfile>({ disable: false });
   const { trigger: addOrder } = useSWRMutation("/orders", fetcherPost);
   const { carts, refreshCarts } = useGetCartsUser();
+  const tokenInfo = useToken();
+  const { refreshOrders } = useOrders<TOrder[]>({ _expand: "userCarts", userCartsId: tokenInfo && tokenInfo.id }, { disable: !tokenInfo });
 
   const form = useForm({
     resolver: zodResolver(checkoutSchema),
@@ -67,11 +77,11 @@ const CheckoutInfo = () => {
       discount: discount,
       shipping: selectedOption,
       totalPrice: totalPrice,
-      status: TRACKING.PLACED,
+      status: TRACKING.PACKED,
       userCartsId: carts[0].userCartsId,
     });
+    refreshOrders();
     router.push("/bill");
-
   };
 
   useEffect(() => {
@@ -87,6 +97,9 @@ const CheckoutInfo = () => {
 
   return (
     <>
+      <Modal isOpenModal={isOpenModalAttention} onCancel={setOpenModalAttention}>
+        <div className="p-5"></div>
+      </Modal>
       <div className="mt-20 py-10 flex items-center lg:flex-wrap">
         <div className="w-full p-4">
           <h3 className="text-blue-ct7 font-semibold text-xl border-b-1 p-3">Billing Details</h3>
@@ -121,7 +134,9 @@ const CheckoutInfo = () => {
                 onClick={() => {
                   setSelectedOption(option);
                 }}
-                className={selectedOption && selectedOption.type === option.type ? "active bg-green-ct5 mx-2 mt-3 text-white " : "mx-2"}
+                className={`xs:mb-1 xs:w-full ${
+                  selectedOption && selectedOption.type === option.type ? "active bg-green-ct5 mx-2 mt-3 text-white " : "mx-2"
+                }`}
               >
                 {option.label}: <span className="text-semibold ml-1"> ${option.price.toFixed(2)}</span>
               </Button>
@@ -131,7 +146,7 @@ const CheckoutInfo = () => {
         <div className="checkout-product-detail w-full border-2 border-green-ct5 p-4 lg:border-0">
           <h3 className="text-blue-ct7 font-semibold text-xl border-b-1 p-3 mb-6">Your order</h3>
           <div className="">
-            <table className="w-full">
+            <table className="w-full xss:text-xs">
               <thead>
                 <tr>
                   <th className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-orange-500 text-start">Product</th>
@@ -142,7 +157,7 @@ const CheckoutInfo = () => {
                   carts.map((cart) => (
                     <tr key={cart.id}>
                       <td className="border-b-1 flex justify-between border-slate-200 py-3 px-5 font-semibold text-blue-500">
-                        <span>
+                        <span className="pr-2">
                           {cart.title} x{cart.quantity}
                         </span>
                         <span className="text-green-500">{cart.price.toFixed(2)}</span>
@@ -152,7 +167,7 @@ const CheckoutInfo = () => {
                 <tr>
                   <td className="border-b-1 flex justify-between border-slate-200 py-3 px-3 font-semibold text-orange-500">
                     <span>Discount</span>
-                    <span className="text-green-500">{discount.name}</span>
+                    <span className="text-green-500"> {discount && discount.length > 0 && discount[0].name}</span>
                   </td>
                 </tr>
                 <tr>

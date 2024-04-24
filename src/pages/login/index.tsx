@@ -21,7 +21,6 @@ import { LoginData } from "./type";
 import authLocal from "@/utils/localStorage";
 
 import logo from "@/image/logo/Logo.png";
-import { useCartsUser } from "@/hooks/useCartUsers";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email format").trim(),
@@ -42,26 +41,24 @@ const Login = () => {
 
   const router = useRouter();
   const [errors, setErrors] = useState("");
-
-  const { trigger, isMutating } = useSWRMutation("/auth/login", fetcherPost);
   const { setInfo } = authLocal;
 
+  const { trigger: postLogin, isMutating } = useSWRMutation("/auth/login", fetcherPost);
+
   const onSubmit = async (data: LoginData) => {
-    const token = (await trigger(data)) as TToken;
+    const token = (await postLogin(data)) as TToken;
 
     if (token && token.access_token) {
       setInfo(token, "KEY_TOKEN");
       setInfo({ role: token.role }, "ROLE");
       router.push("/");
-    } else {
-      setErrors("Incorrect email or password");
     }
   };
 
   const formFields = [{ name: "email", placeholder: "Email" } as const, { name: "password", placeholder: "Password", type: "password" } as const];
 
   return (
-    <div className="login w-full h-screen flex justify-center items-center bg-slate-200 p-5 s:h-full xs:pt-4 xs:pb-4">
+    <div className="login w-full h-screen flex justify-center items-center bg-slate-200 p-5 xs:pt-4 xs:pb-4">
       <Loading isLoading={isMutating} />
       <div className="form-Login flex justify-center items-center w-96 shadow-shadow1 bg-white rounded-lg p-6 sm:w-11/12 xs:w-full">
         <Form {...form}>

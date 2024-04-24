@@ -1,19 +1,19 @@
 import useSWR from "swr";
 import { fetcherGet } from "@/services/callApiService";
 
-export function useComments<T>() {
+export function useComments<T>(query?: object) {
   const url = "/comments";
-  
+
   const {
     data: comments,
     isLoading,
     mutate,
-  } = useSWR<T>([url], ([url]: [string]) => fetcherGet(url), {
+  } = useSWR<T>([url, query], ([url, query]: [string, object?]) => fetcherGet(url, query), {
     revalidateIfStale: false,
   });
 
   const refreshComments = () => {
-    mutate(fetcherGet(url));
+    mutate(fetcherGet(url, query));
   };
 
   return {

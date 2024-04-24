@@ -33,7 +33,7 @@ const fetcherPut = async <T extends { userId: number }>(url: string, { arg }: { 
 
 const fetcherDelete = async <T extends { id: number }>(url: string, { arg }: { arg: T }) => {
   const deleteUrl = `${url}/${arg.id}`;
-  
+
   try {
     const response = await restClient.delete(deleteUrl);
     return response;

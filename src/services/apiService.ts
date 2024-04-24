@@ -108,7 +108,7 @@ export default class RestClient {
           if (token) {
             removeInfo("KEY_TOKEN");
             removeInfo("ROLE");
-            window.location.replace("/");
+            window.location.replace("/login");
           }
         } else if (errorCode === statusCode.FORBIDDEN) {
           window.location.replace("/");

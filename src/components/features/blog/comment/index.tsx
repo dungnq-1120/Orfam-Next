@@ -2,32 +2,51 @@ import React, { useState } from "react";
 import Image from "next/image";
 import useSWRMutation from "swr/mutation";
 
-import { useProfile } from "@/hooks/useProfile";
 import { useComments } from "@/hooks/useComments";
+import useToken from "@/hooks/useToken";
 
 import { Button } from "@/shared/button";
 
 import { fetcherPost } from "@/services/callApiService";
 
 import type { TComments } from "@/services/type";
-import type { TMyProfile } from "../../checkout/type";
 
 import isDefined from "@/utils/isDefine";
+import showToast from "@/utils/showToast";
 
 import avatar from "@/image/logo/favico.png";
 
 const BlogComment = () => {
+  const tokenInfo = useToken();
   const [commentValue, setCommentValue] = useState<string>("");
-  const { comments, refreshComments } = useComments<TComments[]>();
-  const { profile } = useProfile<TMyProfile>(false);
+  const { comments, refreshComments } = useComments<TComments[]>({ _expand: "userCarts" });
+
   const { trigger: addComment } = useSWRMutation("/comments", fetcherPost);
 
   const handleAddComment = () => {
-    if (comments) {
-      const newComment = { comment: commentValue, userId: profile?.data.id, name: profile?.data.name };
-      addComment(newComment);
-      refreshComments();
-      setCommentValue("");
+    if (tokenInfo) {
+      if (commentValue) {
+        if (comments) {
+          const newComment = { comment: commentValue, userCartsId: tokenInfo?.id };
+          addComment(newComment);
+          showToast({
+            message: "Your comment was posted successfully",
+            type: "success",
+          });
+          refreshComments();
+          setCommentValue("");
+        }
+      } else {
+        showToast({
+          message: "Please write a review",
+          type: "error",
+        });
+      }
+    } else {
+      showToast({
+        message: "Please login",
+        type: "error",
+      });
     }
   };
 
@@ -51,7 +70,7 @@ const BlogComment = () => {
               <div key={comment.id} className="comment-client border-t-1 py-4 flex gap-2">
                 <Image src={avatar} alt="" className="rounded-full w-14 h-14" />
                 <div className="content">
-                  <h4 className="text-sm font-semibold text-blue-ct7">{comment.name.toLocaleUpperCase()}</h4>
+                  <h4 className="text-sm font-semibold text-blue-ct7">{comment.userCarts.name.toLocaleUpperCase()}</h4>
                   <p className="text-sm text-blue-ct7 font-medium mt-1">{comment.comment}</p>
                 </div>
               </div>

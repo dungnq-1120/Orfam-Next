@@ -1,13 +1,13 @@
 import useSWR from "swr";
 import { fetcherGet } from "@/services/callApiService";
 
-export function useProfile<T>(disabled?: boolean) {
+export function useProfile<T>(option?: { disable?: boolean }) {
   const url = "/auth/my-profile";
   const {
     data: profile,
     isLoading,
     mutate,
-  } = useSWR<T>(disabled ? null : [url], ([url]: [string]) => fetcherGet(url), {
+  } = useSWR<T>(option?.disable ? null : [url], ([url]: [string]) => fetcherGet(url), {
     revalidateIfStale: true,
   });
 

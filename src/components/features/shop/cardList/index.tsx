@@ -38,6 +38,8 @@ const CardList = () => {
     rate: productRate,
   });
 
+
+
   useEffect(() => {
     setPage(initialPage);
   }, [initialPage]);

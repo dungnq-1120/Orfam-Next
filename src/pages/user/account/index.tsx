@@ -15,7 +15,7 @@ import { FormField, FormItem } from "@/shared/form";
 import InputForm from "@/shared/input";
 import { Button } from "@/shared/button";
 
-import { fetcherPut } from "@/services/callApiService";
+import { fetcherPatch, fetcherPut } from "@/services/callApiService";
 
 import showToast from "@/utils/showToast";
 import isDefined from "@/utils/isDefine";
@@ -29,9 +29,9 @@ const userInfo = z.object({
 
 const Account = () => {
   const router = useRouter();
-  const { profile, refreshProfile } = useProfile<TMyProfile>(false);
+  const { profile, refreshProfile } = useProfile<TMyProfile>({ disable: false });
 
-  const { trigger: updateUser } = useSWRMutation("/auth/users", fetcherPut);
+  const { trigger: updateUser } = useSWRMutation("/auth/users", fetcherPatch);
 
   const form = useForm({
     resolver: zodResolver(userInfo),
@@ -52,7 +52,7 @@ const Account = () => {
 
   const onSubmit = async (data: TFormBilling) => {
     if (profile) {
-      const newData = { ...data, userId: profile.data.id };
+      const newData = { ...data, id: profile.data.id };
       if (newData) {
         updateUser(newData);
         showToast({

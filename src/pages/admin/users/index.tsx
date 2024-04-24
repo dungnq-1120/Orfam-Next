@@ -2,27 +2,31 @@ import React, { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import useSWRMutation from "swr/mutation";
+import Image from "next/image";
 
-import Admin from "..";
+import { useUsers } from "@/hooks/useUsers";
+
+import Admin from "@/pages/admin/index";
 import AdminLayout from "@/components/layouts/AdminLayout";
 
 import { Button } from "@/shared/button";
 import Modal from "@/shared/modal";
 import { FormField, FormItem } from "@/shared/form";
 import InputForm from "@/shared/input";
-import { useUsers } from "@/hooks/useUsers";
+
 import { TUserInfo } from "@/components/features/checkout/type";
-import Image from "next/image";
+import { TCartsUser } from "@/services/type";
+
 import { Edit } from "@/icons/feature/Edit";
-import bin from "@/image/icon/bin.svg";
-import isDefined from "@/utils/isDefine";
-import useSWRMutation from "swr/mutation";
-import { fetcherDelete, fetcherPatch, fetcherPost } from "@/services/callApiService";
+
+import { fetcherDelete, fetcherPatch } from "@/services/callApiService";
 
 import showToast from "@/utils/showToast";
 import { useCartsUser } from "@/hooks/useCartUsers";
-import { useCarts } from "@/hooks/useCart";
-import { TCartsUser } from "@/services/type";
+import isDefined from "@/utils/isDefine";
+
+import bin from "@/image/icon/bin.svg";
 
 const userInfo = z.object({
   name: z.string().min(1, "Please enter your user").trim(),
@@ -105,10 +109,10 @@ const Users = () => {
 
   return (
     <>
-      <div className="shadow-shadow2 bg-white rounded-lg">
-        <h3 className="p-5 font-semibold text-blue-ct7 text-lg">USER ACCOUNTS</h3>
+      <div className="shadow-shadow2 bg-white rounded-lg sm:text-xs">
+        <h3 className="p-5 font-semibold text-blue-ct7 text-lg xs:text-sm xs:border-b-1 xs:pb-2">USER ACCOUNTS</h3>
         <div className="overflow-x-auto">
-          <table className="bg-white w-[110%] border-slate-500 lg:w-[200%] nm:w-[300%] xs:!w-[400%]">
+          <table className="bg-white w-[110%] border-slate-500 lg:w-[200%] nm:w-[300%] xs:!w-[400%] ">
             <thead>
               <tr>
                 {tableNameHeading.map((item) => (
@@ -121,7 +125,7 @@ const Users = () => {
             <tbody>
               {isDefined(users) &&
                 users.map((user) => (
-                  <tr key={user.id} className="text-center font-medium text-blue-ct6 text-sm ">
+                  <tr key={user.id} className="text-center font-medium text-blue-ct6 text-sm sm:text-xs">
                     <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-green-500">{user.name}</td>
                     <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-orange-500">{user.email}</td>
                     <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold text-yellow-500">

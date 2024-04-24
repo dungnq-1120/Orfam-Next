@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import logo from "@/image/logo/Logo.png";
+import React from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
-import InputForm from "@/shared/input";
-import { Button } from "@/shared/button";
-import { Search } from "@/icons/info/Search";
+
 import { User } from "@/icons/info/User";
 import Dropdown from "@/shared/dropdown";
 
+import logo from "@/image/logo/Logo.png";
+
 const Header = () => {
-  const options = [
-    { id: 1, name: "Option 1" },
-    { id: 2, name: "Option 2" },
-    { id: 3, name: "Option 3" },
-  ];
+  const router = useRouter();
+  const handleGoProfile = () => {
+    router.push("/user");
+  };
+  const options = [{ id: 1, name: "My Profile", link: "/user/account", action: handleGoProfile }];
 
   return (
     <>

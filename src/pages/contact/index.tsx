@@ -42,7 +42,7 @@ const Contact = () => {
   ];
   const [messageValue, setMessageValue] = useState<string>("");
   const [errorValue, setErrorValue] = useState("");
-  const { profile } = useProfile<TMyProfile>(false);
+  const { profile } = useProfile<TMyProfile>({ disable: false });
   const { trigger: addMessage } = useSWRMutation("/message", fetcherPost);
 
   const handleSendMessage = () => {

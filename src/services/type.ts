@@ -84,7 +84,11 @@ export interface TMessage {
 }
 
 export interface TComments {
-  userId: number;
+  userCartsId: number;
+  userCarts: {
+    name: string;
+    id: number;
+  };
   id: number;
   comment: string;
   name: string;
@@ -105,9 +109,22 @@ export interface TBrandAndCategories {
   name: string;
 }
 export interface TCartsUser extends TBrandAndCategories {}
+
 export enum TRACKING {
   PLACED = "Placed",
   PACKED = "Packed",
   SHIPPING = "Shipping",
   DELIVERED = "Delivered",
+}
+
+export interface TReview {
+  id: number;
+  userCartsId: number;
+  rate: number;
+  review: string;
+  productsId: number;
+  userCarts: {
+    name: string;
+    id: number;
+  };
 }

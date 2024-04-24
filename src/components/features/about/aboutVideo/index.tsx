@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
+
 import videoImage from "@/image/banner/video-bg-1.webp";
 import play from "@/image/icon/play.svg";
 
@@ -56,7 +57,7 @@ const AboutVideo = () => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-black-ct50 z-5xl" />
+            <div className="fixed inset-0 bg-black-ct50 z-5xl bg-blue-ct5 opacity-50" />
           </Transition.Child>
 
           <div className="fixed z-6xl inset-0 overflow-y-auto">

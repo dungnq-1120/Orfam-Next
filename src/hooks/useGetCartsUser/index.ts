@@ -6,14 +6,14 @@ import { TMyProfile } from "@/components/features/checkout/type";
 
 const useGetCartsUser = () => {
   const tokenInfo = useToken();
-  const { profile } = useProfile<TMyProfile>(tokenInfo ? false : true);
+  const { profile } = useProfile<TMyProfile>({ disable: !tokenInfo });
 
   const { carts, refreshCarts } = useCarts<ApiResponseProductBrandAndCategory[]>(
     {
       _expand: "userCarts",
-      userCartsId: profile && profile.data.id,
+      userCartsId: tokenInfo && tokenInfo.id,
     },
-    profile ? false : true
+    { disable: !profile }
   );
   return { carts, refreshCarts };
 };

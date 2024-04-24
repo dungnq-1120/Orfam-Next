@@ -5,6 +5,8 @@ import { useRouter } from "next/router";
 import useSWRMutation from "swr/mutation";
 
 import useGetCartsUser from "@/hooks/useGetCartsUser";
+import { useDiscounts } from "@/hooks/useDiscount";
+import useInfoCheckout from "@/store/useInfoCheckout";
 
 import { Button } from "@/shared/button";
 import InputForm from "@/shared/input";
@@ -18,12 +20,13 @@ import { isEmptyArray } from "@/utils/isEmptyArray";
 import showToast from "@/utils/showToast";
 
 import bin from "@/image/icon/bin.svg";
-import { useDiscounts } from "@/hooks/useDiscount";
-import authLocal from "@/utils/localStorage";
 
 const ProductCartList = () => {
-  const { setInfo } = authLocal;
   const router = useRouter();
+  const { setDiscount, setTotal } = useInfoCheckout((state) => ({
+    setDiscount: state.setDiscount,
+    setTotal: state.setTotal,
+  }));
   const { carts, refreshCarts } = useGetCartsUser();
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [discountValue, setDiscountValue] = useState<string | null>(null);
@@ -83,7 +86,7 @@ const ProductCartList = () => {
 
   const handleCheckout = () => {
     if (discount && discount.length > 0) {
-      setInfo({ discount: discount[0], total: totalPrice }, "CODE.TOTAL");
+      setDiscount([discount[0]]);
     }
     router.push("/checkout");
   };
@@ -97,6 +100,7 @@ const ProductCartList = () => {
         discount: discount[0].sale,
       });
       setTotalPrice(totalPriceDiscount);
+      setTotal(totalPrice);
     }
   }, [carts, discount]);
 
@@ -163,17 +167,21 @@ const ProductCartList = () => {
           </tbody>
         </table>
       </div>
-      <div className="discount mt-10  sm:block">
-        <div className="flex justify-end">
+      <div className="discount mt-10 sm:block">
+        <div className="flex justify-end xss:block">
           <InputForm
             value={valueDiscount}
             onChange={(e) => {
               setValueDiscount(e.target.value);
             }}
-            className="border-1 rounded-3xl text-xs py-4 pl-5 w-1/4 sm:w-full sm:mb-3"
+            className="border-1 rounded-3xl text-xs py-4 pl-5 mdd:w-2/4 w-1/4 xss:!w-full "
             placeholder="Coupon code"
           />
-          <Button onClick={handleApplyCoupon} className="py-3 px-4 ml-3 rounded-3xl text-base sm:w-full sm:ml-0">
+          <Button
+            disabled={discount && discount.length > 0 && discountValue === discount[0].code}
+            onClick={handleApplyCoupon}
+            className="py-3 px-4 ml-3 rounded-3xl text-base xss:text-sm xss:block xss:w-full xss:ml-0 xss:mt-2"
+          >
             Apply Coupon
           </Button>
         </div>
@@ -198,7 +206,7 @@ const ProductCartList = () => {
               disabled={isEmptyArray(carts)}
               onClick={handleCheckout}
               types="success"
-              className="px-8 py-3 rounded-3xl opacity-100 mt-3 text-sm font-semibold hover:bg-blue-ct7 hover:opacity-100"
+              className="px-8 py-3 rounded-3xl opacity-100 mt-3 text-sm font-semibold hover:bg-blue-ct7 hover:opacity-100 xss:text-xs xss:w-full"
             >
               PROCEED TO CHECKOUT
             </Button>

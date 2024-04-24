@@ -1,21 +1,28 @@
 import AdminLayout from "@/components/layouts/AdminLayout";
 import React, { useState } from "react";
-import Admin from "..";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import Image from "next/image";
+import useSWRMutation from "swr/mutation";
+
+import Admin from "@/pages/admin/index";
+
 import { FormField, FormItem } from "@/shared/form";
 import InputForm from "@/shared/input";
 import { Button } from "@/shared/button";
+import Modal from "@/shared/modal";
+
 import { TCodeDiscount, TDiscount } from "@/services/type";
-import useSWRMutation from "swr/mutation";
+
 import { fetcherDelete, fetcherPatch, fetcherPost } from "@/services/callApiService";
 import { useDiscounts } from "@/hooks/useDiscount";
+
 import isDefined from "@/utils/isDefine";
 import showToast from "@/utils/showToast";
-import Modal from "@/shared/modal";
+
 import { Edit } from "@/icons/feature/Edit";
-import Image from "next/image";
+
 import bin from "@/image/icon/bin.svg";
 
 const DiscountInfo = z.object({
@@ -98,20 +105,20 @@ const Discount = () => {
   };
   return (
     <>
-      <div className="shadow-shadow2 p-5 rounded-sm mt-8 bg-white">
-        <div className="flex justify-between items-center mb-10">
-          <h3 className="font-semibold text-blue-ct7 mb-5">MANAGER DISCOUNT CODES</h3>
+      <div className="shadow-shadow2 p-5 rounded-sm mt-8 bg-white sm:text-xs">
+        <div className="flex justify-between items-center mb-10 csm:block">
+          <h3 className="font-semibold text-blue-ct7 mb-5 text-lg xs:text-xs">MANAGER DISCOUNT CODES</h3>
           <Button
             onClick={() => {
               setIsOpenModalDiscount(true);
             }}
-            className="bg-blue-ct5 py-3"
+            className="bg-blue-ct5 py-3 csm:w-full xs:text-xs"
           >
             CREATE DISCOUNT CODE
           </Button>
         </div>
-        <div className="overflow-auto">
-          <table className="w-full text-sm">
+        <div className="xs:overflow-x-auto">
+          <table className="w-full text-sm xs:!text-xs xs:w-[160%]">
             <thead>
               <tr className="text-blue-ct5">
                 <th className="border-b-1 border-slate-200 py-4 px-3 text-blue-ct5">Name</th>
@@ -132,22 +139,22 @@ const Discount = () => {
                       <span className="px-2 py-1 bg-red-200 rounded">{discount.sale * 100}%</span>
                     </td>
                     <td className="border-b-1 border-slate-200 py-3 px-3 font-semibold ">
-                      <div className="flex gap-2 justify-center items-center">
+                      <div className="flex gap-2 justify-center items-center xss:block">
                         <Button
                           onClick={() => {
                             handleDeleteDiscount(discount);
                           }}
-                          className=" font-semibold p-3 mb-2 bg-red-300 shadow-lg "
+                          className=" font-semibold p-3 mb-2 bg-red-300 shadow-lg sm:p-2"
                         >
-                          <Image src={bin} alt="" className="w-6 h-6" />
+                          <Image src={bin} alt="" className="w-6 h-6 xs:w-4 xs:h-4" />
                         </Button>
                         <Button
                           onClick={() => {
                             handleEditDiscount(discount);
                           }}
-                          className=" font-semibold p-3 mb-2  bg-green-200 shadow-lg "
+                          className=" font-semibold p-3 mb-2  bg-green-200 shadow-lg sm:p-2"
                         >
-                          <Edit className="w-6 h-6" />
+                          <Edit className="w-6 h-6 xs:w-4 xs:h-4" />
                         </Button>
                       </div>
                     </td>
@@ -158,7 +165,7 @@ const Discount = () => {
         </div>
       </div>
       <Modal className="opacity-50" isOpenModal={isOpenModalDiscount} onCancel={setIsOpenModalDiscount}>
-        <div className="bg-white w-[500px] p-3 rounded">
+        <div className="bg-white w-[500px] p-3 rounded xss:w-[410px] xs:!w-[310px]">
           <h3 className="font-semibold text-blue-ct7">CREATE DISCOUNT CODE</h3>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             {formFields.map(({ name, placeholder, label }) => (

@@ -13,17 +13,24 @@ import { Search } from "@/icons/info/Search";
 import { User } from "@/icons/info/User";
 import { CartIcon } from "@/icons/info/Cart";
 
+import { ROLES } from "@/services/type";
+
+import { Logout } from "@/icons/feature/Logout";
+import { Order } from "@/icons/feature/Order";
+import { Home } from "@/icons/feature/Home";
+import { Shop } from "@/icons/feature/Shop";
+import { About } from "@/icons/feature/About";
+import Contact from "@/icons/feature/Contact";
+import Top from "@/icons/feature/Top";
+
+import isDefined from "@/utils/isDefine";
+import authLocal from "@/utils/localStorage";
+
 import logo from "@/image/logo/Logo.png";
 import homeIcon from "@/image/icon/home.png";
 import barsIcon from "@/image/icon/bars-3.png";
 import cartIcon from "@/image/icon/cart.png";
 import userIcon from "@/image/icon/user.png";
-import Top from "@/icons/feature/Top";
-
-import { ROLES } from "@/services/type";
-
-import isDefined from "@/utils/isDefine";
-import authLocal from "@/utils/localStorage";
 
 export const Header = () => {
   const router = useRouter();
@@ -63,6 +70,37 @@ export const Header = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const menuItems = [
+    {
+      text: "Home",
+      route: "/",
+      icon: <Home className="w-6 h-6" />,
+    },
+    {
+      text: "Shop",
+      route: "/shop",
+      icon: <Shop className="w-5 h-5 " />,
+    },
+    {
+      text: "Blog",
+      route: "/blog",
+      icon: <Order className="w-6 h-6" />,
+    },
+    {
+      text: "About us",
+      route: "/about",
+      icon: <About className="w-5 h-5 ml-1" />,
+    },
+    {
+      text: "Contact",
+      route: "/contact",
+      icon: <Contact className="w-6 h-6 -mt-2" />,
+    },
+  ];
+
+  const backUrl = router.pathname;
+  console.log(backUrl);
 
   return (
     <>
@@ -155,20 +193,23 @@ export const Header = () => {
                   }}
                   className="w-full h-full text-blue-ct7 font-medium bg-transparent cursor-pointer p-3 hover:text-red-600"
                 >
-                  LOG OUT
+                  LOGOUT
                 </Button>
               </li>
             </ul>
           ) : (
             <ul className={`absolute right-0 bg-white shadow-xl top-16 text-blue-ct7 z-5xl rounded-md w-52 ${isOpenUser ? "block" : "hidden"}`}>
               <li
-                className=" border-1 flex justify-center w-full h-full text-blue-ct7  bg-transparent text-base cursor-pointer p-3 duration-500 rounded-md hover:bg-green-ct5 hover:text-white"
+                className=" border-1 flex justify-center w-full h-full text-blue-ct7  bg-transparent text-base cursor-pointer p-3 duration-500 rounded-md hover:bg-green-ct5 hover:text-white hover:border-0"
                 onClick={() => {
                   removeInfo("KEY_TOKEN");
-                  router.push("/login");
+                  router.push({
+                    pathname: "/login",
+                    query: { name: "/" },
+                  });
                 }}
               >
-                Log in
+                Login
               </li>
             </ul>
           )}
@@ -182,7 +223,7 @@ export const Header = () => {
       </nav>
       {!router.pathname.startsWith("/admin") && (
         <nav className="nav fixed bottom-10 left-2/4 -translate-x-2/4 hidden shadow-shadow1 z-40 bg-white w-11/12 rounded-[30px] m-auto md:block ">
-          <ul className="flex justify-between px-20 xs:px-10">
+          <ul className="flex justify-between px-10 xs:px-5 xs:py-1">
             <li
               onClick={() => {
                 router.push("/");
@@ -223,47 +264,41 @@ export const Header = () => {
       )}
       <div>
         <Modal
-          modalClass={`bg-white h-screen fixed left-0 w-72 p-3 duration-500 `}
+          modalClass={"overflow-y-auto fixed left-0 w-72 duration-500 bg-blue-ct7"}
           className="opacity-35"
           isOpenModal={isOpenModalBars}
           onCancel={setIsOpenModalBars}
         >
-          <div>
-            <Image className="m-auto pt-5" src={logo} alt="logo" />
-            <ul className="mt-5">
-              {Object.keys(menu).map((label) => (
-                <li
-                  onClick={() => {
-                    router.push(menu[label]);
-                    setIsOpenModalBars(false);
-                  }}
-                  key={label}
-                  className={`px-3 py-4 mb-2 bg-gray-100 hover:shadow-shadow2 text-gray-800 text-xs hover:bg-blue-ct5 hover:text-white rounded-lg cursor-pointer h-full flex items-center font-semibold ${
-                    router.pathname === menu[label] && "!bg-blue-ct5 !text-white "
-                  }`}
-                >
-                  {label}
-                </li>
-              ))}
-            </ul>
-            <div className="border-t-2 border-black mt-5">
-              <ul>
+          <div className="flex w-full h-screen mb-4 flex-col justify-between rounded-lg">
+            <div className="px-4 py-6">
+              <h3 className="text-white text-center p-5  rounded-xl font-semibold">ORFARM</h3>
+              <ul className="mt-6 space-y-6">
+                {menuItems.map((item, index) => (
+                  <li
+                    key={index}
+                    onClick={() => {
+                      router.push(item.route);
+                    }}
+                    className={`flex text-sm items-center gap-4 rounded-lg hover:bg-green-ct5 hover:text-white px-4 py-4 font-medium text-gray-300 cursor-pointer ${
+                      router.pathname === item.route && "bg-green-ct5 text-white shadow-shadow2 font-semibold"
+                    }`}
+                  >
+                    <span>{item.icon}</span> <span>{item.text}</span>
+                  </li>
+                ))}
+                <li className="border-t-1 border-white"></li>
                 <li
                   onClick={() => {
                     removeInfo("KEY_TOKEN");
+                    removeInfo("ROLE");
                     router.push("/login");
                   }}
-                  className="text-start px-3 mt-5 hover:bg-red-500 hover:shadow-shadow2 text-xs hover:text-white py-4 text-gray-800 font-semibold bg-gray-100 rounded-lg cursor-pointer"
+                  className={`flex text-sm items-center  mt-10 gap-4 rounded-lg hover:bg-green-ct7 hover:text-white px-4 py-3 font-medium text-gray-300 cursor-pointer`}
                 >
-                  LOG OUT
-                </li>
-                <li
-                  onClick={() => {
-                    setIsOpenModalBars(false);
-                  }}
-                  className="text-center px-3 mt-5  bg-red-500 hover:shadow-shadow2 text-xs text-white py-4  font-semibold rounded-lg cursor-pointer"
-                >
-                  CLOSE
+                  <span>
+                    <Logout className="w-6 h-6" />
+                  </span>
+                  <span>Logout</span>
                 </li>
               </ul>
             </div>
