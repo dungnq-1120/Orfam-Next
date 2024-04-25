@@ -17,10 +17,11 @@ import { Button } from "@/shared/button";
 import Checkbox from "@/shared/checkbox";
 
 import { fetcherPost } from "@/services/callApiService";
-import { LoginData } from "./type";
+
 import authLocal from "@/utils/localStorage";
 
 import logo from "@/image/logo/Logo.png";
+import { LoginData } from "@/services/type";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email format").trim(),
